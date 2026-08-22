@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-27" />
-  <link rel="stylesheet" href="tb.css?v=20260822-27" />
+  <link rel="stylesheet" href="style.css?v=20260822-28" />
+  <link rel="stylesheet" href="tb.css?v=20260822-28" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-27"></script>
+  <script src="supabase-config.js?v=20260822-28"></script>
 </head>
 <body>
   <!-- 全屏加载页 -->
@@ -46,7 +46,7 @@
       <a class="cat-item" data-page="svgconv"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="4"/><path d="M24 14v20M14 24h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>SVG 转换</a>
       <a class="cat-item" data-page="selectors"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 12h36M6 24h24M6 36h16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>选择符管理</a>
       <a class="cat-item" data-page="memory"><svg class="icon-sm" viewBox="0 0 48 48"><rect x="8" y="14" width="32" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="4"/><path d="M8 22h32M16 8v6M32 8v6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>记忆管理</a>
-      <a class="cat-item" id="nav-errlog"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l20 40H4L24 4z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M24 18v12M24 35v2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>报错日志</a>
+      <a class="cat-item" data-page="errlog"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l20 40H4L24 4z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M24 18v12M24 35v2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>报错日志</a>
     </nav>
 
     <!-- 管理员面板（仅管理员可见） -->
@@ -661,19 +661,21 @@
   </div>
 </div>
 
-<!-- AI 错误日志悬浮入口 -->
-<div id="aiErrFab" title="AI 错误日志"><span id="aiErrDot" style="display:none"></span></div>
-<div id="aiErrPanel">
-  <div class="ai-err-panel-h">
-    <span> AI 错误日志 <span style="font-size:11px;color:var(--td);font-weight:400">（最多保留 15 条，满后自动清除最早的）</span></span>
-    <div style="display:flex;gap:6px">
+<!-- AI 错误日志（整页视图） -->
+<div class="page" id="page-errlog">
+  <div class="page-header">
+    <h2>报错日志</h2>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="font-size:11px;color:var(--td)">最多保留 15 条</span>
       <button class="cp-btn btn-sm" id="aiErrClear" style="border-color:rgba(239,68,68,.3);color:#f87171">清空</button>
-      <button class="cp-btn btn-sm" id="aiErrClose"></button>
     </div>
   </div>
-  <div class="ai-err-panel-b collapsed" id="aiErrLog"><div class="mem-empty">暂无错误记录</div></div>
+  <div class="ai-err-panel-b" id="aiErrLog"><div class="mem-empty">暂无错误记录</div></div>
   <div class="ai-err-toggle" id="aiErrToggle" style="display:none" onclick="toggleAiErrExpand()"><span class="toggle-text">展开全部</span><span class="arrow">▼</span></div>
 </div>
+<!-- 兼容旧代码的空占位（日志逻辑仍引用） -->
+<div id="aiErrFab" style="display:none"><span id="aiErrDot" style="display:none"></span></div>
+<div id="aiErrPanel" style="display:none"></div>
 
 
 
@@ -753,6 +755,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-27"></script>
+  <script src="app.js?v=20260822-28"></script>
 </body>
 </html>

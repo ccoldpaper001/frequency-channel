@@ -167,3 +167,7 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 #toolbox-root #chatSend{padding:10px 20px}
 #toolbox-root #chatInput{border:1px solid #ccc;border-radius:8px;background:#fff;color:#222;font-size:14px;padding:10px 12px}
 #toolbox-root #chatInput:focus{outline:none;border-color:#111}
+
+/* error log as full page */
+#toolbox-root #page-errlog .ai-err-panel-b{max-height:none;overflow:visible;padding:16px 20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+#toolbox-root #page-errlog .ai-err-item{border:1px solid #eee;border-radius:8px;padding:10px 14px;margin-bottom:8px;background:#fff}
