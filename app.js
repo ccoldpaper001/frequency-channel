@@ -47,13 +47,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     }, 300);
   });
   document.getElementById("btn-post").addEventListener("click", createPost);
-  document.getElementById("btn-new-post").addEventListener("click", () => {
-    const panel = document.getElementById("post-box");
-    panel.style.display = panel.style.display === "none" ? "flex" : "none";
-  });
-  document.getElementById("btn-close-post").addEventListener("click", () => {
-    document.getElementById("post-box").style.display = "none";
-  });
+  document.getElementById("btn-new-post").addEventListener("click", showPostPage);
+  document.getElementById("btn-back-list").addEventListener("click", showListView);
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
 
   // 个人资料弹窗
@@ -102,9 +97,10 @@ async function logout() {
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
-  document.getElementById("post-box").style.display = "none";
+  document.getElementById("post-page").style.display = "none";
   document.getElementById("btn-new-post").style.display = "none";
   document.getElementById("admin-box").style.display = "none";
+  document.getElementById("list-view").style.display = "block";
   loadPosts();
 }
 
@@ -205,6 +201,17 @@ async function deleteCategory(id) {
   loadCategories();
 }
 
+// ---------- 页面切换：列表 / 发帖页 ----------
+function showPostPage() {
+  document.getElementById("list-view").style.display = "none";
+  document.getElementById("post-page").style.display = "block";
+  window.scrollTo(0, 0);
+}
+function showListView() {
+  document.getElementById("post-page").style.display = "none";
+  document.getElementById("list-view").style.display = "block";
+}
+
 // ---------- 发帖 ----------
 async function createPost() {
   const title = document.getElementById("post-title").value.trim();
@@ -223,6 +230,7 @@ async function createPost() {
   document.getElementById("post-title").value = "";
   document.getElementById("post-content").value = "";
   showMsg("post-msg", "发布成功！", false);
+  showListView();
   loadPosts();
 }
 

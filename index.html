@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-3" />
+  <link rel="stylesheet" href="style.css?v=20260822-5" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-3"></script>
+  <script src="supabase-config.js?v=20260822-5"></script>
 </head>
 <body>
   <!-- 左侧全高分栏（腾讯云控制台风格） -->
@@ -35,6 +35,21 @@
     </header>
 
     <main>
+      <!-- 发帖页（整页视图） -->
+      <section id="post-page" style="display:none">
+        <button id="btn-back-list" class="btn-outline back-btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M28 8L12 24l16 16M12 24h28" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>返回</button>
+        <div class="card">
+          <h2>发表新帖</h2>
+          <input type="text" id="post-title" placeholder="标题" maxlength="100" />
+          <select id="post-category" class="uniform-input"></select>
+          <textarea id="post-content" class="uniform-input" placeholder="写下你想说的内容..." rows="8"></textarea>
+          <button id="btn-post" class="btn btn-lg"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
+          <p class="msg" id="post-msg"></p>
+        </div>
+      </section>
+
+      <!-- 列表视图 -->
+      <div id="list-view">
       <!-- 未登录：密码登录/注册 -->
       <section id="auth-box" class="card">
         <div class="tabs">
@@ -75,6 +90,7 @@
         <h2>全部帖子</h2>
         <div id="posts"></div>
       </section>
+      </div>
     </main>
   </div>
 
@@ -83,19 +99,6 @@
     <svg viewBox="0 0 48 48"><path d="M8 40l4-12L36 4l8 8-24 24-12 4zM30 10l8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>
   </button>
 
-  <!-- 悬浮发帖窗口 -->
-  <section id="post-box" class="fab-panel" style="display:none">
-    <div class="fab-panel-head">
-      <span>发表新帖</span>
-      <button id="btn-close-post" title="收起"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M10 10l28 28M38 10L10 38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg></button>
-    </div>
-    <input type="text" id="post-title" placeholder="标题" maxlength="100" />
-    <select id="post-category"></select>
-    <textarea id="post-content" placeholder="写下你想说的内容..." rows="4"></textarea>
-    <button id="btn-post" class="btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
-    <p class="msg" id="post-msg"></p>
-  </section>
-
   <!-- 个人资料弹窗 -->
   <div id="profile-modal" style="display:none">
     <div class="card modal-card">
@@ -103,7 +106,7 @@
       <div class="avatar-edit">
         <img id="modal-avatar" class="avatar-big" src="" alt="" />
         <div>
-          <input type="file" id="avatar-file" accept="image/*" />
+          <label class="btn-outline file-btn">选择头像图片<input type="file" id="avatar-file" accept="image/*" hidden /></label>
           <p class="tip">支持 jpg/png，上传后自动替换头像</p>
         </div>
       </div>
@@ -116,6 +119,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-4"></script>
+  <script src="app.js?v=20260822-5"></script>
 </body>
 </html>

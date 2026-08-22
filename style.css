@@ -142,25 +142,25 @@ textarea { resize: vertical; }
 .fab:hover { transform: scale(1.08); }
 .fab svg { width: 24px; height: 24px; }
 
-.fab-panel {
-  position: fixed; right: 24px; bottom: 90px;
-  width: min(360px, calc(100vw - 48px));
-  background: #fff; border-radius: 12px;
-  padding: 14px 16px 16px; z-index: 50;
-  box-shadow: 0 6px 24px rgba(0,0,0,.22);
-  display: flex; flex-direction: column; gap: 10px;
+/* 发帖整页视图 */
+#post-page .card { display: flex; flex-direction: column; gap: 12px; }
+.back-btn { margin-bottom: 14px; }
+.btn-lg { padding: 12px 20px; font-size: 15px; }
+
+/* 统一风格：下拉框 / 文本域 / 文件选择 */
+.uniform-input, select, textarea, input {
+  padding: 10px; font-size: 14px; font-family: inherit;
+  border: 1px solid #ccc; border-radius: 6px;
+  background: #fff; color: #222; width: 100%;
 }
-.fab-panel-head {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 15px; font-weight: bold; color: #222;
+select { cursor: pointer; appearance: auto; }
+select:focus, textarea:focus, input:focus { outline: none; border-color: var(--main); }
+
+/* 头像选择按钮 */
+.file-btn {
+  cursor: pointer; display: inline-flex; margin-bottom: 4px;
+  background: #fff;
 }
-.fab-panel-head button {
-  border: none; background: none; cursor: pointer;
-  color: #999; display: flex; padding: 2px;
-}
-.fab-panel-head button:hover { color: #222; }
-.fab-panel-head svg { width: 16px; height: 16px; }
-.fab-panel .msg { margin-top: -2px; }
 
 /* 关键词搜索框 */
 .search-box { margin-bottom: 14px; }
