@@ -293,14 +293,45 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
 .empty { color: #999; text-align: center; padding: 20px; }
 
 /* 鎵嬫満涓婁晶杈规爮鍙樻í鍚戞潯 */
+/* ---------- 手机端适配：侧边栏变为顶部横向滚动条 ---------- */
 @media (max-width: 640px) {
   body { flex-direction: column; }
   .sidebar { width: 100%; min-height: auto; position: static; }
   .content { margin-left: 0; }
-  .logo { padding: 12px 16px; }
-  .sidebar-group { display: none; }
-  #category-nav { flex-direction: row; overflow-x: auto; }
-  .cat-item { flex-shrink: 0; }
+  .logo { padding: 12px 14px; font-size: 15px; }
+
+  /* 分组标题在手机上改为紧凑小标签 */
+  .sidebar-group {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 10px; padding: 6px 10px 2px;
+  }
+
+  /* 三组导航统一横向滚动，各项不换行 */
+  #category-nav,
+  body.logged-in #community-nav,
+  body.logged-in #ai-nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 8px;
+    scrollbar-width: none;
+  }
+  #category-nav::-webkit-scrollbar,
+  #community-nav::-webkit-scrollbar,
+  #ai-nav::-webkit-scrollbar { display: none; }
+  .cat-item { flex-shrink: 0; padding: 8px 10px; font-size: 13px; white-space: nowrap; }
+
+  /* 管理员面板在手机上贴在导航下方，横向排布 */
+  body.logged-in #admin-box { display: block; margin-top: 0; padding: 10px 12px; }
+  .admin-row { flex-wrap: wrap; }
+
+  main { margin: 14px auto; padding: 0 12px; }
+  .card { padding: 14px; }
+  .post { padding: 12px 14px; }
+
+  /* 手机上工具页占满宽度，减少边距 */
+  body.tb-open main { max-width: none; }
+  .toolbox-frame { height: calc(100vh - 200px); }
 }
 
 

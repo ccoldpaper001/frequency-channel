@@ -191,3 +191,9 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 /* errlog page: always fully expanded, no toggle needed */
 #toolbox-root #page-errlog .ai-err-panel-b,#toolbox-root #page-errlog .ai-err-panel-b.collapsed{max-height:none !important;overflow:visible !important}
 #toolbox-root #page-errlog .ai-err-toggle{display:none !important}
+
+/* mobile: tool pages full width */
+@media(max-width:640px){
+#toolbox-root .page.active{width:100%}
+#toolbox-root .main-content{padding:8px}
+}
