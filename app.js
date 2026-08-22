@@ -9,12 +9,16 @@ let avatarMapCache = null;  // 用户头像缓存
 let avatarMapCacheAt = 0;
 let currentFilter = 0;      // 当前选中的分区（0=全部）
 let searchKeyword = "";     // 搜索关键词
+let lastPosts = [];         // 最近一次加载的帖子（供编辑时取数据）
+let editingPostId = null;   // 正在编辑的帖子 id（null=发新帖）
 
 // 分区文件夹图标（侧边栏/标签共用）
 const folderSvg = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>';
 const closeSvg = '<svg viewBox="0 0 48 48"><path d="M10 10l28 28M38 10L10 38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>';
 const trashSvg = '<svg viewBox="0 0 48 48"><path d="M8 12h32M19 12V6h10v6M12 12l3 32h18l3-32M19 22v12M29 22v12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const moveSvg = '<svg viewBox="0 0 48 48"><path d="M18 8l-8 8 8 8M10 16h20a8 8 0 018 8v8M30 40l8-8-8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const pinSvg = '<svg viewBox="0 0 48 48"><path d="M32 6l10 10-5 5-2.5-2.5L26 27l1.5 9-4.5 4.5L11.5 29 5 41l2-2 12-6.5-11.5-11.5L12 16.5l9 1.5 8.5-8.5L27 7z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>';
+const editSvg = '<svg viewBox="0 0 48 48"><path d="M8 40h6L38 16l-6-6L8 34v6zM33 9l6 6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const defaultAvatar = "data:image/svg+xml," + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><rect width="72" height="72" fill="#c7d2fe"/><circle cx="36" cy="28" r="12" fill="#fff"/><path d="M14 64c0-13 10-20 22-20s22 7 22 20" fill="#fff"/></svg>'
@@ -77,7 +81,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }, 300);
   });
   document.getElementById("btn-post").addEventListener("click", createPost);
-  document.getElementById("btn-new-post").addEventListener("click", showPostPage);
+  document.getElementById("btn-new-post").addEventListener("click", () => { resetPostForm(); showPostPage(); });
   document.getElementById("btn-back-list").addEventListener("click", showListView);
 
   // AI 工具导航：点击后按需把工具箱加载进页面 DOM 并切换功能页
@@ -260,7 +264,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-53");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-54");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -497,13 +501,59 @@ function showListView() {
   document.body.classList.remove("tb-open");
 }
 
-// ---------- 发帖 ----------
+// ---------- 发帖 / 编辑帖子 ----------
+const postBtnPublish = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布';
+const postBtnUpdate = editSvg + '覆盖发布';
+
+function resetPostForm() {
+  editingPostId = null;
+  document.getElementById("post-title").value = "";
+  document.getElementById("post-content").value = "";
+  document.getElementById("post-page-title").textContent = "发表新帖";
+  document.getElementById("btn-post").innerHTML = postBtnPublish;
+  showMsg("post-msg", "", false);
+}
+
+// 编辑自己的帖子：填入原内容，保存时覆盖重新发布
+function editPost(id) {
+  const post = lastPosts.find(p => p.id === Number(id));
+  if (!post) return;
+  if (!currentUser || currentUser.id !== post.user_id) return alert("只能编辑自己的帖子");
+  editingPostId = post.id;
+  document.getElementById("post-title").value = post.title || "";
+  document.getElementById("post-content").value = post.content || "";
+  document.getElementById("post-page-title").textContent = "编辑帖子（保存后覆盖重新发布）";
+  document.getElementById("btn-post").innerHTML = postBtnUpdate;
+  showMsg("post-msg", "", false);
+  showPostPage();
+}
+
 async function createPost() {
   const title = document.getElementById("post-title").value.trim();
   const content = document.getElementById("post-content").value.trim();
   const category_id = Number(document.getElementById("post-category").value) || null;
   if (!title) return showMsg("post-msg", "标题不能为空", true);
   if (!category_id) return showMsg("post-msg", "请选择分区", true);
+
+  // 编辑模式：覆盖原帖并重新发布
+  if (editingPostId) {
+    const post = lastPosts.find(p => p.id === editingPostId);
+    if (!post || !currentUser || currentUser.id !== post.user_id) {
+      editingPostId = null;
+      return showMsg("post-msg", "只能编辑自己的帖子", true);
+    }
+    const { error } = await db.from("posts").update({
+      title, content, category_id,
+      author_nickname: myProfile?.nickname || currentUser.email,
+      updated_at: new Date().toISOString()
+    }).eq("id", editingPostId);
+    if (error) return showMsg("post-msg", "覆盖发布失败：" + error.message, true);
+    resetPostForm();
+    showMsg("post-msg", "已覆盖重新发布！", false);
+    showListView();
+    loadPosts();
+    return;
+  }
 
   const { error } = await db.from("posts").insert({
     title, content, category_id,
@@ -578,7 +628,9 @@ async function loadPosts() {
   await loadCategories();
 
   const filterId = currentFilter;
-  let query = db.from("posts").select("*, categories(name)").order("created_at", { ascending: false });
+  let query = db.from("posts").select("*, categories(name)")
+    .order("is_pinned", { ascending: false })
+    .order("created_at", { ascending: false });
   if (filterId > 0) query = query.eq("category_id", filterId);
   if (searchKeyword) {
     const kw = searchKeyword.replace(/[,()]/g, " "); // 防止关键词破坏查询语法
@@ -601,6 +653,7 @@ async function loadPosts() {
   const box = document.getElementById("posts");
   if (error) { box.innerHTML = `<p class="empty">加载失败：${error.message}</p>`; return; }
   if (!posts.length) { box.innerHTML = '<p class="empty">这个分区还没有帖子</p>'; return; }
+  lastPosts = posts;
 
   box.innerHTML = posts.map(p => {
     const catName = p.categories?.name;
@@ -611,10 +664,11 @@ async function loadPosts() {
       <div class="post-head">
         <img class="avatar-small" src="${avatarMap[p.user_id] || defaultAvatar}" alt="" />
         <div>
-          <h3>${escapeHtml(p.title)}</h3>
+          <h3>${p.is_pinned ? '<span class="pin-tag">置顶</span> ' : ""}${escapeHtml(p.title)}</h3>
           <div class="meta">
             ${escapeHtml(p.author_nickname || "匿名")} ·
             ${new Date(p.created_at).toLocaleString("zh-CN")}
+            ${p.updated_at ? ` · <span class="edited-tag">已编辑</span>` : ""}
             ${catName ? ` · <span class="cat-tag">${escapeHtml(catName)}</span>` : ""}
           </div>
         </div>
@@ -622,6 +676,8 @@ async function loadPosts() {
       <p class="content collapsed">${escapeHtml(p.content || "")}</p>
       ${(p.content || "").length > 80 ? `<button class="expand-btn" data-id="${p.id}">展开全文</button>` : ""}
       <div class="post-actions">
+        ${isMine ? `<button class="act-btn" data-id="${p.id}">${editSvg}编辑</button>` : ""}
+        ${myProfile?.is_admin ? `<button class="act-btn" data-id="${p.id}" data-pinned="${p.is_pinned ? "1" : ""}">${pinSvg}${p.is_pinned ? "取消置顶" : "置顶"}</button>` : ""}
         ${canDelete ? `<button class="del" data-id="${p.id}">${trashSvg}删除</button>` : ""}
         ${myProfile?.is_admin && categories.length ? `
           <span class="move-wrap">${moveSvg}移动到
@@ -638,6 +694,28 @@ async function loadPosts() {
       if (!await pageConfirm("确定删除这篇帖子吗？")) return;
       const { error } = await db.from("posts").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
+      loadPosts();
+    });
+  });
+
+  // 编辑自己的帖子
+  box.querySelectorAll(".post-actions .act-btn[data-id]").forEach(btn => {
+    if (btn.dataset.pinned !== undefined) return; // 置顶按钮单独处理
+    btn.addEventListener("click", () => {
+      if (!requireLogin()) return;
+      editPost(btn.dataset.id);
+    });
+  });
+
+  // 管理员：置顶/取消置顶
+  box.querySelectorAll(".post-actions .act-btn[data-pinned]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const post = lastPosts.find(p => p.id === Number(btn.dataset.id));
+      if (!post) return;
+      const next = !post.is_pinned;
+      if (!await pageConfirm(next ? "确定把这篇帖子置顶吗？" : "确定取消置顶吗？")) return;
+      const { error } = await db.from("posts").update({ is_pinned: next }).eq("id", btn.dataset.id);
+      if (error) return alert("操作失败：" + error.message);
       loadPosts();
     });
   });

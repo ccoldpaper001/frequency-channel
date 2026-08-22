@@ -226,14 +226,15 @@ function renderCpList(){
       var builtinTag=cp.builtin?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">默认</span>':'';
       var apiTag=cp.api?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px"> '+escH(cp.api)+'</span>':'';
       var pubTag=cp.is_public
-        ?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">公开</span>'
-        :'<span style="display:inline-block;padding:1px 6px;background:rgba(120,120,130,.15);color:var(--td);border-radius:4px;font-size:10px;margin-left:6px">私密</span>';
+        ?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px">公开</span>'
+        :'<span style="display:inline-block;padding:1px 6px;background:rgba(120,120,130,.15);color:var(--td);border-radius:4px;font-size:10px">私密</span>';
+      var pubBtn='<button class="cp-btn btn-sm" style="margin-left:auto;flex-shrink:0" '+(cp.is_public?'title="撤回公开，仅自己可见"':'title="公开到预设词广场，所有人可见"')+' onclick="event.stopPropagation();toggleCpPublic('+i+')">'+(cp.is_public?'设为私密':'设为公开')+'</button>';
       html+='<div class="cp-card" onclick="loadCpTemplate('+i+')" id="cpCard'+i+'">'+
-        '<div class="cp-card-title">'+escH(cp.name)+typeTag+apiTag+pubTag+'</div>'+
+        '<div class="cp-card-title" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span>'+escH(cp.name)+'</span>'+typeTag+apiTag+pubTag+pubBtn+'</div>'+
         '<div class="cp-card-desc">'+escH(cp.note||'')+'</div>'+
         '<div class="cp-collapse">'+
           '<div class="cp-card-prompt">'+escH((cp.prompt||'').substring(0,400))+(cp.prompt&&cp.prompt.length>400?'...':'')+'</div>'+
-          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">编辑</button><button class="cp-btn btn-sm" '+(cp.is_public?'style="border-color:rgba(120,120,130,.35);color:var(--td)"':'')+' onclick="event.stopPropagation();toggleCpPublic('+i+')">'+(cp.is_public?'设为私密':'设为公开')+'</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">删除</button></div>'+
+          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">编辑</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">删除</button></div>'+
         '</div>'+
       '</div>';
     });

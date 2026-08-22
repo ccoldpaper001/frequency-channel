@@ -267,6 +267,17 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
 }
 .copy-preset:hover, .toggle-preset:hover { color: #111; }
 .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+.post .act-btn {
+  background: none; border: none; color: #555; cursor: pointer; font-size: 12px;
+  display: inline-flex; align-items: center; gap: 4px; padding: 0;
+}
+.post .act-btn:hover { color: #111; }
+.post .act-btn svg { width: 13px; height: 13px; }
+.pin-tag {
+  background: #141414; color: #fff; padding: 2px 8px;
+  border-radius: 10px; font-size: 11px; vertical-align: 2px; margin-right: 4px;
+}
+.edited-tag { color: #999; }
 .post .del {
   background: none; border: none;
   color: #d32f2f; cursor: pointer; font-size: 12px;
