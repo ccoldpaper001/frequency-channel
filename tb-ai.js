@@ -270,12 +270,16 @@ async function syncCpPlaza(cp,oldName){
     var recId=await cpPlazaRecordId(oldName||cp.name);
     if(cp.is_public){
       var payload={title:cp.name,content:cp.prompt||'',is_public:true,source_type:cp.type||'ai-gen',author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''};
-      if(recId){
-        var u=await db.from('prompt_presets').update(payload).eq('id',recId);
-        return {ok:!u.error,err:u.error};
+      var run=function(p){return recId
+        ?db.from('prompt_presets').update(p).eq('id',recId)
+        :db.from('prompt_presets').insert(Object.assign({user_id:uid},p))};
+      var r=await run(payload);
+      if(r.error&&r.error.message&&r.error.message.indexOf('source_type')>=0){
+        // 数据库还没有 source_type 列（未运行 社区预设词类型.sql）：去掉该字段重试，保证公开功能可用
+        var p2=Object.assign({},payload);delete p2.source_type;
+        r=await run(p2);
       }
-      var ins=await db.from('prompt_presets').insert(Object.assign({user_id:uid},payload));
-      return {ok:!ins.error,err:ins.error};
+      return {ok:!r.error,err:r.error};
     }
     if(recId){
       var d=await db.from('prompt_presets').update({is_public:false}).eq('id',recId);

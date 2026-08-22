@@ -264,7 +264,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-57");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-59");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -366,12 +366,18 @@ async function publishPreset() {
   const is_public = document.querySelector('input[name="preset-vis"]:checked').value === "public";
   if (!title || !content) return showMsg("preset-msg", "名称和内容都不能为空", true);
 
-  const { error } = await db.from("prompt_presets").insert({
+  const payload = {
     title, content, is_public,
     source_type: document.getElementById("preset-type")?.value || "ai-gen",
     user_id: currentUser.id,
     author_nickname: myProfile?.nickname || currentUser.email
-  });
+  };
+  let { error } = await db.from("prompt_presets").insert(payload);
+  if (error && (error.message || "").indexOf("source_type") >= 0) {
+    // 数据库还没有 source_type 列（未运行 社区预设词类型.sql）：去掉该字段重试
+    delete payload.source_type;
+    ({ error } = await db.from("prompt_presets").insert(payload));
+  }
   if (error) return showMsg("preset-msg", "上传失败：" + error.message, true);
   document.getElementById("preset-title").value = "";
   document.getElementById("preset-content").value = "";
