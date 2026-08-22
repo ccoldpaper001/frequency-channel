@@ -298,4 +298,267 @@
   <div style="display:flex;gap:12px;align-items:stretch">
     <div style="flex:1;display:flex;flex-direction:column">
       <div class="ai-section-title" style="margin-bottom:6px">✏️ HTML 代码</div>
-      <textarea id="heEditor" placeholder="<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; }\n  </style>\n</head>\n<body>\n  <h1>Hello</h1>\n
+      <textarea id="heEditor" placeholder="<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; }\n  </style>\n</head>\n<body>\n  <h1>Hello</h1>\n</body>\n</html>" style="width:100%;min-height:480px;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:8px;resize:vertical;background:var(--bi);color:var(--t);line-height:1.6" spellcheck="false"></textarea>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div class="ai-section-title" style="margin-bottom:6px">👁️ 实时预览</div>
+      <iframe id="hePreview" sandbox="allow-scripts allow-modals" style="width:100%;min-height:480px;border:1px solid var(--br);border-radius:8px;background:#fff"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 记忆管理 ===== -->
+<div class="page" id="page-memory">
+  <div class="page-header"><h2>🧠 AI记忆管理</h2></div>
+  
+  <!-- 记忆槽位切换 -->
+  <div class="mem-section">
+    <div class="ai-section-title">🗂️ 当前记忆区 <span style="font-size:11px;color:var(--td)">（可切换不同的记忆空间，互不干扰）</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="memSlotSel" style="flex:1;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+      <button class="cp-btn btn-sm" id="memSlotNew">＋ 新建</button>
+      <button class="cp-btn btn-sm" id="memSlotRename">✏️ 重命名</button>
+    </div>
+  </div>
+
+  <!-- 记忆设置 -->
+  <div class="mem-section">
+    <div class="ai-section-title">⚙️ 记忆设置</div>
+    <div class="mem-config">
+      <label class="mem-config-row"><input type="checkbox" id="memoryToggle"><span>启用记忆</span></label>
+      <label class="mem-config-row"><span>携带记忆轮数：</span><input type="number" id="memRounds" min="1" max="50" value="6" style="width:60px"></label>
+      <label class="mem-config-row"><span>小总结触发阈值（对话数）：</span><input type="number" id="memThreshold" min="2" max="50" value="10" style="width:60px"></label>
+      <label class="mem-config-row"><span>大总结触发（小总结数）：</span><input type="number" id="memLargeThreshold" min="2" max="10" value="3" style="width:60px"></label>
+    </div>
+  </div>
+
+
+  <!-- 记忆操作 -->
+  <div class="mem-section">
+    <div class="ai-section-title">🔧 记忆操作</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="cp-btn btn-sm" id="memAdd">＋ 新增记忆</button>
+      <button class="cp-btn btn-sm" id="memExport">📤 导出记忆</button>
+      <button class="cp-btn btn-sm" id="memImport">📥 导入记忆</button>
+      <input type="file" id="memImportFile" accept=".json" style="display:none">
+    </div>
+  </div>
+
+  <!-- 大总结 -->
+  <div class="mem-section">
+    <div class="ai-section-title">🧠 大总结 <span style="font-size:11px;color:var(--td)">（综合所有小总结，提炼核心偏好）</span>
+      <button class="cp-btn btn-sm" id="memLargeSummaryNow" style="margin-left:8px">📝 立即大总结</button>
+      <button class="cp-btn btn-sm" id="memLargeAdd" style="margin-left:4px">＋ 新增</button>
+    </div>
+    <div class="mem-summaries" id="memLargeSummaries"></div>
+  </div>
+
+  <!-- 小总结 -->
+  <div class="mem-section">
+    <div class="ai-section-title">📝 小总结 <span style="font-size:11px;color:var(--td)">（定期总结近期对话）</span>
+      <button class="cp-btn btn-sm" id="memSummaryNow" style="margin-left:8px">📝 立即小总结</button>
+      <button class="cp-btn btn-sm" id="memSummaryAdd" style="margin-left:4px">＋ 新增</button>
+    </div>
+    <div class="mem-summaries" id="memSummaries"></div>
+  </div>
+
+  <!-- 未总结的记忆 -->
+  <div class="mem-section">
+    <div class="ai-section-title">💬 未总结的记忆 (<span id="memUnsavedCnt">0</span> 条)
+      <span style="font-size:11px;color:var(--td);margin-left:8px">（尚未被总结的原始对话）</span>
+    </div>
+    <div class="mem-list mem-unsaved-list" id="memUnsaved"></div>
+  </div>
+
+  <!-- 完整对话记录 -->
+  <div class="mem-section">
+    <div class="ai-section-title">📋 完整对话记录 (<span id="memCnt">0</span> 条)
+      <button class="cp-btn btn-sm" id="memClear" style="margin-left:8px;border-color:rgba(239,68,68,.3);color:#f87171">清空全部</button>
+      <button class="cp-btn btn-sm" id="memClearSummary" style="margin-left:4px;border-color:rgba(239,68,68,.3);color:#f87171">清空总结</button>
+    </div>
+    <div class="mem-list" id="memList"></div>
+  </div>
+</div>
+
+
+<!-- ===== 提示词数据库 ===== -->
+<div class="page" id="page-component">
+  <div class="page-header">
+    <h2>🗄️ 提示词数据库</h2>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-s btn-sm" id="cpExport">📤 导出数据</button>
+      <button class="btn btn-s btn-sm" id="cpImport">📥 导入数据</button>
+      <button class="btn btn-s btn-sm" id="cpDataManage">🗄️ 数据管理</button>
+      <button class="btn btn-p btn-sm" id="cpNew">＋ 新建提示词</button>
+      <input type="file" id="cpImportFile" accept=".json" style="display:none">
+    </div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📋 全部提示词 <span style="font-size:11px;color:var(--td)">（点击卡片展开查看与编辑，修改后自动保存）</span></div>
+    <div style="padding:0 0 8px 0"><input type="text" id="cpSearch" placeholder="搜索提示词（名称/备注）..." style="width:100%;padding:6px 10px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" oninput="filterCpList()"></div>
+    <div class="cp-list" id="cpList"></div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📝 编辑提示词</div>
+    <div class="md-field"><label>名称</label><input type="text" id="cpName" placeholder="提示词名称"></div>
+    <div class="md-field"><label>分类</label>
+      <select id="cpType" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)">
+        <option value="ai-gen">AI智能生成提示词</option>
+        <option value="ai-analyze">AI分析组件提示词</option>
+        <option value="component">组件提示词</option>
+      </select>
+    </div>
+    <div class="md-field"><label>备注</label><input type="text" id="cpNote" placeholder="该提示词的用途说明"></div>
+    <div class="md-field"><label>提示词内容</label>
+      <textarea id="cpPrompt" rows="10" placeholder="提示词内容..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    </div>
+    <div class="md-field"><label>使用API</label>
+      <select id="cpApi" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p btn-sm" id="cpSave">💾 保存</button>
+      <button class="btn btn-s btn-sm" id="cpDelete" style="border-color:rgba(239,68,68,.3);color:#f87171">🗑️ 删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 组件分析 ===== -->
+<div class="page" id="page-analyzer">
+  <div class="page-header">
+    <h2><svg class="icon" viewBox="0 0 24 24" style="font-size:18px"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 组件分析 <span class="help-q" onclick="showHelp('cgPage')">?</span></h2>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📥 输入 <span class="help-q" onclick="showHelp('cgInput')">?</span> <span style="font-size:11px;color:var(--td)">（粘贴组件代码，AI按分析规则分析结构特点，生成组件提示词）</span></div>
+    <div class="md-field"><label>分析规则 <span class="help-q" onclick="showHelp('cgRule')">?</span> <span style="font-size:11px;color:var(--td)">（选择一个「AI分析组件提示词」作为分析规则）</span></label>
+      <select id="cgRule" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+    </div>
+    <div class="md-field"><label>组件代码 <span class="help-q" onclick="showHelp('cgCode')">?</span> <span style="font-size:11px;color:var(--td)">（粘贴 HTML / CSS / JavaScript，作为AI分析对象）</span></label>
+      <textarea id="cgCode" rows="10" placeholder="粘贴组件的 HTML / CSS / JavaScript 代码..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-p btn-sm" id="cgAnalyzePrompt">🤖 生成提示词</button>
+    </div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📤 生成结果 <span class="help-q" onclick="showHelp('cgResultSec')">?</span></div>
+    <div class="md-field"><label>生成结果 <span class="help-q" onclick="showHelp('cgResult')">?</span> <span style="font-size:11px;color:var(--td)">（可直接编辑，点击「存入数据库」保存为组件提示词，供预设选用）</span></label>
+      <textarea id="cgResult" rows="10" placeholder="AI生成的组件提示词将显示在这里..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p btn-sm" id="cgSave">💾 存入数据库</button>
+      <button class="cp-btn btn-sm" id="cgClear" style="border-color:rgba(239,68,68,.3);color:#f87171">🗑️ 清理内容</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 代码生成 ===== -->
+<div class="page" id="page-codegen">
+  <div class="page-header">
+    <h2>⚡ 代码生成 <span class="help-q" onclick="showHelp('cgConfig')">?</span></h2>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">⚙️ 生成配置 <span style="font-size:11px;color:var(--td)">（基于组件提示词预设，生成真实可用的组件代码）</span></div>
+    <div class="md-field"><label>提示词预设 <span class="help-q" onclick="showHelp('cgPreset')">?</span> <span style="font-size:11px;color:var(--td)">（选择一个「组件提示词」作为生成参考，可留空）</span></label>
+      <select id="cgPreset" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+    </div>
+    <div class="md-field"><label>用户额外要求 <span class="help-q" onclick="showHelp('cgExtra')">?</span> <span style="font-size:11px;color:var(--td)">（单独补充的生成要求，可留空）</span></label>
+      <textarea id="cgExtra" rows="3" placeholder="额外补充的生成要求..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    </div>
+    <div class="md-field"><label>使用API <span class="help-q" onclick="showHelp('cgApi')">?</span> <span style="font-size:11px;color:var(--td)">（默认使用主API配置，可选择其他API预设）</span></label>
+      <select id="cgApi" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-p btn-sm" id="cgAnalyze">🤖 生成代码</button>
+    </div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📤 生成结果 <span style="font-size:11px;color:var(--td)">（AI生成的组件代码，可直接编辑后存入记忆）</span></div>
+    <div class="md-field"><label>生成结果 <span style="font-size:11px;color:var(--td)">（编辑后自动刷新下方预览）</span></label>
+      <textarea id="cgCodeResult" rows="10" placeholder="AI生成的组件代码将显示在这里..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    </div>
+    <div class="md-field" id="cgPreviewWrap" style="display:none"><label>👁️ 实时预览</label>
+      <iframe id="cgCodePreview" sandbox="allow-scripts allow-modals" style="width:100%;min-height:320px;border:1px solid var(--br);border-radius:8px;background:#fff"></iframe>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p btn-sm" id="cgSaveToMemory">💾 存入记忆</button>
+      <button class="cp-btn btn-sm" id="cgCodeClear" style="border-color:rgba(239,68,68,.3);color:#f87171">🗑️ 清理内容</button>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- 帮助说明弹窗 -->
+<div class="modal" id="helpModal">
+  <div class="md" style="max-width:520px">
+    <div class="md-title" id="helpTitle">说明</div>
+    <div id="helpBody" style="font-size:13px;line-height:1.8;color:var(--t);white-space:pre-wrap"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-p btn-sm" onclick="document.getElementById('helpModal').classList.remove('active')">知道了</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通用提示弹窗（替代 alert/confirm，点击背景可关闭） -->
+<div class="modal" id="dialogModal">
+  <div class="md" style="max-width:420px">
+    <div class="md-title" id="dialogTitle">提示</div>
+    <div id="dialogBody" style="font-size:13px;line-height:1.8;color:var(--t);white-space:pre-wrap;max-height:300px;overflow-y:auto"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px" id="dialogBtns"></div>
+  </div>
+</div>
+
+<!-- API弹窗 -->
+<div class="modal" id="akm">
+  <div class="md">
+    <div class="md-h"><h3>🔑 API 设置</h3><button class="md-x" id="akmx">✕</button></div>
+    <div class="md-b">
+      <div class="api-preset-row" id="apiPresetRow"></div>
+      <div class="md-field"><label>API 地址</label><input type="text" id="akurl" placeholder="https://api.openai.com/v1"></div>
+      <div class="md-field"><label>API Key</label><input type="password" id="aki" placeholder="sk-..."></div>
+      <div class="md-field"><label>模型</label><div style="display:flex;gap:6px"><select id="akmodel" style="flex:1"></select><button class="cp-btn" id="fetchModelsBtn"><span>🔄</span> 拉取</button></div></div>
+      <div class="md-field" id="akmcustomwrap" style="display:none"><label>自定义模型名</label><input type="text" id="akmodelcustom"></div>
+      <div class="md-field"><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="akautov1" checked style="width:auto"> 自动添加 /v1 路径（OpenAI 兼容格式）</label></div>
+    </div>
+    <div class="md-f"><button class="btn btn-s btn-sm" id="akcl">清除</button><button class="btn btn-s btn-sm" id="akclearcache" style="border-color:rgba(239,68,68,.3);color:#f87171">重置数据</button><button class="btn btn-p btn-sm" id="aksv">💾 保存</button></div>
+  </div>
+</div>
+
+<!-- 代码弹窗 -->
+<div class="modal" id="cvm">
+  <div class="md pv-md">
+    <div class="md-h"><h3>CSS代码</h3><div class="cv-toolbar"><button class="cp-btn" id="cvcopy"><span>📋</span> 复制</button><button class="cp-btn" id="cvclr" style="border-color:rgba(239,68,68,.3);color:#f87171"><span>🗑️</span> 清空</button><button class="md-x" id="cvx">✕</button></div></div>
+    <div class="md-b"><div class="cv" id="cvv"></div></div>
+  </div>
+</div>
+
+<!-- AI 错误日志悬浮入口 -->
+<div id="aiErrFab" title="AI 错误日志">⚠️<span id="aiErrDot" style="display:none"></span></div>
+<div id="aiErrPanel">
+  <div class="ai-err-panel-h">
+    <span>⚠️ AI 错误日志 <span style="font-size:11px;color:var(--td);font-weight:400">（最多保留 15 条，满后自动清除最早的）</span></span>
+    <div style="display:flex;gap:6px">
+      <button class="cp-btn btn-sm" id="aiErrClear" style="border-color:rgba(239,68,68,.3);color:#f87171">清空</button>
+      <button class="cp-btn btn-sm" id="aiErrClose">✕</button>
+    </div>
+  </div>
+  <div class="ai-err-panel-b collapsed" id="aiErrLog"><div class="mem-empty">暂无错误记录</div></div>
+  <div class="ai-err-toggle" id="aiErrToggle" style="display:none" onclick="toggleAiErrExpand()"><span class="toggle-text">展开全部</span><span class="arrow">▼</span></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
