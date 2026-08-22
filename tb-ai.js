@@ -269,7 +269,7 @@ async function syncCpPlaza(cp,oldName){
   try{
     var recId=await cpPlazaRecordId(oldName||cp.name);
     if(cp.is_public){
-      var payload={title:cp.name,content:cp.prompt||'',is_public:true,author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''};
+      var payload={title:cp.name,content:cp.prompt||'',is_public:true,source_type:cp.type||'ai-gen',author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''};
       if(recId){
         var u=await db.from('prompt_presets').update(payload).eq('id',recId);
         return {ok:!u.error,err:u.error};

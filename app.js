@@ -264,7 +264,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-54");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-57");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -368,6 +368,7 @@ async function publishPreset() {
 
   const { error } = await db.from("prompt_presets").insert({
     title, content, is_public,
+    source_type: document.getElementById("preset-type")?.value || "ai-gen",
     user_id: currentUser.id,
     author_nickname: myProfile?.nickname || currentUser.email
   });
@@ -385,20 +386,22 @@ async function loadPresets() {
   if (error) { box.innerHTML = `<p class="empty">加载失败：${escapeHtml(error.message)}</p>`; return; }
   if (!presets.length) { box.innerHTML = '<p class="empty">还没有预设词，来上传第一个吧</p>'; return; }
 
+  const PRESET_TYPE_LABELS = { "ai-gen": "AI智能生成提示词", "ai-analyze": "AI分析组件提示词", "component": "组件提示词" };
   box.innerHTML = presets.map(p => {
     const mine = currentUser && currentUser.id === p.user_id;
+    const typeName = PRESET_TYPE_LABELS[p.source_type] || PRESET_TYPE_LABELS["ai-gen"];
     return `
     <div class="post">
       <div class="post-head">
         <div>
-          <h3>${escapeHtml(p.title)}${p.is_public ? "" : ' <span class="cat-tag">私有</span>'}</h3>
+          <h3>${escapeHtml(p.title)} <span class="cat-tag">${typeName}</span>${p.is_public ? "" : ' <span class="cat-tag">私有</span>'}</h3>
           <div class="meta">${escapeHtml(p.author_nickname || "匿名")} · ${new Date(p.created_at).toLocaleString("zh-CN")}</div>
         </div>
       </div>
       <p class="content collapsed">${escapeHtml(p.content)}</p>
       ${(p.content || "").length > 80 ? `<button class="expand-btn">展开全文</button>` : ""}
       <div class="post-actions">
-        <button class="import-preset" data-title="${encodeURIComponent(p.title)}" data-content="${encodeURIComponent(p.content || "")}" data-author="${encodeURIComponent(p.author_nickname || "")}">存入我的数据库</button>
+        <button class="import-preset" data-title="${encodeURIComponent(p.title)}" data-content="${encodeURIComponent(p.content || "")}" data-author="${encodeURIComponent(p.author_nickname || "")}" data-type="${encodeURIComponent(p.source_type || "ai-gen")}">存入我的数据库</button>
         ${mine ? `<button class="toggle-preset" data-id="${p.id}" data-public="${p.is_public}">${p.is_public ? "转为私有" : "转为公开"}</button>
         <button class="del" data-id="${p.id}">删除</button>` : ""}
       </div>
@@ -411,20 +414,27 @@ async function loadPresets() {
       btn.textContent = content.classList.toggle("collapsed") ? "展开全文" : "收起";
     });
   });
-  // 一键把广场预设词存入自己账号的提示词数据库（云端，按账号隔离）
+  // 一键把广场预设词存入自己账号的提示词数据库（云端，按账号隔离；类型与作者一致，同内容只允许存一次）
   box.querySelectorAll(".import-preset").forEach(btn => {
     btn.addEventListener("click", async () => {
       if (!requireLogin()) return;
       const title = decodeURIComponent(btn.dataset.title);
       const content = decodeURIComponent(btn.dataset.content);
+      const type = decodeURIComponent(btn.dataset.type || "ai-gen") || "ai-gen";
       if (!content) return alert("这条预设词没有内容");
       try {
         await ensureToolbox(null);
         if (typeof promptDB === "undefined" || typeof savePromptDB !== "function") throw new Error("工具箱未加载完成");
+        // 防重复：数据库里已有同样内容时拒绝再存，防止无限存入
+        if (promptDB.some(p => (p.prompt || "") === content)) {
+          btn.textContent = "已存入过";
+          btn.disabled = true;
+          return alert("你的数据库里已经有这条预设词，不能重复存入");
+        }
         let name = title, n = 2;
-        while (promptDB.some(p => p.name === name && p.type === "ai-gen")) { name = title + " " + n; n++; }
+        while (promptDB.some(p => p.name === name && p.type === type)) { name = title + " " + n; n++; }
         promptDB.push({
-          name, type: "ai-gen",
+          name, type,
           note: "来自预设词广场 · " + (decodeURIComponent(btn.dataset.author) || "匿名"),
           prompt: content, api: "", builtin: false, is_public: false
         });

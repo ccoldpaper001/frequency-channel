@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工具箱</title>
-  <link rel="stylesheet" href="style.css?v=20260822-55" />
+  <link rel="stylesheet" href="style.css?v=20260822-57" />
   <link rel="stylesheet" href="tb.css?v=20260822-51" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260822-51"></script>
@@ -100,6 +100,11 @@
           <h2>上传预设词</h2>
           <input type="text" id="preset-title" placeholder="预设名称，如：默认CSS生成" maxlength="60" />
           <textarea id="preset-content" placeholder="粘贴提示词内容..." rows="5"></textarea>
+          <select id="preset-type">
+            <option value="ai-gen">类型：AI智能生成提示词</option>
+            <option value="ai-analyze">类型：AI分析组件提示词</option>
+            <option value="component">类型：组件提示词</option>
+          </select>
           <div class="preset-visibility">
             <label><input type="radio" name="preset-vis" value="public" /> 公开（展示在广场，所有人可见）</label>
             <label><input type="radio" name="preset-vis" value="private" checked /> 仅自己使用（默认）</label>
@@ -801,6 +806,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-56"></script>
+  <script src="app.js?v=20260822-57"></script>
 </body>
 </html>

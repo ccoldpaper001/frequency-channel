@@ -254,7 +254,7 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* 预设词广场 */
-#preset-publish-box input, #preset-publish-box textarea { margin-bottom: 10px; }
+#preset-publish-box input, #preset-publish-box textarea, #preset-publish-box select { margin-bottom: 10px; }
 .preset-visibility { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .preset-visibility label {
   display: flex; align-items: center; gap: 8px;
