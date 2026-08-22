@@ -341,3 +341,8 @@ body.side-collapsed .sidebar-group{visibility:hidden;height:10px;padding:0}
 body.side-collapsed .cat-item{justify-content:center;padding:10px 0;font-size:0}
 body.side-collapsed .cat-item svg{font-size:17px}
 body.side-collapsed #admin-box{display:none !important}
+
+/* 鏁翠綋缂╂斁 75%锛岄〉闈㈡洿瀹芥澗锛涢殣钘忔墍鏈夋粴鍔ㄦ潯 */
+html{zoom:0.75}
+*{scrollbar-width:none}
+::-webkit-scrollbar{width:0;height:0;display:none}
