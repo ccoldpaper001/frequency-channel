@@ -1,129 +1,129 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>鏂囧瓧璁哄潧</title>
+  <title>文字论坛</title>
   <link rel="stylesheet" href="style.css?v=20260822-7" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260822-7"></script>
 </head>
 <body>
-  <!-- 宸︿晶鍏ㄩ珮鍒嗘爮锛堣吘璁簯鎺у埗鍙伴鏍硷級 -->
+  <!-- 左侧全高分栏（腾讯云控制台风格） -->
   <aside class="sidebar">
     <div class="logo">
       <svg class="icon" viewBox="0 0 48 48"><path d="M5 40h38M8 34V6h24l8 8v20" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M16 6v10h12" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M15 28h14M15 21h14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-      <span>鏂囧瓧璁哄潧</span>
+      <span>文字论坛</span>
     </div>
 
-    <div class="sidebar-group">鍒嗗尯</div>
+    <div class="sidebar-group">分区</div>
     <nav id="category-nav">
-      <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>鍏ㄩ儴</a>
+      <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>全部</a>
     </nav>
 
-    <div class="sidebar-group">宸ュ叿</div>
-    <a class="cat-item" id="nav-toolbox"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10zM38 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>宸ュ叿绠?/a>
+    <div class="sidebar-group">工具</div>
+    <a class="cat-item" id="nav-toolbox"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10zM38 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>工具箱</a>
 
-    <!-- 绠＄悊鍛橀潰鏉匡紙浠呯鐞嗗憳鍙锛?-->
+    <!-- 管理员面板（仅管理员可见） -->
     <div id="admin-box" class="admin-sidebar" style="display:none">
-      <div class="sidebar-group"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><path d="M20.5 31.5a4.5 4.5 0 009 0c0-4.5-9-2.5-9-7a4.5 4.5 0 019 0M24 13v4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>绠＄悊鍛橀潰鏉?/div>
+      <div class="sidebar-group"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><path d="M20.5 31.5a4.5 4.5 0 009 0c0-4.5-9-2.5-9-7a4.5 4.5 0 019 0M24 13v4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>管理员面板</div>
       <div class="admin-row">
-        <input type="text" id="new-category" placeholder="鏂板垎鍖哄悕绉? />
-        <button id="btn-add-category" class="btn" title="鍒涘缓鍒嗗尯"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 8v32M8 24h32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button>
+        <input type="text" id="new-category" placeholder="新分区名称" />
+        <button id="btn-add-category" class="btn" title="创建分区"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 8v32M8 24h32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button>
       </div>
       <div id="category-manage"></div>
       <p class="msg msg-dark" id="admin-msg"></p>
     </div>
   </aside>
 
-  <!-- 鍙充晶鍐呭鍖?-->
+  <!-- 右侧内容区 -->
   <div class="content">
     <header>
       <div id="user-bar" style="display:none">
         <img id="user-avatar" class="avatar-small" src="" alt="" />
         <span id="user-nickname"></span>
-        <span id="admin-badge" class="badge" style="display:none"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l5.3 10.9L41.5 16.6l-8.8 8.5 2.1 12L24 31.5l-10.8 5.6 2.1-12-8.8-8.5 12.2-1.7L24 4z" fill="currentColor"/></svg>绠＄悊鍛?/span>
-        <button id="btn-profile" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="M6 44c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>涓汉璧勬枡</button>
-        <button id="btn-logout" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M23 4H8v40h15M17 24h23M33 14l10 10-10 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>閫€鍑?/button>
+        <span id="admin-badge" class="badge" style="display:none"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l5.3 10.9L41.5 16.6l-8.8 8.5 2.1 12L24 31.5l-10.8 5.6 2.1-12-8.8-8.5 12.2-1.7L24 4z" fill="currentColor"/></svg>管理员</span>
+        <button id="btn-profile" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="M6 44c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>个人资料</button>
+        <button id="btn-logout" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M23 4H8v40h15M17 24h23M33 14l10 10-10 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>退出</button>
       </div>
     </header>
 
     <main>
-      <!-- 鍙戝笘椤碉紙鏁撮〉瑙嗗浘锛?-->
+      <!-- 发帖页（整页视图） -->
       <section id="post-page" style="display:none">
-        <button id="btn-back-list" class="btn-outline back-btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M28 8L12 24l16 16M12 24h28" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>杩斿洖</button>
+        <button id="btn-back-list" class="btn-outline back-btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M28 8L12 24l16 16M12 24h28" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>返回</button>
         <div class="card">
-          <h2>鍙戣〃鏂板笘</h2>
-          <input type="text" id="post-title" placeholder="鏍囬" maxlength="100" />
+          <h2>发表新帖</h2>
+          <input type="text" id="post-title" placeholder="标题" maxlength="100" />
           <select id="post-category" class="uniform-input"></select>
-          <textarea id="post-content" class="uniform-input" placeholder="鍐欎笅浣犳兂璇寸殑鍐呭..." rows="8"></textarea>
-          <button id="btn-post" class="btn btn-lg"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>鍙戝竷</button>
+          <textarea id="post-content" class="uniform-input" placeholder="写下你想说的内容..." rows="8"></textarea>
+          <button id="btn-post" class="btn btn-lg"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
           <p class="msg" id="post-msg"></p>
         </div>
       </section>
 
-      <!-- 宸ュ叿绠辫鍥撅紙鍐呭祵锛?-->
+      <!-- 工具箱视图（内嵌） -->
       <section id="toolbox-view" style="display:none">
         <div class="card toolbox-card">
-          <iframe src="toolbox/" class="toolbox-frame" title="宸ュ叿绠?></iframe>
+          <iframe src="toolbox/" class="toolbox-frame" title="工具箱"></iframe>
         </div>
       </section>
 
-      <!-- 鍒楄〃瑙嗗浘 -->
+      <!-- 列表视图 -->
       <div id="list-view">
-      <!-- 鏈櫥褰曪細瀵嗙爜鐧诲綍/娉ㄥ唽 -->
+      <!-- 未登录：密码登录/注册 -->
       <section id="auth-box" class="card">
         <div class="tabs">
-          <button class="tab active" data-tab="login">鐧诲綍</button>
-          <button class="tab" data-tab="register">娉ㄥ唽</button>
+          <button class="tab active" data-tab="login">登录</button>
+          <button class="tab" data-tab="register">注册</button>
         </div>
         <form id="form-login" class="auth-form">
-          <input type="email" id="login-email" placeholder="閭" required />
-          <input type="password" id="login-password" placeholder="瀵嗙爜" minlength="6" required />
-          <button type="submit" class="btn">鐧诲綍</button>
+          <input type="email" id="login-email" placeholder="邮箱" required />
+          <input type="password" id="login-password" placeholder="密码" minlength="6" required />
+          <button type="submit" class="btn">登录</button>
           <p class="msg" id="login-msg"></p>
         </form>
         <form id="form-register" class="auth-form" style="display:none">
-          <input type="text" id="reg-nickname" placeholder="鏄电О" required />
-          <input type="email" id="reg-email" placeholder="閭" required />
-          <input type="password" id="reg-password" placeholder="瀵嗙爜锛堣嚦灏?浣嶏級" minlength="6" required />
-          <button type="submit" class="btn">娉ㄥ唽</button>
+          <input type="text" id="reg-nickname" placeholder="昵称" required />
+          <input type="email" id="reg-email" placeholder="邮箱" required />
+          <input type="password" id="reg-password" placeholder="密码（至少6位）" minlength="6" required />
+          <button type="submit" class="btn">注册</button>
           <p class="msg" id="reg-msg"></p>
         </form>
       </section>
 
-      <!-- 甯栧瓙鍒楄〃 -->
+      <!-- 帖子列表 -->
       <section id="posts-list">
         <div class="search-box">
-          <input type="search" id="search-keyword" placeholder="鎼滅储甯栧瓙鏍囬鎴栧唴瀹?.." />
+          <input type="search" id="search-keyword" placeholder="搜索帖子标题或内容..." />
         </div>
-        <h2>鍏ㄩ儴甯栧瓙</h2>
+        <h2>全部帖子</h2>
         <div id="posts"></div>
       </section>
       </div>
     </main>
   </div>
 
-  <!-- 鍙充笅瑙掓偓娴彂甯栨寜閽?-->
-  <button id="btn-new-post" class="fab" style="display:none" title="鍙戣〃鏂板笘">
+  <!-- 右下角悬浮发帖按钮 -->
+  <button id="btn-new-post" class="fab" style="display:none" title="发表新帖">
     <svg viewBox="0 0 48 48"><path d="M8 40l4-12L36 4l8 8-24 24-12 4zM30 10l8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>
   </button>
 
-  <!-- 涓汉璧勬枡寮圭獥 -->
+  <!-- 个人资料弹窗 -->
   <div id="profile-modal" style="display:none">
     <div class="card modal-card">
-      <h2>涓汉璧勬枡</h2>
+      <h2>个人资料</h2>
       <div class="avatar-edit">
         <img id="modal-avatar" class="avatar-big" src="" alt="" />
         <div>
-          <label class="btn-outline file-btn">閫夋嫨澶村儚鍥剧墖<input type="file" id="avatar-file" accept="image/*" hidden /></label>
-          <p class="tip">鏀寔 jpg/png锛屼笂浼犲悗鑷姩鏇挎崲澶村儚</p>
+          <label class="btn-outline file-btn">选择头像图片<input type="file" id="avatar-file" accept="image/*" hidden /></label>
+          <p class="tip">支持 jpg/png，上传后自动替换头像</p>
         </div>
       </div>
-      <input type="text" id="modal-nickname" placeholder="鏄电О" maxlength="30" />
+      <input type="text" id="modal-nickname" placeholder="昵称" maxlength="30" />
       <div class="modal-btns">
-        <button id="btn-save-profile" class="btn">淇濆瓨</button>
-        <button id="btn-close-modal" class="btn-outline">鍏抽棴</button>
+        <button id="btn-save-profile" class="btn">保存</button>
+        <button id="btn-close-modal" class="btn-outline">关闭</button>
       </div>
       <p class="msg" id="profile-msg"></p>
     </div>
