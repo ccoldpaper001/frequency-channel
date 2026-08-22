@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工具箱</title>
-  <link rel="stylesheet" href="style.css?v=20260822-49" />
-  <link rel="stylesheet" href="tb.css?v=20260822-49" />
+  <link rel="stylesheet" href="style.css?v=20260822-51" />
+  <link rel="stylesheet" href="tb.css?v=20260822-51" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-49"></script>
+  <script src="supabase-config.js?v=20260822-51"></script>
 </head>
 <body>
   <!-- 全屏加载页：等待全部模块（登录态/帖子/工具箱）就绪后自动消失 -->
@@ -563,7 +563,7 @@
   </div>
   <div class="cp-section">
     <div class="ai-section-title"> 编辑提示词</div>
-    <div class="md-field"><label>名称</label><input type="text" id="cpName" placeholder="提示词名称"></div>
+    <div class="md-field"><label>名称</label><input type="text" id="cpName" autocomplete="off" placeholder="提示词名称"></div>
     <div class="md-field"><label>分类</label>
       <select id="cpType" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)">
         <option value="ai-gen">AI智能生成提示词</option>
@@ -571,7 +571,7 @@
         <option value="component">组件提示词</option>
       </select>
     </div>
-    <div class="md-field"><label>备注</label><input type="text" id="cpNote" placeholder="该提示词的用途说明"></div>
+          <div class="md-field"><label>备注</label><input type="text" id="cpNote" autocomplete="off" spellcheck="false" placeholder="该提示词的用途说明"></div>
     <div class="md-field"><label>提示词内容</label>
       <textarea id="cpPrompt" rows="10" placeholder="提示词内容..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
     </div>
@@ -678,10 +678,10 @@
     <div class="md-h"><h3> API 设置</h3><button class="md-x" id="akmx"></button></div>
     <div class="md-b">
       <div class="api-preset-row" id="apiPresetRow"></div>
-      <div class="md-field"><label>API 地址</label><input type="text" id="akurl" placeholder="https://api.openai.com/v1"></div>
-      <div class="md-field"><label>API Key</label><input type="password" id="aki" placeholder="sk-..."></div>
+      <div class="md-field"><label>API 地址</label><input type="text" id="akurl" autocomplete="off" spellcheck="false" placeholder="https://api.openai.com/v1"></div>
+      <div class="md-field"><label>API Key</label><input type="text" id="aki" autocomplete="off" spellcheck="false" placeholder="sk-..."></div>
       <div class="md-field"><label>模型</label><div style="display:flex;gap:6px"><select id="akmodel" style="flex:1"></select><button class="cp-btn" id="fetchModelsBtn"><span></span> 拉取</button></div></div>
-      <div class="md-field" id="akmcustomwrap" style="display:none"><label>自定义模型名</label><input type="text" id="akmodelcustom"></div>
+      <div class="md-field" id="akmcustomwrap" style="display:none"><label>自定义模型名</label><input type="text" id="akmodelcustom" autocomplete="off"></div>
       <div class="md-field"><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="akautov1" checked style="width:auto"> 自动添加 /v1 路径（OpenAI 兼容格式）</label></div>
     </div>
     <div class="md-f"><button class="btn btn-s btn-sm" id="akcl">清除</button><button class="btn btn-s btn-sm" id="akclearcache" style="border-color:rgba(239,68,68,.3);color:#f87171">重置数据</button><button class="btn btn-p btn-sm" id="aksv"> 保存</button></div>
@@ -739,15 +739,15 @@
           <button class="tab" data-tab="register">注册</button>
         </div>
         <form id="form-login" class="auth-form">
-          <input type="email" id="login-email" placeholder="邮箱" required />
-          <input type="password" id="login-password" placeholder="密码" minlength="6" required />
+        <input type="email" id="login-email" autocomplete="username" placeholder="邮箱" required />
+        <input type="password" id="login-password" autocomplete="current-password" placeholder="密码" minlength="6" required />
           <button type="submit" class="btn">登录</button>
           <p class="msg" id="login-msg"></p>
         </form>
         <form id="form-register" class="auth-form" style="display:none">
           <input type="text" id="reg-nickname" placeholder="昵称" required />
-          <input type="email" id="reg-email" placeholder="邮箱" required />
-          <input type="password" id="reg-password" placeholder="密码（至少6位）" minlength="6" required />
+          <input type="email" id="reg-email" autocomplete="off" placeholder="邮箱" required />
+          <input type="password" id="reg-password" autocomplete="new-password" placeholder="密码（至少6位）" minlength="6" required />
           <button type="submit" class="btn">注册</button>
           <p class="msg" id="reg-msg"></p>
         </form>
@@ -801,6 +801,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-50"></script>
+  <script src="app.js?v=20260822-51"></script>
 </body>
 </html>
