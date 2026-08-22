@@ -1,0 +1,118 @@
+{
+  "version": "1.2",
+  "description": "工具箱提示词数据库 - 统一简洁格式",
+  "prompts": [
+    {
+      "name": "默认CSS生成",
+      "type": "ai-gen",
+      "note": "默认的CSS生成提示词",
+      "prompt": "你是CSS美化工程师。为聊天页面生成CSS。\n\n【重要规则】\n1. 只能使用以下选择符，禁止编造任何新选择符：\n{{SELECTORS}}\n2. 只输出纯CSS代码，不要代码块包裹，不要解释\n3. 每个CSS属性必须单独一行\n4. 每个属性后面用 /* 中文注释 */ 说明作用\n5. 每条CSS规则末尾用 /* 区域名 */ 注明\n6. 所有属性值后加 !important\n\n输出示例：\n.header.qqy-chat-header {\n  background: linear-gradient(135deg,#667eea,#764ba2) !important; /* 顶栏渐变背景 */\n  backdrop-filter: blur(10px) !important; /* 毛玻璃模糊度 */\n} /* 顶栏 */",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "默认组件分析",
+      "type": "ai-analyze",
+      "note": "分析组件的HTML结构、CSS布局、JS逻辑",
+      "prompt": "你是一名专业前端架构分析工程师。\n你的任务不是分析视觉效果。\n不要关注：\n- 颜色\n- 图片\n- UI主题\n- 装饰效果\n\n重点分析：\n- HTML结构\n- CSS布局逻辑\n- JavaScript程序逻辑\n- 数据关系\n- 状态变化\n- 组件通信\n\n输出可以被另一个AI复刻的组件结构模型。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "小总结指令",
+      "type": "memory-summary",
+      "note": "memory.js 自动小总结时发送给 AI 的系统指令",
+      "prompt": "请简洁总结以下CSS美化的对话记录，提取关键信息：用户修改了哪些区域、使用了什么风格、有什么偏好。200字以内。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "大总结指令",
+      "type": "memory-summary",
+      "note": "memory.js 自动大总结时发送给 AI 的系统指令",
+      "prompt": "请对所有小总结进行大总结，提炼用户的：①核心审美偏好 ②常用配色方案 ③常用字体 ④修改习惯 ⑤特殊需求。300字以内。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "大总结系统前缀",
+      "type": "memory-prefix",
+      "note": "buildMessages 中大总结内容的系统指令前缀",
+      "prompt": "以下是之前所有对话的大总结，包含用户核心偏好和风格习惯：",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "小总结系统前缀",
+      "type": "memory-prefix",
+      "note": "buildMessages 中小总结内容的系统指令前缀",
+      "prompt": "以下是近期对话的小总结：",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "AI生成-只修改选择符模板",
+      "type": "ai-template",
+      "note": "buildAiPrompt 中当用户勾选特定选择符时的追加指令",
+      "prompt": "【只修改以下选择符】\n{{SELECTED_SELS}}\n不要输出其他选择符的CSS。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "AI生成-已有CSS模板",
+      "type": "ai-template",
+      "note": "buildAiPrompt 中当存在当前CSS时的追加指令",
+      "prompt": "【当前已有CSS】\n{{CURRENT_CSS}}\n请在此基础上优化。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "AI生成-用户额外要求模板",
+      "type": "ai-template",
+      "note": "buildAiPrompt 中用户额外要求的追加指令",
+      "prompt": "【用户额外要求】\n{{USER_REQUEST}}",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "AI生成-重要规则模板",
+      "type": "ai-template",
+      "note": "buildAiPrompt 末尾的固定重要规则",
+      "prompt": "【重要】只能使用提供的选择符列表中的选择符，禁止编造新选择符。每个属性单独一行，行尾用 /* 中文注释 */ 标注。",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "AI生成-兼容旧提示词模板",
+      "type": "ai-template",
+      "note": "buildAiPrompt 中兼容无占位符旧提示词的动态选择符追加",
+      "prompt": "【当前可用选择符（以此为准）】\n{{SELECTORS}}",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "组件分析-提示词预设模板",
+      "type": "ai-template",
+      "note": "cgAnalyze 中提示词预设部分的组装模板",
+      "prompt": "【提示词预设】\n{{PRESET_PROMPT}}",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "组件分析-用户额外要求模板",
+      "type": "ai-template",
+      "note": "cgAnalyze 中用户额外要求部分的组装模板",
+      "prompt": "【用户额外要求】\n{{EXTRA_REQUEST}}",
+      "api": "",
+      "builtin": true
+    },
+    {
+      "name": "组件分析-待分析代码模板",
+      "type": "ai-template",
+      "note": "cgAnalyze 中待分析组件代码部分的组装模板",
+      "prompt": "【待分析的组件代码】\n{{COMPONENT_CODE}}",
+      "api": "",
+      "builtin": true
+    }
+  ]
+}
