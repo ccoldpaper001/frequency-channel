@@ -237,7 +237,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-33");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-34");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -253,7 +253,7 @@ async function ensureToolbox(page) {
     toolboxLoading = (async () => {
       window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("tb-storage.js?v=20260822-33");
+      await loadScript("tb-storage.js?v=20260822-34");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
@@ -424,8 +424,10 @@ function showPostPage() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("presets-view").style.display = "none";
+  document.getElementById("selpack-view").style.display = "none";
   document.getElementById("post-page").style.display = "block";
   document.getElementById("nav-presets").classList.remove("active");
+  document.getElementById("nav-selpack").classList.remove("active");
   document.body.classList.remove("tb-open");
   window.scrollTo(0, 0);
 }
@@ -433,7 +435,9 @@ function showToolbox() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
   document.getElementById("presets-view").style.display = "none";
+  document.getElementById("selpack-view").style.display = "none";
   document.getElementById("nav-presets").classList.remove("active");
+  document.getElementById("nav-selpack").classList.remove("active");
   document.getElementById("toolbox-view").style.display = "block";
   document.body.classList.add("tb-open"); // 放宽 main 的 860px 限宽，让工具卡片占满 90% 页面
   // 取消分区导航的高亮（AI 工具项自行管理高亮）
@@ -495,8 +499,10 @@ async function loadCategories() {
       currentFilter = Number(item.dataset.id);
       document.getElementById("toolbox-view").style.display = "none";
       document.getElementById("presets-view").style.display = "none";
+      document.getElementById("selpack-view").style.display = "none";
       document.getElementById("list-view").style.display = "block";
       document.getElementById("nav-presets").classList.remove("active");
+      document.getElementById("nav-selpack").classList.remove("active");
       document.body.classList.remove("tb-open");
       document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
