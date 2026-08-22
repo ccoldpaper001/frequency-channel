@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文字论坛</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header>
+    <h1>📝 文字论坛</h1>
+    <div id="user-bar" style="display:none">
+      <img id="user-avatar" class="avatar-small" src="" alt="" />
+      <span id="user-nickname"></span>
+      <span id="admin-badge" class="badge" style="display:none">管理员</span>
+      <button id="btn-profile" class="btn btn-outline">个人资料</button>
+      <button id="btn-logout" class="btn-outline">退出</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 未登录：邮箱验证码登录/注册 -->
+    <section id="auth-box" class="card">
+      <h2>登录 / 注册</h2>
+      <p class="tip">输入邮箱，我们会给你发送一位 6 位验证码。新邮箱会自动注册。</p>
+      <div class="auth-form">
+        <input type="text" id="otp-nickname" placeholder="昵称（新用户注册时填写）" />
+        <input type="email" id="otp-email" placeholder="邮箱" required />
+        <div class="otp-row">
+          <input type="text" id="otp-code" placeholder="6位验证码" maxlength="6" inputmode="numeric" />
+          <button id="btn-send-code" class="btn">发送验证码</button>
+        </div>
+        <button id="btn-verify" class="btn">登录</button>
+        <p class="msg" id="auth-msg"></p>
+      </div>
+    </section>
+
+    <!-- 已登录：发帖区 -->
+    <section id="post-box" class="card" style="display:none">
+      <h2>发表新帖</h2>
+      <input type="text" id="post-title" placeholder="标题" maxlength="100" />
+      <select id="post-category"></select>
+      <textarea id="post-content" placeholder="写下你想说的内容..." rows="4"></textarea>
+      <button id="btn-post" class="btn">发布</button>
+      <p class="msg" id="post-msg"></p>
+    </section>
+
+    <!-- 管理员面板 -->
+    <section id="admin-box" class="card" style="display:none">
+      <h2>⚙️ 管理员面板</h2>
+      <div class="admin-row">
+        <input type="text" id="new-category" placeholder="新分区名称，如：技术分享" />
+        <button id="btn-add-category" class="btn">创建分区</button>
+      </div>
+      <div id="category-manage"></div>
+      <p class="msg" id="admin-msg"></p>
+    </section>
+
+    <!-- 分区筛选 -->
+    <section id="posts-list">
+      <div class="list-head">
+        <h2>全部帖子</h2>
+        <select id="filter-category">
+          <option value="0">全部分区</option>
+        </select>
+      </div>
+      <div id="posts"></div>
+    </section>
+  </main>
+
+  <!-- 个人资料弹窗 -->
+  <div id="profile-modal" style="display:none">
+    <div class="card modal-card">
+      <h2>个人资料</h2>
+      <div class="avatar-edit">
+        <img id="modal-avatar" class="avatar-big" src="" alt="" />
+        <div>
+          <input type="file" id="avatar-file" accept="image/*" />
+          <p class="tip">支持 jpg/png，上传后自动替换头像</p>
+        </div>
+      </div>
+      <input type="text" id="modal-nickname" placeholder="昵称" maxlength="30" />
+      <div class="modal-btns">
+        <button id="btn-save-profile" class="btn">保存</button>
+        <button id="btn-close-modal" class="btn-outline">关闭</button>
+      </div>
+      <p class="msg" id="profile-msg"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
