@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-30" />
-  <link rel="stylesheet" href="tb.css?v=20260822-30" />
+  <link rel="stylesheet" href="style.css?v=20260822-32" />
+  <link rel="stylesheet" href="tb.css?v=20260822-32" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-30"></script>
+  <script src="supabase-config.js?v=20260822-32"></script>
 </head>
 <body>
   <!-- 全屏加载页 -->
@@ -31,6 +31,7 @@
     <div class="sidebar-group">社区</div>
     <nav id="community-nav">
       <a class="cat-item" id="nav-presets"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 34V8h24l8 8v18H6zM14 40h24V22M18 16h12M18 24h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>预设词广场</a>
+      <a class="cat-item" id="nav-selpack"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10zM14 22h20M14 30h14" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>选择符广场</a>
     </nav>
 
     <div class="sidebar-group">AI 工具</div>
@@ -104,6 +105,15 @@
         <div class="card">
           <h2>预设词列表</h2>
           <div id="presets-list"></div>
+        </div>
+      </section>
+
+      <!-- 选择符广场视图 -->
+      <section id="selpack-view" style="display:none">
+        <div class="card">
+          <h2>选择符广场</h2>
+          <p class="tip">这里展示大家公开的选择符合集。导入后只加入选择符本身；标题和说明仅在此展示。要发布自己的，去 AI 工具 → 选择符管理 → 发布到论坛。</p>
+          <div id="selpack-list"></div>
         </div>
       </section>
 
@@ -246,10 +256,25 @@
     <h2> 选择符管理</h2>
     <div style="display:flex;gap:6px">
       <button class="btn btn-s btn-sm" id="importTextBtn"> 从文本导入</button>
+      <button class="btn btn-s btn-sm" id="publishSelBtn">发布到论坛</button>
       <button class="btn btn-p btn-sm" id="newSetBtn">＋ 新建</button>
     </div>
   </div>
   <div class="set-list" id="setList"></div>
+
+  <!-- 发布选择符弹窗 -->
+  <div class="modal" id="selPackModal">
+    <div class="modal-card-t" style="max-width:420px;margin:8vh auto;background:var(--bi);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.2);position:relative">
+      <h3 style="margin-bottom:12px;font-size:15px">发布选择符合集到论坛</h3>
+      <input type="text" id="selPackTitle" placeholder="标题（必填），如：青丘语完整选择符" style="width:100%;padding:9px 12px;border:1px solid #ccc;border-radius:6px;margin-bottom:10px;font-size:13px" />
+      <textarea id="selPackDesc" placeholder="说明内容（可选，仅在论坛广场展示）" rows="3" style="width:100%;padding:9px 12px;border:1px solid #ccc;border-radius:6px;margin-bottom:10px;font-size:13px;resize:vertical"></textarea>
+      <p style="font-size:12px;color:#999;margin-bottom:12px">将发布当前集合的全部选择符；别人导入的只有选择符本身。</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="cp-btn" id="selPackCancel">取消</button>
+        <button class="btn" id="selPackSubmit">发布</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 新建/编辑弹窗 -->
   <div class="modal" id="setModal">
@@ -760,6 +785,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-30"></script>
+  <script src="app.js?v=20260822-32"></script>
 </body>
 </html>

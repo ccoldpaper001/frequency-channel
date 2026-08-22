@@ -303,3 +303,9 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
   .cat-item { flex-shrink: 0; }
 }
 
+
+/* 游客只显示帖子：未登录时隐藏社区/AI工具/管理员导航 */
+#community-nav,#ai-nav,#admin-box{display:none}
+body.logged-in #community-nav{display:flex}
+body.logged-in #ai-nav{display:flex;flex-direction:column}
+body.logged-in #admin-box{display:flex}

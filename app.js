@@ -70,6 +70,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
   document.getElementById("nav-presets").addEventListener("click", () => { showPresetsView(); loadPresets(); });
+  document.getElementById("nav-selpack").addEventListener("click", () => { showSelpackView(); loadSelpacks(); });
   document.getElementById("nav-apiset").addEventListener("click", () => {
     if (!requireLogin()) return;
     showToolbox();
@@ -122,6 +123,7 @@ async function register(e) {
 
 async function logout() {
   await db.auth.signOut();
+  document.body.classList.remove("logged-in");
   localStorage.removeItem("forum_uid");
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
@@ -155,6 +157,7 @@ async function afterLogin(user) {
   }
 
   refreshTopBar();
+  document.body.classList.add("logged-in");
   if (myProfile?.is_admin) document.getElementById("admin-box").style.display = "block";
 
   // 工具箱存储按此隔离各用户数据（同一页面内实时读取）
@@ -234,7 +237,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-app.js"].map(f => f + "?v=20260822-30");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-32");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -250,7 +253,7 @@ async function ensureToolbox(page) {
     toolboxLoading = (async () => {
       window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("tb-storage.js?v=20260822-30");
+      await loadScript("tb-storage.js?v=20260822-32");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
@@ -260,12 +263,68 @@ async function ensureToolbox(page) {
   if (page && typeof switchPage === "function") switchPage(page);
 }
 
+// ---------- 选择符广场 ----------
+function showSelpackView() {
+  if (!requireLogin()) return;
+  document.getElementById("list-view").style.display = "none";
+  document.getElementById("post-page").style.display = "none";
+  document.getElementById("toolbox-view").style.display = "none";
+  document.getElementById("presets-view").style.display = "none";
+  document.getElementById("selpack-view").style.display = "block";
+  document.body.classList.remove("tb-open");
+  document.querySelectorAll("#category-nav .cat-item, #ai-nav .cat-item").forEach(i => i.classList.remove("active"));
+  document.getElementById("nav-selpack").classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+async function loadSelpacks() {
+  const { data: packs, error } = await db
+    .from("selector_packs").select("*").order("created_at", { ascending: false });
+  const box = document.getElementById("selpack-list");
+  if (error) { box.innerHTML = `<p class="empty">加载失败：${escapeHtml(error.message)}</p>`; return; }
+  if (!packs.length) { box.innerHTML = '<p class="empty">还没有人发布选择符，去 AI 工具 → 选择符管理 → 发布到论坛</p>'; return; }
+
+  box.innerHTML = packs.map(p => {
+    const mine = currentUser && currentUser.id === p.user_id;
+    const count = (p.selectors || []).reduce((n, g) => n + (g.s || []).length, 0);
+    const groups = (p.selectors || []).map(g => escapeHtml(g.g || "")).filter(Boolean).join("、");
+    return `
+    <div class="post">
+      <h3>${escapeHtml(p.title)}</h3>
+      <div class="meta">${escapeHtml(p.author_nickname || "匿名")} · ${new Date(p.created_at).toLocaleString("zh-CN")} · ${count} 个选择符${groups ? " · " + groups : ""}</div>
+      ${p.description ? `<p class="content">${escapeHtml(p.description)}</p>` : ""}
+      <div class="post-actions">
+        <button class="copy-preset import-selpack" data-pack='${encodeURIComponent(JSON.stringify(p.selectors || []))}'>导入到我的选择符</button>
+        ${mine ? `<button class="del del-selpack" data-id="${p.id}">删除</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  box.querySelectorAll(".import-selpack").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!currentUser) return alert("请先登录");
+      const selectors = JSON.parse(decodeURIComponent(btn.dataset.pack));
+      await ensureToolbox(null); // 确保 tb-share.js 已加载
+      importSelectorPack({ title: "导入集合", description: "", selectors });
+    });
+  });
+  box.querySelectorAll(".del-selpack").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("确定删除这个选择符合集吗？")) return;
+      const { error } = await db.from("selector_packs").delete().eq("id", btn.dataset.id);
+      if (error) return alert("删除失败：" + error.message);
+      loadSelpacks();
+    });
+  });
+}
+
 // ---------- 预设词广场 ----------
 function showPresetsView() {
   if (!requireLogin()) return;
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
+  document.getElementById("selpack-view").style.display = "none";
   document.getElementById("presets-view").style.display = "block";
   document.body.classList.remove("tb-open");
   document.querySelectorAll("#category-nav .cat-item, #ai-nav .cat-item").forEach(i => i.classList.remove("active"));
@@ -385,7 +444,9 @@ function showListView() {
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("presets-view").style.display = "none";
+  document.getElementById("selpack-view").style.display = "none";
   document.getElementById("nav-presets").classList.remove("active");
+  document.getElementById("nav-selpack").classList.remove("active");
   document.getElementById("list-view").style.display = "block";
   document.body.classList.remove("tb-open");
 }
