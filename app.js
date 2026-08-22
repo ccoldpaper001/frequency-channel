@@ -9,6 +9,7 @@ let currentFilter = 0;      // 当前选中的分区（0=全部）
 const folderSvg = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>';
 const closeSvg = '<svg viewBox="0 0 48 48"><path d="M10 10l28 28M38 10L10 38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>';
 const trashSvg = '<svg viewBox="0 0 48 48"><path d="M8 12h32M19 12V6h10v6M12 12l3 32h18l3-32M19 22v12M29 22v12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const moveSvg = '<svg viewBox="0 0 48 48"><path d="M18 8l-8 8 8 8M10 16h20a8 8 0 018 8v8M30 40l8-8-8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const defaultAvatar = "data:image/svg+xml," + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><rect width="72" height="72" fill="#c7d2fe"/><circle cx="36" cy="28" r="12" fill="#fff"/><path d="M14 64c0-13 10-20 22-20s22 7 22 20" fill="#fff"/></svg>'
@@ -275,7 +276,15 @@ async function loadPosts() {
         </div>
       </div>
       <p class="content">${escapeHtml(p.content || "")}</p>
-      ${canDelete ? `<button class="del" data-id="${p.id}">${trashSvg}删除</button>` : ""}
+      <div class="post-actions">
+        ${canDelete ? `<button class="del" data-id="${p.id}">${trashSvg}删除</button>` : ""}
+        ${myProfile?.is_admin && categories.length ? `
+          <span class="move-wrap">${moveSvg}移动到
+            <select class="move-cat" data-id="${p.id}">
+              ${categories.map(c => `<option value="${c.id}" ${c.id === p.category_id ? "selected" : ""}>${escapeHtml(c.name)}</option>`).join("")}
+            </select>
+          </span>` : ""}
+      </div>
     </div>`;
   }).join("");
 
@@ -284,6 +293,19 @@ async function loadPosts() {
       if (!confirm("确定删除这篇帖子吗？")) return;
       const { error } = await db.from("posts").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
+      loadPosts();
+    });
+  });
+
+  // 管理员：移动帖子分区
+  box.querySelectorAll(".move-cat").forEach(sel => {
+    sel.addEventListener("change", async () => {
+      const newCat = Number(sel.value);
+      const postId = sel.dataset.id;
+      const catName = categories.find(c => c.id === newCat)?.name || "";
+      if (!confirm(`确定把这篇帖子移动到「${catName}」分区吗？`)) { loadPosts(); return; }
+      const { error } = await db.from("posts").update({ category_id: newCat }).eq("id", postId);
+      if (error) return alert("移动失败：" + error.message);
       loadPosts();
     });
   });

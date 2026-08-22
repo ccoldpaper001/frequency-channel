@@ -9,26 +9,30 @@
   <script src="supabase-config.js"></script>
 </head>
 <body>
-  <!-- 顶部导航 -->
-  <header>
-    <h1><svg class="icon" viewBox="0 0 48 48"><path d="M5 40h38M8 34V6h24l8 8v20" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M16 6v10h12" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M15 28h14M15 21h14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>文字论坛</h1>
-    <div id="user-bar" style="display:none">
-      <img id="user-avatar" class="avatar-small" src="" alt="" />
-      <span id="user-nickname"></span>
-      <span id="admin-badge" class="badge" style="display:none"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l5.3 10.9L41.5 16.6l-8.8 8.5 2.1 12L24 31.5l-10.8 5.6 2.1-12-8.8-8.5 12.2-1.7L24 4z" fill="currentColor"/></svg>管理员</span>
-      <button id="btn-profile" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="M6 44c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>个人资料</button>
-      <button id="btn-logout" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M23 4H8v40h15M17 24h23M33 14l10 10-10 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>退出</button>
+  <!-- 左侧全高分栏（腾讯云控制台风格） -->
+  <aside class="sidebar">
+    <div class="logo">
+      <svg class="icon" viewBox="0 0 48 48"><path d="M5 40h38M8 34V6h24l8 8v20" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M16 6v10h12" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M15 28h14M15 21h14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+      <span>文字论坛</span>
     </div>
-  </header>
 
-  <div class="layout">
-    <!-- 左侧分区栏 -->
-    <aside class="sidebar">
-      <div class="sidebar-title"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>分区</div>
-      <nav id="category-nav">
-        <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>全部</a>
-      </nav>
-    </aside>
+    <div class="sidebar-group">分区</div>
+    <nav id="category-nav">
+      <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>全部</a>
+    </nav>
+  </aside>
+
+  <!-- 右侧内容区 -->
+  <div class="content">
+    <header>
+      <div id="user-bar" style="display:none">
+        <img id="user-avatar" class="avatar-small" src="" alt="" />
+        <span id="user-nickname"></span>
+        <span id="admin-badge" class="badge" style="display:none"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l5.3 10.9L41.5 16.6l-8.8 8.5 2.1 12L24 31.5l-10.8 5.6 2.1-12-8.8-8.5 12.2-1.7L24 4z" fill="currentColor"/></svg>管理员</span>
+        <button id="btn-profile" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="M6 44c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>个人资料</button>
+        <button id="btn-logout" class="btn-outline"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M23 4H8v40h15M17 24h23M33 14l10 10-10 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>退出</button>
+      </div>
+    </header>
 
     <main>
       <!-- 未登录：密码登录/注册 -->
