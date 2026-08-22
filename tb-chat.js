@@ -14,13 +14,15 @@ function chatSave() {
   storage.setItem('qqy_chat_history', JSON.stringify(chatHistory));
 }
 
-// 渲染预设下拉框（来自提示词数据库）
+// 渲染预设下拉框（来自提示词数据库；排除记忆总结/系统前缀/内部模板类）
 function renderChatPresets() {
   var sel = document.getElementById('chatPreset');
   if (!sel) return;
+  var excluded = { 'memory-summary': 1, 'memory-prefix': 1, 'ai-template': 1 };
   var cur = storage.getItem('qqy_chat_preset') || '';
   var html = '<option value="">（不用预设提示词）</option>';
   promptDB.forEach(function (cp) {
+    if (excluded[cp.type]) return;
     html += '<option value="' + escH(cp.name) + '"' + (cp.name === cur ? ' selected' : '') + '>' + escH(cp.name) + '</option>';
   });
   sel.innerHTML = html;
