@@ -398,7 +398,7 @@ async function loadPresets() {
       <p class="content collapsed">${escapeHtml(p.content)}</p>
       ${(p.content || "").length > 80 ? `<button class="expand-btn">展开全文</button>` : ""}
       <div class="post-actions">
-        <button class="copy-preset" data-content="${encodeURIComponent(p.content)}">复制内容</button>
+        <button class="import-preset" data-title="${encodeURIComponent(p.title)}" data-content="${encodeURIComponent(p.content || "")}" data-author="${encodeURIComponent(p.author_nickname || "")}">存入我的数据库</button>
         ${mine ? `<button class="toggle-preset" data-id="${p.id}" data-public="${p.is_public}">${p.is_public ? "转为私有" : "转为公开"}</button>
         <button class="del" data-id="${p.id}">删除</button>` : ""}
       </div>
@@ -411,11 +411,28 @@ async function loadPresets() {
       btn.textContent = content.classList.toggle("collapsed") ? "展开全文" : "收起";
     });
   });
-  box.querySelectorAll(".copy-preset").forEach(btn => {
+  // 一键把广场预设词存入自己账号的提示词数据库（云端，按账号隔离）
+  box.querySelectorAll(".import-preset").forEach(btn => {
     btn.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(decodeURIComponent(btn.dataset.content)); btn.textContent = "已复制"; }
-      catch (e) { alert("复制失败，请手动选择内容复制"); }
-      setTimeout(() => btn.textContent = "复制内容", 1500);
+      if (!requireLogin()) return;
+      const title = decodeURIComponent(btn.dataset.title);
+      const content = decodeURIComponent(btn.dataset.content);
+      if (!content) return alert("这条预设词没有内容");
+      try {
+        await ensureToolbox(null);
+        if (typeof promptDB === "undefined" || typeof savePromptDB !== "function") throw new Error("工具箱未加载完成");
+        let name = title, n = 2;
+        while (promptDB.some(p => p.name === name && p.type === "ai-gen")) { name = title + " " + n; n++; }
+        promptDB.push({
+          name, type: "ai-gen",
+          note: "来自预设词广场 · " + (decodeURIComponent(btn.dataset.author) || "匿名"),
+          prompt: content, api: "", builtin: false, is_public: false
+        });
+        savePromptDB();
+        btn.textContent = "已存入我的数据库";
+        btn.disabled = true;
+        setTimeout(() => { btn.textContent = "存入我的数据库"; btn.disabled = false; }, 2000);
+      } catch (e) { alert("存入失败：" + e.message); }
     });
   });
   box.querySelectorAll(".toggle-preset").forEach(btn => {

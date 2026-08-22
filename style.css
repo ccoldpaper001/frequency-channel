@@ -261,11 +261,12 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
   font-size: 13px; color: #444; cursor: pointer;
 }
 .preset-visibility input { width: auto; }
-.copy-preset, .toggle-preset {
+.copy-preset, .toggle-preset, .import-preset {
   background: none; border: none; color: #555; cursor: pointer; font-size: 12px;
   text-decoration: underline; padding: 0;
 }
-.copy-preset:hover, .toggle-preset:hover { color: #111; }
+.copy-preset:hover, .toggle-preset:hover, .import-preset:hover { color: #111; }
+.import-preset:disabled { color: #999; cursor: default; }
 .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
 .post .act-btn {
   background: none; border: none; color: #555; cursor: pointer; font-size: 12px;
