@@ -4,6 +4,7 @@ let currentUser = null;     // auth 用户
 let myProfile = null;       // profiles 表里我的资料
 let categories = [];        // 所有分区
 let currentFilter = 0;      // 当前选中的分区（0=全部）
+let searchKeyword = "";     // 搜索关键词
 
 // 分区文件夹图标（侧边栏/标签共用）
 const folderSvg = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>';
@@ -33,6 +34,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("form-login").addEventListener("submit", login);
   document.getElementById("form-register").addEventListener("submit", register);
   document.getElementById("btn-logout").addEventListener("click", logout);
+
+  // 关键词搜索（输入停顿 300 毫秒后自动搜索）
+  let searchTimer = null;
+  document.getElementById("search-keyword").addEventListener("input", (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      searchKeyword = e.target.value.trim();
+      loadPosts();
+    }, 300);
+  });
   document.getElementById("btn-post").addEventListener("click", createPost);
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
 
@@ -247,6 +258,10 @@ async function loadPosts() {
   const filterId = currentFilter;
   let query = db.from("posts").select("*, categories(name)").order("created_at", { ascending: false });
   if (filterId > 0) query = query.eq("category_id", filterId);
+  if (searchKeyword) {
+    const kw = searchKeyword.replace(/[,()]/g, " "); // 防止关键词破坏查询语法
+    query = query.or(`title.ilike.%${kw}%,content.ilike.%${kw}%`);
+  }
 
   // 单独取所有用户资料，用 user_id 对应头像
   const { data: allProfiles } = await db.from("profiles").select("id, avatar_url");
