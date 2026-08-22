@@ -230,7 +230,7 @@ function renderCpList(){
         '<div class="cp-card-desc">'+escH(cp.note||'')+'</div>'+
         '<div class="cp-collapse">'+
           '<div class="cp-card-prompt">'+escH((cp.prompt||'').substring(0,400))+(cp.prompt&&cp.prompt.length>400?'...':'')+'</div>'+
-          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')"> 编辑</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')"></button></div>'+
+          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">编辑</button><button class="cp-btn btn-sm" onclick="event.stopPropagation();shareCpToPlaza('+i+')">分享到广场</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">删除</button></div>'+
         '</div>'+
       '</div>';
     });
@@ -247,6 +247,26 @@ function renderCpList(){
     html+='</div></div>';
   }
   list.innerHTML=html;
+}
+
+// 把提示词数据库里的提示词公开分享到论坛的预设词广场
+async function shareCpToPlaza(i){
+  var cp=promptDB[i];if(!cp)return;
+  if(typeof db==='undefined'||!localStorage.getItem('forum_uid')){
+    alert('请先在论坛登录后再分享');return;
+  }
+  if(!confirm('确定把「'+cp.name+'」公开到预设词广场吗？所有人将可见。'))return;
+  try{
+    var r=await db.from('prompt_presets').insert({
+      title:cp.name,
+      content:cp.prompt||'',
+      is_public:true,
+      user_id:localStorage.getItem('forum_uid'),
+      author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''
+    });
+    if(r.error){alert('分享失败：'+r.error.message);return}
+    alert('已公开到预设词广场！');
+  }catch(e){alert('分享失败：'+e.message)}
 }
 
 function toggleCpCard(i){
