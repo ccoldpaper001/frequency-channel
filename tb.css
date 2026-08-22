@@ -141,3 +141,7 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 /* tool page: 90% width, centered */
 #toolbox-root .main-content{width:100%;padding:0}
 #toolbox-root .page.active{width:90%;margin:0 auto;box-sizing:border-box}
+
+/* fix: remove leftover sidebar offset */
+#toolbox-root .main-content{margin-left:0 !important;width:auto;padding:0}
+#toolbox-root .page.active{width:90%;margin:0 auto}
