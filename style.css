@@ -234,6 +234,20 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
   text-decoration: underline;
 }
 .expand-btn:hover { color: #111; }
+
+/* 预设词广场 */
+#preset-publish-box input, #preset-publish-box textarea { margin-bottom: 10px; }
+.preset-visibility { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.preset-visibility label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #444; cursor: pointer;
+}
+.preset-visibility input { width: auto; }
+.copy-preset, .toggle-preset {
+  background: none; border: none; color: #555; cursor: pointer; font-size: 12px;
+  text-decoration: underline; padding: 0;
+}
+.copy-preset:hover, .toggle-preset:hover { color: #111; }
 .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
 .post .del {
   background: none; border: none;

@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-21" />
-  <link rel="stylesheet" href="tb.css?v=20260822-21" />
+  <link rel="stylesheet" href="style.css?v=20260822-22" />
+  <link rel="stylesheet" href="tb.css?v=20260822-22" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-21"></script>
+  <script src="supabase-config.js?v=20260822-22"></script>
 </head>
 <body>
   <!-- 左侧全高分栏（腾讯云控制台风格） -->
@@ -20,6 +20,11 @@
     <div class="sidebar-group">分区</div>
     <nav id="category-nav">
       <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>全部</a>
+    </nav>
+
+    <div class="sidebar-group">社区</div>
+    <nav id="community-nav">
+      <a class="cat-item" id="nav-presets"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 34V8h24l8 8v18H6zM14 40h24V22M18 16h12M18 24h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>预设词广场</a>
     </nav>
 
     <div class="sidebar-group">AI 工具</div>
@@ -71,6 +76,25 @@
           <textarea id="post-content" class="uniform-input" placeholder="写下你想说的内容..." rows="8"></textarea>
           <button id="btn-post" class="btn btn-lg"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
           <p class="msg" id="post-msg"></p>
+        </div>
+      </section>
+
+      <!-- 预设词广场视图 -->
+      <section id="presets-view" style="display:none">
+        <div class="card" id="preset-publish-box">
+          <h2>上传预设词</h2>
+          <input type="text" id="preset-title" placeholder="预设名称，如：默认CSS生成" maxlength="60" />
+          <textarea id="preset-content" placeholder="粘贴提示词内容..." rows="5"></textarea>
+          <div class="preset-visibility">
+            <label><input type="radio" name="preset-vis" value="public" checked /> 公开（展示在广场，所有人可见）</label>
+            <label><input type="radio" name="preset-vis" value="private" /> 仅自己使用</label>
+          </div>
+          <button id="btn-publish-preset" class="btn">上传</button>
+          <p class="msg" id="preset-msg"></p>
+        </div>
+        <div class="card">
+          <h2>预设词列表</h2>
+          <div id="presets-list"></div>
         </div>
       </section>
 
@@ -703,6 +727,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-21"></script>
+  <script src="app.js?v=20260822-22"></script>
 </body>
 </html>

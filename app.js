@@ -60,6 +60,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   });
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
+  document.getElementById("nav-presets").addEventListener("click", () => { showPresetsView(); loadPresets(); });
+  document.getElementById("btn-publish-preset").addEventListener("click", publishPreset);
 
   // 个人资料弹窗
   document.getElementById("btn-profile").addEventListener("click", openProfileModal);
@@ -242,17 +244,110 @@ async function ensureToolbox(page) {
   if (page && typeof switchPage === "function") switchPage(page);
 }
 
+// ---------- 预设词广场 ----------
+function showPresetsView() {
+  document.getElementById("list-view").style.display = "none";
+  document.getElementById("post-page").style.display = "none";
+  document.getElementById("toolbox-view").style.display = "none";
+  document.getElementById("presets-view").style.display = "block";
+  document.body.classList.remove("tb-open");
+  document.querySelectorAll("#category-nav .cat-item, #ai-nav .cat-item").forEach(i => i.classList.remove("active"));
+  document.getElementById("nav-presets").classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+async function publishPreset() {
+  if (!currentUser) return showMsg("preset-msg", "请先登录再上传", true);
+  const title = document.getElementById("preset-title").value.trim();
+  const content = document.getElementById("preset-content").value.trim();
+  const is_public = document.querySelector('input[name="preset-vis"]:checked').value === "public";
+  if (!title || !content) return showMsg("preset-msg", "名称和内容都不能为空", true);
+
+  const { error } = await db.from("prompt_presets").insert({
+    title, content, is_public,
+    user_id: currentUser.id,
+    author_nickname: myProfile?.nickname || currentUser.email
+  });
+  if (error) return showMsg("preset-msg", "上传失败：" + error.message, true);
+  document.getElementById("preset-title").value = "";
+  document.getElementById("preset-content").value = "";
+  showMsg("preset-msg", is_public ? "已公开到广场！" : "已保存（仅自己可见）", false);
+  loadPresets();
+}
+
+async function loadPresets() {
+  const { data: presets, error } = await db
+    .from("prompt_presets").select("*").order("created_at", { ascending: false });
+  const box = document.getElementById("presets-list");
+  if (error) { box.innerHTML = `<p class="empty">加载失败：${escapeHtml(error.message)}</p>`; return; }
+  if (!presets.length) { box.innerHTML = '<p class="empty">还没有预设词，来上传第一个吧</p>'; return; }
+
+  box.innerHTML = presets.map(p => {
+    const mine = currentUser && currentUser.id === p.user_id;
+    return `
+    <div class="post">
+      <div class="post-head">
+        <div>
+          <h3>${escapeHtml(p.title)}${p.is_public ? "" : ' <span class="cat-tag">私有</span>'}</h3>
+          <div class="meta">${escapeHtml(p.author_nickname || "匿名")} · ${new Date(p.created_at).toLocaleString("zh-CN")}</div>
+        </div>
+      </div>
+      <p class="content collapsed">${escapeHtml(p.content)}</p>
+      ${(p.content || "").length > 80 ? `<button class="expand-btn">展开全文</button>` : ""}
+      <div class="post-actions">
+        <button class="copy-preset" data-content="${encodeURIComponent(p.content)}">复制内容</button>
+        ${mine ? `<button class="toggle-preset" data-id="${p.id}" data-public="${p.is_public}">${p.is_public ? "转为私有" : "转为公开"}</button>
+        <button class="del" data-id="${p.id}">删除</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  box.querySelectorAll(".expand-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const content = btn.parentElement.querySelector(".content");
+      btn.textContent = content.classList.toggle("collapsed") ? "展开全文" : "收起";
+    });
+  });
+  box.querySelectorAll(".copy-preset").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(decodeURIComponent(btn.dataset.content)); btn.textContent = "已复制"; }
+      catch (e) { alert("复制失败，请手动选择内容复制"); }
+      setTimeout(() => btn.textContent = "复制内容", 1500);
+    });
+  });
+  box.querySelectorAll(".toggle-preset").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const { error } = await db.from("prompt_presets")
+        .update({ is_public: btn.dataset.public !== "true" }).eq("id", btn.dataset.id);
+      if (error) return alert("操作失败：" + error.message);
+      loadPresets();
+    });
+  });
+  box.querySelectorAll(".del").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("确定删除这个预设词吗？")) return;
+      const { error } = await db.from("prompt_presets").delete().eq("id", btn.dataset.id);
+      if (error) return alert("删除失败：" + error.message);
+      loadPresets();
+    });
+  });
+}
+
 // ---------- 页面切换：列表 / 发帖页 / 工具箱 ----------
 function showPostPage() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
+  document.getElementById("presets-view").style.display = "none";
   document.getElementById("post-page").style.display = "block";
+  document.getElementById("nav-presets").classList.remove("active");
   document.body.classList.remove("tb-open");
   window.scrollTo(0, 0);
 }
 function showToolbox() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
+  document.getElementById("presets-view").style.display = "none";
+  document.getElementById("nav-presets").classList.remove("active");
   document.getElementById("toolbox-view").style.display = "block";
   document.body.classList.add("tb-open"); // 放宽 main 的 860px 限宽，让工具卡片占满 90% 页面
   // 取消分区导航的高亮（AI 工具项自行管理高亮）
@@ -262,6 +357,8 @@ function showToolbox() {
 function showListView() {
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
+  document.getElementById("presets-view").style.display = "none";
+  document.getElementById("nav-presets").classList.remove("active");
   document.getElementById("list-view").style.display = "block";
   document.body.classList.remove("tb-open");
 }
@@ -309,7 +406,9 @@ async function loadCategories() {
     item.addEventListener("click", () => {
       currentFilter = Number(item.dataset.id);
       document.getElementById("toolbox-view").style.display = "none";
+      document.getElementById("presets-view").style.display = "none";
       document.getElementById("list-view").style.display = "block";
+      document.getElementById("nav-presets").classList.remove("active");
       document.body.classList.remove("tb-open");
       document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
