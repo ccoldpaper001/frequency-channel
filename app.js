@@ -247,12 +247,14 @@ function showPostPage() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("post-page").style.display = "block";
+  document.body.classList.remove("tb-open");
   window.scrollTo(0, 0);
 }
 function showToolbox() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "block";
+  document.body.classList.add("tb-open"); // 放宽 main 的 860px 限宽，让工具卡片占满 90% 页面
   // 取消分区导航的高亮（AI 工具项自行管理高亮）
   document.querySelectorAll("#category-nav .cat-item").forEach(i => i.classList.remove("active"));
   window.scrollTo(0, 0);
@@ -261,6 +263,7 @@ function showListView() {
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("list-view").style.display = "block";
+  document.body.classList.remove("tb-open");
 }
 
 // ---------- 发帖 ----------
@@ -307,6 +310,7 @@ async function loadCategories() {
       currentFilter = Number(item.dataset.id);
       document.getElementById("toolbox-view").style.display = "none";
       document.getElementById("list-view").style.display = "block";
+      document.body.classList.remove("tb-open");
       document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
       item.classList.add("active");

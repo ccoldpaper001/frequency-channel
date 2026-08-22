@@ -74,6 +74,8 @@ header {
 }
 
 main { max-width: 860px; margin: 24px auto; padding: 0 20px; }
+/* 工具页放宽限宽：让工具卡片真正占到页面 90% */
+body.tb-open main { max-width: none; }
 
 .card {
   background: #fff; border-radius: 10px; padding: 20px;
