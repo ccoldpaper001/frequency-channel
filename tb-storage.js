@@ -126,14 +126,17 @@ var storage = {
   },
   setItem: function(key, value) {
     var rk = _realKey(key);
+    var str = String(value);
     try {
-      localStorage.setItem(rk, String(value));
+      localStorage.setItem(rk, str);
     } catch (e) {
+      // 浏览器配额不足时才做全量扫描清理（平时不做，避免每次写入都遍历全部数据导致卡顿）
       _enforceQuota(rk);
-      try { localStorage.setItem(rk, String(value)); } catch (e2) { console.warn('存储失败', e2); return; }
+      try { localStorage.setItem(rk, str); } catch (e2) { console.warn('存储失败', e2); return; }
     }
     _touchIndex(rk);
-    _enforceQuota(rk);
+    // 只有大值写入时才主动检查配额；小值（如当前页面记录）跳过昂贵扫描
+    if (str.length > 50000) _enforceQuota(rk);
     _schedulePush(key);
   },
   removeItem: function(key) {
