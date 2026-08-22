@@ -108,7 +108,7 @@ async function logout() {
   await db.auth.signOut();
   localStorage.removeItem("forum_uid");
   const tbFrame = document.querySelector(".toolbox-frame");
-  if (tbFrame) tbFrame.src = "toolbox/";
+  if (tbFrame) tbFrame.src = "toolbox/?embed=1";
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
@@ -146,7 +146,7 @@ async function afterLogin(user) {
   // 告知工具箱当前用户（工具箱按此隔离数据），并刷新内嵌页使其生效
   localStorage.setItem("forum_uid", user.id);
   const tbFrame = document.querySelector(".toolbox-frame");
-  if (tbFrame) tbFrame.src = "toolbox/";
+  if (tbFrame) tbFrame.src = "toolbox/?embed=1";
 }
 
 function refreshTopBar() {
