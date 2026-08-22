@@ -110,6 +110,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-profile").addEventListener("click", openProfileModal);
   document.getElementById("btn-close-modal").addEventListener("click", closeProfileModal);
   document.getElementById("avatar-file").addEventListener("change", uploadAvatar);
+  document.getElementById("btn-clear-avatar").addEventListener("click", clearAvatar);
   document.getElementById("btn-save-profile").addEventListener("click", saveNickname);
 });
 
@@ -231,6 +232,25 @@ async function uploadAvatar() {
   document.getElementById("modal-avatar").src = data.publicUrl;
   refreshTopBar();
   showMsg("profile-msg", "头像已更新！", false);
+  loadPosts();
+}
+
+// 清除头像：恢复默认头像，并尽力删除存储桶里的旧文件
+async function clearAvatar() {
+  if (!await pageConfirm("确定清除头像吗？清除后将恢复为默认头像。")) return;
+  showMsg("profile-msg", "清除中...", false);
+  try {
+    const oldUrl = myProfile?.avatar_url || "";
+    const m = oldUrl.match(/\/storage\/v1\/object\/public\/avatars\/(.+)$/);
+    if (m) await db.storage.from("avatars").remove([decodeURIComponent(m[1])]); // 无删除权限时静默跳过
+  } catch (e) {}
+  const { error } = await db.from("profiles").update({ avatar_url: null }).eq("id", currentUser.id);
+  if (error) return showMsg("profile-msg", "清除失败：" + error.message, true);
+  myProfile.avatar_url = null;
+  avatarMapCache = null;
+  document.getElementById("modal-avatar").src = defaultAvatar;
+  refreshTopBar();
+  showMsg("profile-msg", "头像已清除！", false);
   loadPosts();
 }
 

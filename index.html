@@ -793,7 +793,10 @@
       <div class="avatar-edit">
         <img id="modal-avatar" class="avatar-big" src="" alt="" />
         <div>
-          <label class="btn-outline file-btn">选择头像图片<input type="file" id="avatar-file" accept="image/*" hidden /></label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <label class="btn-outline file-btn">选择头像图片<input type="file" id="avatar-file" accept="image/*" hidden /></label>
+            <button id="btn-clear-avatar" class="btn-outline" type="button">清除头像</button>
+          </div>
           <p class="tip">支持 jpg/png，上传后自动替换头像</p>
         </div>
       </div>
@@ -806,6 +809,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-61"></script>
+  <script src="app.js?v=20260822-62"></script>
 </body>
 </html>
