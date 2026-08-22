@@ -105,3 +105,8 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 /* 宓屽叆妯″紡锛氶殣钘忓伐鍏风鑷甫渚ц竟鏍?*/
 #toolbox-root .sidebar{display:none}
 #toolbox-root .main-content{margin-left:0}
+
+/* 杈撳叆妗嗕笌鍐呭鍗＄墖瀹藉害鑷€傚簲瀹瑰櫒 */
+#toolbox-root input:not([type='checkbox']):not([type='radio']):not([type='button']):not([type='submit']):not([type='file']),
+#toolbox-root textarea,
+#toolbox-root select{width:100%;max-width:100%;box-sizing:border-box}

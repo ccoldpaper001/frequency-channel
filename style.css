@@ -220,6 +220,18 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
 .post p.content { font-size: 14px; line-height: 1.7; white-space: pre-wrap; }
+.post p.content.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.expand-btn {
+  background: none; border: none; color: #4f4f4f;
+  cursor: pointer; font-size: 12px; padding: 4px 0;
+  text-decoration: underline;
+}
+.expand-btn:hover { color: #111; }
 .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
 .post .del {
   background: none; border: none;

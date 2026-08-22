@@ -216,7 +216,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["storage.js","svg-icons.js","config.js","utils.js","editor.js","ai.js","memory.js","api.js","search.js","prompt-db.js","replace.js","sidebar-sort.js","htmledit.js","svg-converter.js","app.js"];
+const TOOLBOX_SCRIPTS = ["svg-icons.js","config.js","utils.js","editor.js","ai.js","memory.js","api.js","search.js","prompt-db.js","replace.js","sidebar-sort.js","htmledit.js","svg-converter.js","app.js"];
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -233,6 +233,9 @@ async function ensureToolbox(page) {
       window.__TOOLBOX_DIR__ = "toolbox/";
       const html = await (await fetch("toolbox/body.html")).text();
       document.getElementById("toolbox-root").innerHTML = html;
+      // 先加载存储层，等待云端数据拉取完成后再渲染界面
+      await loadScript("toolbox/storage.js");
+      if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript("toolbox/" + f);
     })();
     toolboxLoading.catch(() => { toolboxLoading = null; });
@@ -361,7 +364,8 @@ async function loadPosts() {
           </div>
         </div>
       </div>
-      <p class="content">${escapeHtml(p.content || "")}</p>
+      <p class="content collapsed">${escapeHtml(p.content || "")}</p>
+      ${(p.content || "").length > 80 ? `<button class="expand-btn" data-id="${p.id}">展开全文</button>` : ""}
       <div class="post-actions">
         ${canDelete ? `<button class="del" data-id="${p.id}">${trashSvg}删除</button>` : ""}
         ${myProfile?.is_admin && categories.length ? `
@@ -380,6 +384,15 @@ async function loadPosts() {
       const { error } = await db.from("posts").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
       loadPosts();
+    });
+  });
+
+  // 帖子内容展开/收起
+  box.querySelectorAll(".expand-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const content = btn.parentElement.querySelector(".content");
+      const isCollapsed = content.classList.toggle("collapsed");
+      btn.textContent = isCollapsed ? "展开全文" : "收起";
     });
   });
 
