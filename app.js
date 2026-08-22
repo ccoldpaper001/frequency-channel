@@ -216,7 +216,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["svg-icons.js","config.js","utils.js","editor.js","ai.js","memory.js","api.js","search.js","prompt-db.js","replace.js","sidebar-sort.js","htmledit.js","svg-converter.js","app.js"];
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-app.js"];
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -230,13 +230,11 @@ function loadScript(src) {
 async function ensureToolbox(page) {
   if (!toolboxLoading) {
     toolboxLoading = (async () => {
-      window.__TOOLBOX_DIR__ = "toolbox/";
-      const html = await (await fetch("toolbox/body.html")).text();
-      document.getElementById("toolbox-root").innerHTML = html;
+      window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("toolbox/storage.js");
+      await loadScript("tb-storage.js");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
-      for (const f of TOOLBOX_SCRIPTS) await loadScript("toolbox/" + f);
+      for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
     toolboxLoading.catch(() => { toolboxLoading = null; });
   }
