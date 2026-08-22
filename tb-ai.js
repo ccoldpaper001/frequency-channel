@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // ai.js - AI生成 + 提示词数据库
 // ==============================
 
@@ -101,10 +101,10 @@ async function hg(skipMem){
     var rawContent=d.choices[0].message&&d.choices[0].message.content;if(!rawContent)throw new Error('AI返回内容为空');var css=rawContent.replace(/^```css\s*/i,'').replace(/```\s*$/i,'').trim();
     if(memoryEnabled&&!skipMem){addMemory('user',userContent);addMemory('assistant',css);checkAutoSummary()}
     parseCssToStates(css);rsb();
-    sbt('ok',isMulti?'✅ 已修改'+selectedSels.size+'个区块':'✅ 已填入编辑器');
+    sbt('ok',isMulti?' 已修改'+selectedSels.size+'个区块':' 已填入编辑器');
     lastAiGen={css:css,type:isMulti?'multi':'all'};lastAiRequest={system:sp,user:userContent};showLastAiCss();
   }catch(err){var fullReq=sp+'\n\n[用户请求]\n'+userContent;var detail=typeof getApiSnapshot==='function'?getApiSnapshot(fullReq):null;if(typeof logAiError==='function')logAiError('AI生成',err.message||String(err),detail);sbt('err','AI生成失败：'+err.message)}
-  finally{isP=false;$('gb').disabled=false;$('gb').innerHTML='<span>🚀</span> 生成'}
+  finally{isP=false;$('gb').disabled=false;$('gb').innerHTML='<span></span> 生成'}
 }
 
 // ===== 此次AI生成的代码（显示 + 重说） =====
@@ -224,13 +224,13 @@ function renderCpList(){
       var typeName=PROMPT_TYPE_NAMES[cp.type]||cp.type;
       var typeTag='<span style="display:inline-block;padding:1px 6px;background:rgba(126,85,255,.12);color:var(--pl);border-radius:4px;font-size:10px;margin-left:6px">'+escH(typeName)+'</span>';
       var builtinTag=cp.builtin?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">默认</span>':'';
-      var apiTag=cp.api?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">🔑 '+escH(cp.api)+'</span>':'';
+      var apiTag=cp.api?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px"> '+escH(cp.api)+'</span>':'';
       html+='<div class="cp-card" onclick="loadCpTemplate('+i+')" id="cpCard'+i+'">'+
         '<div class="cp-card-title">'+escH(cp.name)+typeTag+apiTag+'</div>'+
         '<div class="cp-card-desc">'+escH(cp.note||'')+'</div>'+
         '<div class="cp-collapse">'+
           '<div class="cp-card-prompt">'+escH((cp.prompt||'').substring(0,400))+(cp.prompt&&cp.prompt.length>400?'...':'')+'</div>'+
-          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">📝 编辑</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">🗑️</button></div>'+
+          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')"> 编辑</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')"></button></div>'+
         '</div>'+
       '</div>';
     });
@@ -239,7 +239,7 @@ function renderCpList(){
   // 处理未分类的
   var otherItems=groups['other'];
   if(otherItems&&otherItems.length){
-    html+='<div class="prompt-group"><div class="prompt-group-header" style="padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:6px;font-weight:600;font-size:13px">📋 其他（'+otherItems.length+'条）</div><div class="prompt-group-body">';
+    html+='<div class="prompt-group"><div class="prompt-group-header" style="padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:6px;font-weight:600;font-size:13px"> 其他（'+otherItems.length+'条）</div><div class="prompt-group-body">';
     otherItems.forEach(function(item){
       var cp=item.cp,i=item.idx;
       html+='<div class="cp-card" onclick="loadCpTemplate('+i+')" id="cpCard'+i+'"><div class="cp-card-title">'+escH(cp.name)+'</div></div>';
@@ -299,7 +299,7 @@ function loadCpTemplate(i){
     '<div class="md-field"><label>类型</label><select id="cpEditType" onchange="saveCpInline()"><option value="ai-gen" '+(cp.type==='ai-gen'?'selected':'')+'>AI智能生成提示词</option><option value="ai-analyze" '+(cp.type==='ai-analyze'?'selected':'')+'>AI分析组件提示词</option><option value="component" '+(cp.type==='component'?'selected':'')+'>组件提示词</option></select></div>'+
     '<div class="md-field"><label>备注</label><input type="text" id="cpEditNote" value="'+escH(cp.note||'')+'" oninput="saveCpInline()"></div>'+
     '<div class="md-field"><label>提示词内容</label><textarea id="cpEditPrompt" rows="8" oninput="saveCpInline()">'+escH(cp.prompt||'')+'</textarea></div>'+
-    '<div style="display:flex;gap:6px;margin-top:8px"><button class="cp-btn btn-sm" onclick="event.stopPropagation();deleteCpTemplate('+i+')" style="border-color:rgba(239,68,68,.3);color:#f87171">🗑️ 删除</button><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">✕ 收起</button></div>';
+    '<div style="display:flex;gap:6px;margin-top:8px"><button class="cp-btn btn-sm" onclick="event.stopPropagation();deleteCpTemplate('+i+')" style="border-color:rgba(239,68,68,.3);color:#f87171"> 删除</button><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')"> 收起</button></div>';
   card.appendChild(editDiv);
   card.style.borderColor='var(--p)';
 }
@@ -328,7 +328,7 @@ function saveCpTemplate(){
   savePromptDB();
   renderCpList();
   loadPromptUI();
-  sbt('ok','✅ 已保存');setTimeout(hst,2000);
+  sbt('ok',' 已保存');setTimeout(hst,2000);
 }
 
 async function deleteCpTemplate(i){
@@ -378,16 +378,16 @@ async function cgAnalyzePrompt(){
 
   var userContent=buildCgUserContent('',$('cgExtra')?$('cgExtra').value.trim():'',code);
 
-  var btn=$('cgAnalyzePrompt');btn.disabled=true;btn.textContent='🤖 生成中...';
+  var btn=$('cgAnalyzePrompt');btn.disabled=true;btn.textContent=' 生成中...';
   try{
     var res=await fetch(buildApiUrl(akUrl,'/chat/completions'),{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ak},body:JSON.stringify({model:akModel,messages:[{role:'system',content:rule.prompt},{role:'user',content:userContent}],temperature:.4,max_tokens:4096})});
     if(!res.ok){var e=await res.json().catch(function(){});throw new Error((e&&e.error&&e.error.message)||'HTTP '+res.status)}
     var d=await res.json();
     if(!d.choices||!d.choices[0])throw new Error('接口返回异常');
     var cgContent=d.choices[0].message&&d.choices[0].message.content;if(!cgContent)throw new Error('AI返回内容为空');$('cgResult').value=cgContent.trim();
-    sbt('ok','✅ 提示词生成完成');setTimeout(hst,2000);
+    sbt('ok',' 提示词生成完成');setTimeout(hst,2000);
   }catch(err){if(typeof logAiError==='function')logAiError('生成提示词',err.message||String(err));showDialog('生成失败',err.message)}
-  finally{btn.disabled=false;btn.textContent='🤖 生成提示词'}
+  finally{btn.disabled=false;btn.textContent=' 生成提示词'}
 }
 
 // ===== 功能B：生成配置 → 生成真实组件代码 → 存入记忆 =====
@@ -409,7 +409,7 @@ async function cgAnalyze(){
   }
   if(!useKey){sbt('err','请先设置API');$('akm').classList.add('active');return}
 
-  var btn=$('cgAnalyze');btn.disabled=true;btn.textContent='🤖 生成中...';
+  var btn=$('cgAnalyze');btn.disabled=true;btn.textContent=' 生成中...';
 
   // 组装请求：预设作为参考范例，额外要求作为补充指令
   var userContent='';
@@ -424,9 +424,9 @@ async function cgAnalyze(){
     if(!d.choices||!d.choices[0])throw new Error('接口返回异常');
     var cgCodeContent=d.choices[0].message&&d.choices[0].message.content;if(!cgCodeContent)throw new Error('AI返回内容为空');$('cgCodeResult').value=cgCodeContent.trim();
     if(typeof cgUpdatePreview==='function')cgUpdatePreview();
-    sbt('ok','✅ 组件代码生成完成');setTimeout(hst,2000);
+    sbt('ok',' 组件代码生成完成');setTimeout(hst,2000);
   }catch(err){var fullReq='你是一个前端组件代码生成器。根据用户提供的组件提示词（描述组件结构和样式特点）和额外要求，生成完整的、可直接使用的 HTML/CSS/JavaScript 组件代码。只输出代码，不要输出解释。'+'\n\n[用户请求]\n'+userContent;var detail=typeof getApiSnapshot==='function'?getApiSnapshot(fullReq):null;if(typeof logAiError==='function')logAiError('生成代码',err.message||String(err),detail);alert('生成失败：'+err.message)}
-  finally{btn.disabled=false;btn.textContent='🤖 生成代码'}
+  finally{btn.disabled=false;btn.textContent=' 生成代码'}
 }
 
 function cgSave(){
@@ -437,7 +437,7 @@ function cgSave(){
   if(promptDB.find(function(p){return p.name===name&&p.type==='component'})){showDialog('提示','同名组件提示词已存在');return}
   promptDB.push({name:name,type:'component',note:'由组件生成器生成',prompt:content,api:'',builtin:false});
   savePromptDB();renderCpList();
-  sbt('ok','✅ 已存入数据库');setTimeout(hst,2000);
+  sbt('ok',' 已存入数据库');setTimeout(hst,2000);
 }
 
 // ===== 组装组件分析的用户提示词（预览与实际发送共用，保证一致） =====
@@ -480,7 +480,7 @@ function exportAllData(){
   a.download='toolbox-backup-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   URL.revokeObjectURL(a.href);
-  sbt('ok','✅ 数据已导出为JSON文件');setTimeout(hst,2000);
+  sbt('ok',' 数据已导出为JSON文件');setTimeout(hst,2000);
 }
 
 function importAllData(file){
@@ -529,7 +529,7 @@ function importAllData(file){
         report.push('API预设：新增'+aAdded+'个（Key需手动补填）');
       }
       if(report.length===0){showDialog('提示','未在文件中找到可导入的数据');return}
-      showDialog('导入完成','📥 导入完成\n\n'+report.join('\n'));
+      showDialog('导入完成',' 导入完成\n\n'+report.join('\n'));
     }catch(err){showDialog('导入失败','文件格式不正确\n'+err.message)}
   };
   reader.readAsText(file);
@@ -556,7 +556,7 @@ function reloadDataFromFile(){
   renderCpList();
   loadPromptUI();
   updateCacheInfo();
-  sbt('ok','✅ 已重新加载 data.json');setTimeout(hst,2000);
+  sbt('ok',' 已重新加载 data.json');setTimeout(hst,2000);
 }
 
 function viewCacheData(){
@@ -579,5 +579,5 @@ function clearPromptCache(){
   renderCpList();
   loadPromptUI();
   updateCacheInfo();
-  sbt('ok','✅ 已清除提示词缓存');setTimeout(hst,2000);
+  sbt('ok',' 已清除提示词缓存');setTimeout(hst,2000);
 }

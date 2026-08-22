@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // app.js - 初始化 & 事件绑定
 // ==============================
 
@@ -35,7 +35,7 @@ function init(){
   $('cpo').addEventListener('click',function(){renderCodeView();$('cvm').classList.add('active')});
   $('clr').addEventListener('click',clearAllCss);
 
-  $('cvcopy').addEventListener('click',function(){var css=buildCss();if(!css)return;copyToClipboard(css).then(function(){var b=$('cvcopy');b.textContent='✓ 已复制';b.classList.add('cd');setTimeout(function(){b.textContent='📋 复制';b.classList.remove('cd')},1500)}).catch(function(){})});
+  $('cvcopy').addEventListener('click',function(){var css=buildCss();if(!css)return;copyToClipboard(css).then(function(){var b=$('cvcopy');b.textContent=' 已复制';b.classList.add('cd');setTimeout(function(){b.textContent=' 复制';b.classList.remove('cd')},1500)}).catch(function(){})});
   $('cvclr').addEventListener('click',clearAllCss);
   $('cvx').addEventListener('click',function(){$('cvm').classList.remove('active')});
 
@@ -57,7 +57,7 @@ function init(){
   $('promptTa').addEventListener('input',onPromptTaInput);
 
   $('gb').addEventListener('click',hg);
-  $('lastAiCopy').addEventListener('click',function(){var ta=$('lastAiCss');if(!ta||!ta.value)return;copyToClipboard(ta.value).then(function(){var b=$('lastAiCopy');b.innerHTML='<span>✓</span> 已复制';setTimeout(function(){b.innerHTML='<span>📋</span> 复制代码'},1500)}).catch(function(){})});
+  $('lastAiCopy').addEventListener('click',function(){var ta=$('lastAiCss');if(!ta||!ta.value)return;copyToClipboard(ta.value).then(function(){var b=$('lastAiCopy');b.innerHTML='<span></span> 已复制';setTimeout(function(){b.innerHTML='<span></span> 复制代码'},1500)}).catch(function(){})});
   $('lastAiRetry').addEventListener('click',retryLastAi);
   $('ri').addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();hg()}});
 
@@ -159,11 +159,11 @@ function init(){
   // 组件分析（功能A：分析代码 → 生成提示词 → 存入数据库）
   $('cgAnalyzePrompt').addEventListener('click',cgAnalyzePrompt);
   $('cgSave').addEventListener('click',cgSave);
-  var cgClear=$('cgClear');if(cgClear)cgClear.addEventListener('click',async function(){if(!$('cgResult').value.trim()){sbt('info','内容已为空');setTimeout(hst,1500);return}if(!await showDialog('确认清理','确定清空生成结果吗？','confirm'))return;$('cgResult').value='';sbt('ok','✅ 已清理');setTimeout(hst,2000)});
+  var cgClear=$('cgClear');if(cgClear)cgClear.addEventListener('click',async function(){if(!$('cgResult').value.trim()){sbt('info','内容已为空');setTimeout(hst,1500);return}if(!await showDialog('确认清理','确定清空生成结果吗？','confirm'))return;$('cgResult').value='';sbt('ok',' 已清理');setTimeout(hst,2000)});
   // 代码生成（功能B：预设 → 生成代码 → 存入记忆）
   $('cgAnalyze').addEventListener('click',cgAnalyze);
   $('cgSaveToMemory').addEventListener('click',cgSaveToMemory);
-  var cgCodeClear=$('cgCodeClear');if(cgCodeClear)cgCodeClear.addEventListener('click',async function(){if(!$('cgCodeResult').value.trim()){sbt('info','内容已为空');setTimeout(hst,1500);return}if(!await showDialog('确认清理','确定清空生成结果吗？','confirm'))return;$('cgCodeResult').value='';sbt('ok','✅ 已清理');setTimeout(hst,2000)});
+  var cgCodeClear=$('cgCodeClear');if(cgCodeClear)cgCodeClear.addEventListener('click',async function(){if(!$('cgCodeResult').value.trim()){sbt('info','内容已为空');setTimeout(hst,1500);return}if(!await showDialog('确认清理','确定清空生成结果吗？','confirm'))return;$('cgCodeResult').value='';sbt('ok',' 已清理');setTimeout(hst,2000)});
 
   // 恢复上次停留的页面（刷新/重开后保持）
   var lastPage=storage.getItem('qqy_current_page');

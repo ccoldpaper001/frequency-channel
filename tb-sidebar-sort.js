@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // sidebar-sort.js - 侧边栏长按拖拽排序
 // ==============================
 // 功能：
@@ -46,7 +46,7 @@
     var nav=getNav();if(!nav)return;
     nav.classList.add('sort-mode');
     getItems().forEach(function(el){el.setAttribute('draggable','true')});
-    if(typeof sbt==='function'){sbt('ok','🔀 排序模式：拖拽调整顺序，点击空白处退出');setTimeout(function(){if(typeof hst==='function')hst()},2500)}
+    if(typeof sbt==='function'){sbt('ok',' 排序模式：拖拽调整顺序，点击空白处退出');setTimeout(function(){if(typeof hst==='function')hst()},2500)}
   }
 
   // 退出排序模式

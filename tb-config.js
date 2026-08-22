@@ -4,7 +4,7 @@
 
 const SELECTOR_SETS={
   'QQY':{
-    name:'青丘语',icon:'🦊',desc:'青丘语角色聊天页面',
+    name:'青丘语',icon:'',desc:'青丘语角色聊天页面',
     selectors:[
       {g:'顶栏',s:['.header.qqy-chat-header','.title','.title-content'],hints:['背景/边框','文字样式','容器']},
       {g:'顶栏按钮',s:['.header-right','.right-item','.left','.back'],hints:['按钮区域','图标按钮','返回区域','返回箭头']},
@@ -92,7 +92,7 @@ var selectedSels=new Set();
 var PROMPT_TYPE_NAMES={'ai-gen':'AI智能生成提示词','ai-analyze':'AI分析组件提示词','component':'组件提示词'};
 
 // ===== 提示词数据库折叠状态（从 prompt-db.js 移入，确保 renderCpList 调用前已定义） =====
-var PROMPT_TYPE_LABELS={'ai-gen':'🤖 AI智能生成提示词','ai-analyze':'🔍 AI分析组件提示词','component':'🧩 组件提示词'};
+var PROMPT_TYPE_LABELS={'ai-gen':' AI智能生成提示词','ai-analyze':' AI分析组件提示词','component':' 组件提示词'};
 var collapsedTypes=JSON.parse(storage.getItem('qqy_collapsed_types')||'null');
 if(!collapsedTypes){collapsedTypes={'ai-gen':false,'ai-analyze':false,'component':false};storage.setItem('qqy_collapsed_types',JSON.stringify(collapsedTypes))}
 function buildDefaultPromptDB(){

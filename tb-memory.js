@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // memory.js - 记忆管理 + 自动总结（大总结/小总结）
 // ==============================
 
@@ -22,9 +22,9 @@ function renderMemory(){
   if(!aiMemory.length){box.innerHTML='<div class="mem-empty">暂无对话记忆</div>';return}
   box.innerHTML=aiMemory.map(function(m,i){
     var time=new Date(m.t).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
-    var roleLabel=m.role==='user'?'👤 User':'🤖 AI';
+    var roleLabel=m.role==='user'?' User':' AI';
     var preview=m.content.substring(0,200)+(m.content.length>200?'...':'');
-    return '<div class="mem-item"><span class="mem-role '+m.role+'">'+roleLabel+'</span><span class="mem-content">'+escH(preview)+'</span><span class="mem-time">'+time+'</span><button class="mem-edit-btn" onclick="editMemory('+i+')" title="编辑这条记忆">✏️</button></div>';
+    return '<div class="mem-item"><span class="mem-role '+m.role+'">'+roleLabel+'</span><span class="mem-content">'+escH(preview)+'</span><span class="mem-time">'+time+'</span><button class="mem-edit-btn" onclick="editMemory('+i+')" title="编辑这条记忆"></button></div>';
   }).join('');
 }
 
@@ -32,12 +32,12 @@ function renderMemory(){
 function renderUnsaved(){
   var box=$('memUnsaved');if(!box)return;
   var cnt=$('memUnsavedCnt');if(cnt)cnt.textContent=aiMemory.length;
-  if(!aiMemory.length){box.innerHTML='<div class="mem-empty">所有记忆已总结 ✓</div>';return}
+  if(!aiMemory.length){box.innerHTML='<div class="mem-empty">所有记忆已总结 </div>';return}
   box.innerHTML=aiMemory.map(function(m,i){
     var time=new Date(m.t).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-    var roleLabel=m.role==='user'?'👤':'🤖';
+    var roleLabel=m.role==='user'?'':'';
     var preview=m.content.substring(0,120)+(m.content.length>120?'...':'');
-    return '<div class="mem-item mem-unsaved"><span class="mem-role '+m.role+'">'+roleLabel+'</span><span class="mem-content">'+escH(preview)+'</span><span class="mem-time">'+time+'</span><button class="mem-edit-btn" onclick="editMemory('+i+')" title="编辑这条记忆">✏️</button></div>';
+    return '<div class="mem-item mem-unsaved"><span class="mem-role '+m.role+'">'+roleLabel+'</span><span class="mem-content">'+escH(preview)+'</span><span class="mem-time">'+time+'</span><button class="mem-edit-btn" onclick="editMemory('+i+')" title="编辑这条记忆"></button></div>';
   }).join('');
 }
 
@@ -71,15 +71,15 @@ function saveMemEdit(){
 function editMemory(i){
   var m=aiMemory[i];if(!m)return;
   openMemEdit({
-    title:'✏️ 编辑记忆',
-    label:'记忆内容（角色：'+(m.role==='user'?'👤 用户':'🤖 AI')+'）',
+    title:' 编辑记忆',
+    label:'记忆内容（角色：'+(m.role==='user'?' 用户':' AI')+'）',
     content:m.content,
     onSave:function(v){
       if(!v.trim()){showDialog('提示','内容不能为空');return}
       m.content=v.trim();
       saveCurrentSlot();
       renderMemory();renderUnsaved();
-      sbt('ok','✅ 记忆已更新');setTimeout(hst,2000);
+      sbt('ok',' 记忆已更新');setTimeout(hst,2000);
     }
   });
 }
@@ -95,7 +95,7 @@ function onSlotChange(){
   var v=$('memSlotSel').value;
   switchSlot(v);
   renderSlotList();
-  sbt('ok','✅ 已切换到 '+v);setTimeout(hst,2000);
+  sbt('ok',' 已切换到 '+v);setTimeout(hst,2000);
 }
 
 function newMemorySlot(){
@@ -106,7 +106,7 @@ function newMemorySlot(){
   saveCurrentSlot();
   switchSlot(name);
   renderSlotList();
-  sbt('ok','✅ 已创建并切换到 '+name);setTimeout(hst,2000);
+  sbt('ok',' 已创建并切换到 '+name);setTimeout(hst,2000);
 }
 
 function renameMemorySlot(){
@@ -119,7 +119,7 @@ function renameMemorySlot(){
   storage.setItem('qqy_current_slot',name);
   saveCurrentSlot();
   renderSlotList();
-  sbt('ok','✅ 已重命名为 '+name);setTimeout(hst,2000);
+  sbt('ok',' 已重命名为 '+name);setTimeout(hst,2000);
 }
 function toggleMemory(){memoryEnabled=!memoryEnabled;storage.setItem('qqy_memory_enabled',memoryEnabled?'1':'0');$('memoryToggle').checked=memoryEnabled}
 
@@ -209,12 +209,12 @@ async function summaryNow(){
   hst();
   try{
     await autoSummary('small');
-    sbt('ok','✅ 小总结完成');setTimeout(hst,2000);
+    sbt('ok',' 小总结完成');setTimeout(hst,2000);
   }catch(e){
     if(typeof logAiError==='function')logAiError('小总结',e.message||String(e));
     sbt('err','小总结失败：'+(e.message||e));setTimeout(hst,3000);
   }finally{
-    if(btn){btn.disabled=false;btn.innerHTML='📝 立即小总结'}
+    if(btn){btn.disabled=false;btn.innerHTML=' 立即小总结'}
   }
 }
 
@@ -228,12 +228,12 @@ async function largeSummaryNow(){
   try{
     if(aiMemory.length>=2){await autoSummary('small')}
     await autoSummary('large');
-    sbt('ok','✅ 大总结完成');setTimeout(hst,2000);
+    sbt('ok',' 大总结完成');setTimeout(hst,2000);
   }catch(e){
     if(typeof logAiError==='function')logAiError('大总结',e.message||String(e));
     sbt('err','大总结失败：'+(e.message||e));setTimeout(hst,3000);
   }finally{
-    if(btn){btn.disabled=false;btn.innerHTML='📝 立即大总结'}
+    if(btn){btn.disabled=false;btn.innerHTML=' 立即大总结'}
   }
 }
 
@@ -243,7 +243,7 @@ function renderSummaries(){
     if(!memorySummaries.length){box.innerHTML='<div class="mem-empty">暂无小总结</div>'}
     else{
       box.innerHTML=memorySummaries.map(function(s,i){
-        return '<div class="mem-summary-item small"><div class="summary-time">📝 小总结 '+(i+1)+' · '+s.time+' <button class="mem-edit-btn" onclick="editSummary('+i+')" title="编辑">✏️</button><button class="mem-edit-btn" onclick="deleteSummary('+i+')" title="删除这条小总结" style="color:#f87171">🗑️</button></div>'+escH(s.content)+'</div>';
+        return '<div class="mem-summary-item small"><div class="summary-time"> 小总结 '+(i+1)+' · '+s.time+' <button class="mem-edit-btn" onclick="editSummary('+i+')" title="编辑"></button><button class="mem-edit-btn" onclick="deleteSummary('+i+')" title="删除这条小总结" style="color:#f87171"></button></div>'+escH(s.content)+'</div>';
       }).join('');
     }
   }
@@ -252,7 +252,7 @@ function renderSummaries(){
     if(!memoryLargeSummaries.length){lbox.innerHTML='<div class="mem-empty">暂无大总结</div>'}
     else{
       lbox.innerHTML=memoryLargeSummaries.map(function(s,i){
-        return '<div class="mem-summary-item large"><div class="summary-time">🧠 大总结 '+(i+1)+' · '+s.time+' <button class="mem-edit-btn" onclick="editLargeSummary('+i+')" title="编辑">✏️</button><button class="mem-edit-btn" onclick="deleteLargeSummary('+i+')" title="删除这条大总结" style="color:#f87171">🗑️</button></div>'+escH(s.content)+'</div>';
+        return '<div class="mem-summary-item large"><div class="summary-time"> 大总结 '+(i+1)+' · '+s.time+' <button class="mem-edit-btn" onclick="editLargeSummary('+i+')" title="编辑"></button><button class="mem-edit-btn" onclick="deleteLargeSummary('+i+')" title="删除这条大总结" style="color:#f87171"></button></div>'+escH(s.content)+'</div>';
       }).join('');
     }
   }
@@ -321,7 +321,7 @@ async function deleteSummary(i){
   memorySummaries.splice(i,1);
   saveSummaries();
   renderSummaries();
-  sbt('ok','✅ 小总结已删除');setTimeout(hst,2000);
+  sbt('ok',' 小总结已删除');setTimeout(hst,2000);
 }
 
 // ===== 删除单条大总结 =====
@@ -331,7 +331,7 @@ async function deleteLargeSummary(i){
   memoryLargeSummaries.splice(i,1);
   saveLargeSummaries();
   renderSummaries();
-  sbt('ok','✅ 大总结已删除');setTimeout(hst,2000);
+  sbt('ok',' 大总结已删除');setTimeout(hst,2000);
 }
 
 async function clearSummaries(){
@@ -348,7 +348,7 @@ function saveMemConfig(){
   storage.setItem('qqy_mem_rounds',String(memoryMaxRounds));
   storage.setItem('qqy_mem_summary_threshold',String(memorySummaryThreshold));
   storage.setItem('qqy_mem_large_threshold',String(memoryLargeThreshold));
-  sbt('ok','✅ 已保存');setTimeout(hst,2000);
+  sbt('ok',' 已保存');setTimeout(hst,2000);
 }
 
 // ===== 新增记忆 =====
@@ -363,7 +363,7 @@ function addMemoryManual(){
       if(!v.trim()){showDialog('提示','内容不能为空');return}
       aiMemory.push({role:role,content:v.trim(),t:Date.now()});
       saveCurrentSlot();renderMemory();renderUnsaved();
-      sbt('ok','✅ 记忆已添加');setTimeout(hst,2000);
+      sbt('ok',' 记忆已添加');setTimeout(hst,2000);
     }
   });
 }
@@ -372,7 +372,7 @@ function addMemoryManual(){
 function editLargeSummary(i){
   var s=memoryLargeSummaries[i];if(!s)return;
   openMemEdit({
-    title:'✏️ 编辑大总结',
+    title:' 编辑大总结',
     label:'大总结内容',
     content:s.content,
     onSave:function(v){
@@ -380,7 +380,7 @@ function editLargeSummary(i){
       s.content=v.trim();
       saveLargeSummaries();
       renderSummaries();
-      sbt('ok','✅ 大总结已更新');setTimeout(hst,2000);
+      sbt('ok',' 大总结已更新');setTimeout(hst,2000);
     }
   });
 }
@@ -389,7 +389,7 @@ function editLargeSummary(i){
 function editSummary(i){
   var s=memorySummaries[i];if(!s)return;
   openMemEdit({
-    title:'✏️ 编辑小总结',
+    title:' 编辑小总结',
     label:'小总结内容',
     content:s.content,
     onSave:function(v){
@@ -397,7 +397,7 @@ function editSummary(i){
       s.content=v.trim();
       saveSummaries();
       renderSummaries();
-      sbt('ok','✅ 小总结已更新');setTimeout(hst,2000);
+      sbt('ok',' 小总结已更新');setTimeout(hst,2000);
     }
   });
 }
@@ -414,7 +414,7 @@ function addLargeSummary(){
       memoryLargeSummaries.push({content:v.trim(),time:time,t:Date.now(),type:'large'});
       saveLargeSummaries();
       renderSummaries();
-      sbt('ok','✅ 大总结已添加');setTimeout(hst,2000);
+      sbt('ok',' 大总结已添加');setTimeout(hst,2000);
     }
   });
 }
@@ -431,7 +431,7 @@ function addSummary(){
       memorySummaries.push({content:v.trim(),time:time,t:Date.now(),type:'small'});
       saveSummaries();
       renderSummaries();
-      sbt('ok','✅ 小总结已添加');setTimeout(hst,2000);
+      sbt('ok',' 小总结已添加');setTimeout(hst,2000);
     }
   });
 }
@@ -455,7 +455,7 @@ function exportMemory(){
   a.href=URL.createObjectURL(blob);
   a.download='qqy-记忆-'+currentSlot+'-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
-  sbt('ok','✅ 记忆已导出');setTimeout(hst,2000);
+  sbt('ok',' 记忆已导出');setTimeout(hst,2000);
 }
 
 // ===== 导入记忆 =====
@@ -504,7 +504,7 @@ function handleMemoryImport(e){
       storage.setItem('qqy_memory_slots',JSON.stringify(memorySlots));
       saveSummaries();saveLargeSummaries();
       renderSlotList();renderMemory();renderSummaries();renderUnsaved();
-      sbt('ok','✅ 记忆导入成功（已合并 '+importedSlots.length+' 个记忆区）');setTimeout(hst,2000);
+      sbt('ok',' 记忆导入成功（已合并 '+importedSlots.length+' 个记忆区）');setTimeout(hst,2000);
     }catch(err){
       showDialog('导入失败','JSON 解析错误\n\n'+err.message);
     }

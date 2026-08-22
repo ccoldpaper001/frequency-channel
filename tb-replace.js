@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // replace.js - 选择符快捷替换
 // ==============================
 
@@ -155,7 +155,7 @@ function rpDoReplace(){
   if(count===0){showDialog('提示','未在粘贴的CSS中找到匹配的选择符');return}
   $('rpResultBox').style.display='block';
   $('rpResult').value=css;
-  sbt('ok','✅ 已替换 '+count+' 处选择符');setTimeout(hst,2500);
+  sbt('ok',' 已替换 '+count+' 处选择符');setTimeout(hst,2500);
 }
 
 function rpGetApi(){
@@ -194,7 +194,7 @@ async function rpAiAnalyze(){
     return info;
   }).join('\n');
   var css=$('rpCssInput').value.trim()||'（未粘贴CSS代码）';
-  var btn=$('rpAiAnalyze');btn.disabled=true;btn.textContent='🤖 分析中...';
+  var btn=$('rpAiAnalyze');btn.disabled=true;btn.textContent=' 分析中...';
   var sysPrompt='你是CSS选择符替换分析专家。分析用户的替换计划，指出：1.每个替换是否合理 2.可能的风险 3.修正建议。用简洁中文分点回答。';
   var userContent='【替换计划】\n源选择符：\n'+srcInfo+'\n\n目标选择符：\n'+tgtInfo+'\n\n【当前CSS】\n'+css.substring(0,3000);
   try{
@@ -205,9 +205,9 @@ async function rpAiAnalyze(){
     $('rpAnalysisBox').style.display='block';
     $('rpAnalysisResult').value=rpAnalysisResult;
     if(memoryEnabled){addMemory('user','【选择符替换分析】'+userContent.substring(0,500));addMemory('assistant',rpAnalysisResult);checkAutoSummary()}
-    sbt('ok','✅ 分析完成');setTimeout(hst,2000);
+    sbt('ok',' 分析完成');setTimeout(hst,2000);
   }catch(err){var fullReq=sysPrompt+'\n\n[用户请求]\n'+userContent;var detail=typeof getApiSnapshot==='function'?getApiSnapshot(fullReq):null;if(typeof logAiError==='function')logAiError('替换分析',err.message||String(err),detail);showDialog('分析失败',err.message)}
-  finally{btn.disabled=false;btn.textContent='🤖 AI分析替换问题'}
+  finally{btn.disabled=false;btn.textContent=' AI分析替换问题'}
 }
 
 async function rpAiReplace(){
@@ -218,7 +218,7 @@ async function rpAiReplace(){
   var keys=Object.keys(map);
   var css=$('rpCssInput').value.trim();
   if(!css){showDialog('提示','请先粘贴需要替换的CSS代码');return}
-  var btn=$('rpAiReplace');btn.disabled=true;btn.textContent='🤖 替换中...';
+  var btn=$('rpAiReplace');btn.disabled=true;btn.textContent=' 替换中...';
   var lockReq=($('rpLockReq')&&$('rpLockReq').value.trim())||'只修改选择符名称，不要修改任何CSS属性值、数值、颜色和结构';
   var sysPrompt='你是CSS选择符替换专家。根据分析结果对CSS执行精确替换。只输出替换后的完整CSS，不要解释。锁定要求：'+lockReq;
   var userContent='【替换映射】\n'+keys.map(function(s){return s+' → '+map[s]}).join('\n')+'\n\n【锁定要求】\n'+lockReq+'\n\n【分析结论】\n'+rpAnalysisResult+'\n\n【待替换CSS】\n'+css;
@@ -230,9 +230,9 @@ async function rpAiReplace(){
     $('rpResultBox').style.display='block';
     $('rpResult').value=newCss;
     if(memoryEnabled){addMemory('user','【AI辅助替换】'+userContent.substring(0,500));addMemory('assistant',newCss.substring(0,500));checkAutoSummary()}
-    sbt('ok','✅ AI辅助替换完成');setTimeout(hst,2000);
+    sbt('ok',' AI辅助替换完成');setTimeout(hst,2000);
   }catch(err){var fullReq=sysPrompt+'\n\n[用户请求]\n'+userContent;var detail=typeof getApiSnapshot==='function'?getApiSnapshot(fullReq):null;if(typeof logAiError==='function')logAiError('AI辅助替换',err.message||String(err),detail);showDialog('替换失败',err.message)}
-  finally{btn.disabled=false;btn.textContent='✨ AI辅助替换'}
+  finally{btn.disabled=false;btn.textContent=' AI辅助替换'}
 }
 
 function initReplacePage(){

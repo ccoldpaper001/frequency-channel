@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // htmledit.js - 代码编辑页面（HTML 预览与展示）
 // ==============================
 // 内容仅保存在内存变量中：切换页面不丢失，刷新页面后清空
@@ -27,7 +27,7 @@ function heProcessContent(raw){
   var hasCssRule=/[.#]?[a-zA-Z0-9_\-\[\]:."'=,() >+~*]+\{[^}]*\}/.test(content);
   if(!hasHtmlTag&&hasCssRule){
     // 纯 CSS：包装成带示例结构的文档，直接应用样式
-    return '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<style>\n'+content+'\n</style>\n</head>\n<body>\n<div style="padding:16px;color:#666;font:13px sans-serif">📋 检测到纯 CSS 代码，已自动应用为页面样式。<br>在下方添加 HTML 结构可查看实际效果。</div>\n</body>\n</html>';
+    return '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<style>\n'+content+'\n</style>\n</head>\n<body>\n<div style="padding:16px;color:#666;font:13px sans-serif"> 检测到纯 CSS 代码，已自动应用为页面样式。<br>在下方添加 HTML 结构可查看实际效果。</div>\n</body>\n</html>';
   }
   // HTML 片段：自动包装成完整文档
   return '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n</head>\n<body>\n'+content+'\n</body>\n</html>';
@@ -63,7 +63,7 @@ function heRunPreview(){
   if(ta)heContent=ta.value;
   var processed=heProcessContent(heContent);
   heWriteIframe(processed||'<div style="padding:20px;color:#999;font-family:sans-serif;font-size:13px">暂无内容可预览</div>');
-  sbt('ok','▶️ 已运行预览');setTimeout(hst,1500);
+  sbt('ok','▶ 已运行预览');setTimeout(hst,1500);
 }
 
 // 复制代码
@@ -72,7 +72,7 @@ function heCopyCode(){
   var content=ta?ta.value:heContent;
   if(!content.trim()){sbt('info','暂无内容可复制');setTimeout(hst,1500);return}
   copyToClipboard(content).then(function(){
-    sbt('ok','✅ 代码已复制');setTimeout(hst,1500);
+    sbt('ok',' 代码已复制');setTimeout(hst,1500);
   }).catch(function(){
     sbt('err','复制失败');setTimeout(hst,2000);
   });
@@ -87,7 +87,7 @@ async function heClearCode(){
   heContent='';
   if(ta)ta.value='';
   heUpdatePreview();
-  sbt('ok','✅ 已清空');setTimeout(hst,2000);
+  sbt('ok',' 已清空');setTimeout(hst,2000);
 }
 
 // ==============================

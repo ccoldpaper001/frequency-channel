@@ -1,4 +1,4 @@
-// 拼接 API 地址（网页版：直连接口，不再经过本地代理）
+﻿// 拼接 API 地址（网页版：直连接口，不再经过本地代理）
 function buildApiUrl(baseUrl, endpoint) {
   baseUrl = baseUrl.trim().replace(/\/+$/, '');
   var autoV1 = storage.getItem('qqy_api_auto_v1') !== '0'; // 默认开启
@@ -48,11 +48,11 @@ async function fetchModels(){
     fetchedModels=models;
     storage.setItem('qqy_fetched_models',JSON.stringify(models));
     renderModelSelect();
-    btn.innerHTML='<span>✓</span> 已拉取'+models.length+'个';
-    setTimeout(function(){btn.innerHTML='<span>🔄</span> 拉取';btn.disabled=false},2000);
+    btn.innerHTML='<span></span> 已拉取'+models.length+'个';
+    setTimeout(function(){btn.innerHTML='<span></span> 拉取';btn.disabled=false},2000);
   }catch(err){
     showDialog('拉取失败',err.message+'\n请检查API地址和Key');
-    btn.innerHTML='<span>🔄</span> 拉取';btn.disabled=false;
+    btn.innerHTML='<span></span> 拉取';btn.disabled=false;
   }
 }
 
@@ -67,7 +67,7 @@ function saveApiConfig(){
   storage.setItem('qqy_api_auto_v1',$('akautov1').checked?'1':'0');
   $('akm').classList.remove('active');
   $('aks').textContent=ak?'已设置':'设置API';
-  sbt('ok','✅ API已保存');setTimeout(hst,2000);
+  sbt('ok',' API已保存');setTimeout(hst,2000);
 }
 
 async function clearApiConfig(){
@@ -116,7 +116,7 @@ function renderApiPresets(){
       return '<span class="api-preset-item'+active+'" onclick="switchApiPreset('+i+')">'+escH(p.name)+'</span>';
     }).join('');
   }
-  wrap.innerHTML=html+'<button class="cp-btn btn-sm" onclick="saveApiPreset()" style="margin-left:auto">💾 存为预设</button>'+(currentApiPreset?'<button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="deleteApiPreset()">🗑️</button>':'');
+  wrap.innerHTML=html+'<button class="cp-btn btn-sm" onclick="saveApiPreset()" style="margin-left:auto"> 存为预设</button>'+(currentApiPreset?'<button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="deleteApiPreset()"></button>':'');
 }
 
 function saveApiPreset(){
@@ -151,7 +151,7 @@ function switchApiPreset(i){
   renderModelSelect();
   renderApiPresets();
   $('aks').textContent=ak?'已设置':'设置API';
-  sbt('ok','✅ 已切换到 '+p.name);setTimeout(hst,2000);
+  sbt('ok',' 已切换到 '+p.name);setTimeout(hst,2000);
 }
 
 async function deleteApiPreset(){

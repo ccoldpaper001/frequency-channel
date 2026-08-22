@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // svg-converter.js - SVG图标代码格式转换
 // ==============================
 
@@ -74,7 +74,7 @@ function svgDoConvert(){
   if(!svg){showDialog('提示','请先粘贴 SVG 代码');return}
   var converted=svgConvertToDataUri(svg);
   output.value=converted;
-  sbt('ok','✅ 转换完成');setTimeout(hst,2000);
+  sbt('ok',' 转换完成');setTimeout(hst,2000);
 }
 
 // 转换 SVG 为 data URI 格式
@@ -104,7 +104,7 @@ function svgCopyResult(){
   var output=$('svgOutput');
   if(!output||!output.value.trim()){sbt('info','暂无内容可复制');setTimeout(hst,1500);return}
   copyToClipboard(output.value).then(function(){
-    sbt('ok','✅ 已复制');setTimeout(hst,1500);
+    sbt('ok',' 已复制');setTimeout(hst,1500);
   }).catch(function(){
     sbt('err','复制失败');setTimeout(hst,2000);
   });
@@ -119,7 +119,7 @@ async function svgClearAll(){
   if(output)output.value='';
   svgConverterContent='';
   svgUpdatePreview();
-  sbt('ok','✅ 已清空');setTimeout(hst,2000);
+  sbt('ok',' 已清空');setTimeout(hst,2000);
 }
 
 // ==============================
@@ -154,8 +154,8 @@ function renderResList(){
     return '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bg2);border-radius:4px;font-size:11px">'+
       '<a href="'+escH(l.url)+'" target="_blank" onclick="event.stopPropagation()" style="flex:1;color:var(--p);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escH(l.url)+'">'+escH(l.name)+'</a>'+
       (l.note?'<span style="color:var(--td);font-size:10px;flex-shrink:0">'+escH(l.note)+'</span>':'')+
-      '<span style="cursor:pointer;color:var(--td);flex-shrink:0" onclick="editResLink('+i+')" title="编辑">✏️</span>'+
-      '<span style="cursor:pointer;color:#f87171;flex-shrink:0" onclick="delResLink('+i+')" title="删除">🗑️</span>'+
+      '<span style="cursor:pointer;color:var(--td);flex-shrink:0" onclick="editResLink('+i+')" title="编辑"></span>'+
+      '<span style="cursor:pointer;color:#f87171;flex-shrink:0" onclick="delResLink('+i+')" title="删除"></span>'+
     '</div>';
   }).join('');
 }
@@ -168,7 +168,7 @@ async function addResLink(){
   var note=await showDialog('添加链接','请输入备注（可选）：','prompt')||'';
   resLinks.push({name:name,url:url,note:note});
   saveResLinks();renderResList();
-  sbt('ok','✅ 已添加');setTimeout(hst,1500);
+  sbt('ok',' 已添加');setTimeout(hst,1500);
 }
 
 async function editResLink(i){
@@ -180,7 +180,7 @@ async function editResLink(i){
   var note=await showDialog('编辑链接','备注（可选）：','prompt',l.note||'')||'';
   resLinks[i]={name:name,url:url,note:note};
   saveResLinks();renderResList();
-  sbt('ok','✅ 已保存');setTimeout(hst,1500);
+  sbt('ok',' 已保存');setTimeout(hst,1500);
 }
 
 async function delResLink(i){

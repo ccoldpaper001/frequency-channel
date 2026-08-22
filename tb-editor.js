@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // editor.js - 区块编辑器 + 选择符管理 + 文本导入
 // ==============================
 
@@ -86,12 +86,12 @@ function rsb(){
     '<span class="cs-editor-label">当前编辑选择器:</span>'+
     '<span class="cs-editor-sel-name">'+sel+'</span>'+
     '<div class="cs-editor-actions">'+
-      '<button class="cp-btn btn-sm" onclick="copyBlock(\''+sq+'\')">📋 复制</button>'+
+      '<button class="cp-btn btn-sm" onclick="copyBlock(\''+sq+'\')"> 复制</button>'+
     '</div></div>';
   // 中文备注（重点突出，显示在代码上方）
   if(hintText||groupText){
     html+='<div class="cs-hint-banner">'+
-      '<span class="cs-hint-group">📁 '+groupText+'</span>'+
+      '<span class="cs-hint-group"> '+groupText+'</span>'+
       (hintText?'<span class="cs-hint-text">'+hintText+'</span>':'')+
     '</div>';
   }
@@ -177,10 +177,10 @@ async function upd(sel,prop,val){
 
 function copyBlock(sel){var css=buildBlockCss(sel);if(!css.trim())return;copyToClipboard(css).catch(function(){})}
 
-async function clearAllCss(){if(!await showDialog('确认清空','确定要清空所有CSS？','confirm'))return;initStates();expandedBlock=null;rsel();rsb();cvLines=[];$('cvv').innerHTML='<div class="cv-empty">已清空</div>';sbt('ok','✅ 已清空');setTimeout(hst,2000)}
+async function clearAllCss(){if(!await showDialog('确认清空','确定要清空所有CSS？','confirm'))return;initStates();expandedBlock=null;rsel();rsb();cvLines=[];$('cvv').innerHTML='<div class="cv-empty">已清空</div>';sbt('ok',' 已清空');setTimeout(hst,2000)}
 
-function renderCodeView(){var css=buildCss();cvLines=css?css.split('\n').filter(function(l){return l.trim()}):[];if(!cvLines.length){$('cvv').innerHTML='<div class="cv-empty">暂无CSS代码</div>';return}$('cvv').innerHTML=cvLines.map(function(ln,i){return '<div class="cv-line"><div class="ln-code">'+escH(ln)+'</div><button class="ln-copy" onclick="copyLine('+i+')">📋</button></div>'}).join('')}
-function copyLine(i){if(!cvLines[i])return;copyToClipboard(cvLines[i]).then(function(){var btn=document.querySelectorAll('.ln-copy')[i];if(btn){btn.textContent='✓';btn.classList.add('cd');setTimeout(function(){btn.textContent='📋';btn.classList.remove('cd')},1500)}}).catch(function(){})}
+function renderCodeView(){var css=buildCss();cvLines=css?css.split('\n').filter(function(l){return l.trim()}):[];if(!cvLines.length){$('cvv').innerHTML='<div class="cv-empty">暂无CSS代码</div>';return}$('cvv').innerHTML=cvLines.map(function(ln,i){return '<div class="cv-line"><div class="ln-code">'+escH(ln)+'</div><button class="ln-copy" onclick="copyLine('+i+')"></button></div>'}).join('')}
+function copyLine(i){if(!cvLines[i])return;copyToClipboard(cvLines[i]).then(function(){var btn=document.querySelectorAll('.ln-copy')[i];if(btn){btn.textContent='';btn.classList.add('cd');setTimeout(function(){btn.textContent='';btn.classList.remove('cd')},1500)}}).catch(function(){})}
 
 
 
@@ -191,7 +191,7 @@ function renderSetList(){
   for(var key in all){
     var set=all[key];var isCurrent=key===currentSetKey;var isCustom=!!customSets[key];
     var selCount=set.selectors.reduce(function(n,g){return n+g.s.length},0);
-    html+='<div class="set-card'+(isCurrent?' active':'')+'"'+(!isCurrent?' onclick="switchSet(\''+key+'\')" style="cursor:pointer" title="点击切换到此集合"':'')+'><div class="set-card-header"><div><div class="set-card-title">'+(set.icon||'📋')+' '+set.name+(isCurrent?' <span style="color:var(--g);font-size:11px">✓ 当前</span>':'')+'</div><div class="set-card-desc">'+(set.desc||'')+' · '+selCount+'个选择符</div></div><div style="display:flex;gap:4px"><button class="cp-btn btn-sm" onclick="event.stopPropagation();editSet(\''+key+'\')">✏️</button>'+(isCustom?'<button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteSet(\''+key+'\')">🗑️</button>':'')+'</div></div><div class="set-card-sels">'+set.selectors.map(function(g){return g.s.map(function(s,i){return '<div>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[i]||'')+'</span></div>'}).join('')}).join('')+'</div></div>';
+    html+='<div class="set-card'+(isCurrent?' active':'')+'"'+(!isCurrent?' onclick="switchSet(\''+key+'\')" style="cursor:pointer" title="点击切换到此集合"':'')+'><div class="set-card-header"><div><div class="set-card-title">'+(set.icon||'')+' '+set.name+(isCurrent?' <span style="color:var(--g);font-size:11px"> 当前</span>':'')+'</div><div class="set-card-desc">'+(set.desc||'')+' · '+selCount+'个选择符</div></div><div style="display:flex;gap:4px"><button class="cp-btn btn-sm" onclick="event.stopPropagation();editSet(\''+key+'\')"></button>'+(isCustom?'<button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteSet(\''+key+'\')"></button>':'')+'</div></div><div class="set-card-sels">'+set.selectors.map(function(g){return g.s.map(function(s,i){return '<div>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[i]||'')+'</span></div>'}).join('')}).join('')+'</div></div>';
   }
   $('setList').innerHTML=html;
 }
@@ -226,16 +226,16 @@ function openSetModal(editKey){
     editingSetBuiltin=!customSets[editKey];
     $('setModalTitle').textContent='编辑：'+set.name;
     $('newSetName').value=set.name;
-    $('newSetIcon').value=set.icon||'📋';
+    $('newSetIcon').value=set.icon||'';
     $('newSetDesc').value=set.desc||'';
     tempSels=JSON.parse(JSON.stringify(set.selectors));
-  }else{$('setModalTitle').textContent='新建选择符集';$('newSetName').value='';$('newSetIcon').value='📋';$('newSetDesc').value='';tempSels=[]}
+  }else{$('setModalTitle').textContent='新建选择符集';$('newSetName').value='';$('newSetIcon').value='';$('newSetDesc').value='';tempSels=[]}
   renderSelPreview();$('setModal').classList.add('active');
 }
-function renderSelPreview(){$('selPreview').innerHTML=tempSels.length?tempSels.map(function(g,gi){return g.s.map(function(s,si){return '<div class="sel-preview-item"><span>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[si]||'')+'</span></span><button onclick="removeTempSel('+gi+','+si+')">✕</button></div>'}).join('')}).join(''):'<div style="color:var(--td);padding:8px">暂无</div>'}
+function renderSelPreview(){$('selPreview').innerHTML=tempSels.length?tempSels.map(function(g,gi){return g.s.map(function(s,si){return '<div class="sel-preview-item"><span>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[si]||'')+'</span></span><button onclick="removeTempSel('+gi+','+si+')"></button></div>'}).join('')}).join(''):'<div style="color:var(--td);padding:8px">暂无</div>'}
 function addTempSel(){var g=$('newSelGroup').value.trim();var s=$('newSelSelector').value.trim();var h=$('newSelHint').value.trim();if(!g||!s){showDialog('提示','请填写组名和选择器');return}var grp=tempSels.find(function(x){return x.g===g});if(!grp){grp={g:g,s:[],hints:[]};tempSels.push(grp)}grp.s.push(s);grp.hints.push(h||'');$('newSelSelector').value='';$('newSelHint').value='';renderSelPreview()}
 function removeTempSel(gi,si){tempSels[gi].s.splice(si,1);tempSels[gi].hints.splice(si,1);if(tempSels[gi].s.length===0)tempSels.splice(gi,1);renderSelPreview()}
-function saveSet(){var name=$('newSetName').value.trim();if(!name){showDialog('提示','请填写名称');return}var icon=$('newSetIcon').value.trim()||'📋';var desc=$('newSetDesc').value.trim();if(tempSels.length===0){showDialog('提示','请至少添加一个选择符');return}var key=editingSetKey||name.replace(/\s+/g,'_');customSets[key]={name:name,icon:icon,desc:desc,selectors:JSON.parse(JSON.stringify(tempSels))};storage.setItem('qqy_custom_sets',JSON.stringify(customSets));$('setModal').classList.remove('active');renderSetList();if(currentSetKey===key){initStates();rsel();rsb()}sbt('ok','✅ 已保存');setTimeout(hst,2000)}
+function saveSet(){var name=$('newSetName').value.trim();if(!name){showDialog('提示','请填写名称');return}var icon=$('newSetIcon').value.trim()||'';var desc=$('newSetDesc').value.trim();if(tempSels.length===0){showDialog('提示','请至少添加一个选择符');return}var key=editingSetKey||name.replace(/\s+/g,'_');customSets[key]={name:name,icon:icon,desc:desc,selectors:JSON.parse(JSON.stringify(tempSels))};storage.setItem('qqy_custom_sets',JSON.stringify(customSets));$('setModal').classList.remove('active');renderSetList();if(currentSetKey===key){initStates();rsel();rsb()}sbt('ok',' 已保存');setTimeout(hst,2000)}
 function editSet(key){openSetModal(key)}
 async function deleteSet(key){if(!await showDialog('确认删除','确定删除？','confirm'))return;delete customSets[key];storage.setItem('qqy_custom_sets',JSON.stringify(customSets));if(currentSetKey===key){var fallback=Object.keys(SELECTOR_SETS)[0]||Object.keys(customSets)[0]||'';currentSetKey=fallback;initStates();rsel();rsb()}renderSetList();renderAiSelGrid()}
 
@@ -344,22 +344,22 @@ function analyzeWithAI(text){
       try{tempSels=JSON.parse(match[0]);renderImportPreview()}
       catch(e){showDialog('解析失败','AI返回解析失败，请重试')}
     }else{showDialog('提示','AI未返回有效结果')}
-    $('importAnalyze').disabled=false;$('importAnalyze').textContent='🔍 分析';
-  }).catch(function(e){if(typeof logAiError==='function')logAiError('文本导入分析',e.message||String(e));showDialog('分析失败','AI分析失败：'+e.message);$('importAnalyze').disabled=false;$('importAnalyze').textContent='🔍 分析'});
+    $('importAnalyze').disabled=false;$('importAnalyze').textContent=' 分析';
+  }).catch(function(e){if(typeof logAiError==='function')logAiError('文本导入分析',e.message||String(e));showDialog('分析失败','AI分析失败：'+e.message);$('importAnalyze').disabled=false;$('importAnalyze').textContent=' 分析'});
 }
 
 function renderImportPreview(){
   $('importResult').style.display='block';
-  $('importPreview').innerHTML=tempSels.length?tempSels.map(function(g,gi){return g.s.map(function(s,si){return '<div class="sel-preview-item"><span>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[si]||'')+'</span></span><button onclick="removeTempSel('+gi+','+si+')">✕</button></div>'}).join('')}).join(''):'<div style="color:var(--td);padding:8px">未识别到选择符</div>';
+  $('importPreview').innerHTML=tempSels.length?tempSels.map(function(g,gi){return g.s.map(function(s,si){return '<div class="sel-preview-item"><span>'+s+' <span style="color:var(--td)">— '+g.g+'/'+(g.hints[si]||'')+'</span></span><button onclick="removeTempSel('+gi+','+si+')"></button></div>'}).join('')}).join(''):'<div style="color:var(--td);padding:8px">未识别到选择符</div>';
 }
 
 function saveImportSet(){
   var name=$('importSetName').value.trim();if(!name){showDialog('提示','请填写名称');return}
   if(tempSels.length===0){showDialog('提示','请先分析并确认有选择符');return}
-  var key=name.replace(/\s+/g,'_');customSets[key]={name:name,icon:'📥',desc:'从文本导入',selectors:tempSels};
+  var key=name.replace(/\s+/g,'_');customSets[key]={name:name,icon:'',desc:'从文本导入',selectors:tempSels};
   storage.setItem('qqy_custom_sets',JSON.stringify(customSets));
   $('importModal').classList.remove('active');renderSetList();
-  sbt('ok','✅ 已导入'+tempSels.length+'组选择符');setTimeout(hst,3000);
+  sbt('ok',' 已导入'+tempSels.length+'组选择符');setTimeout(hst,3000);
 }
 
 // ==============================
@@ -419,7 +419,7 @@ function geRenderEditor(sq,s){
       '<input type="color" value="'+toHex(stop.c)+'" onchange="geSetColor(\''+sq+'\','+i+',this.value)">'+
       '<input type="range" min="0" max="100" value="'+stop.p+'" style="flex:1" oninput="geSetPos(\''+sq+'\','+i+',this.value)">'+
       '<span class="ge-pct">'+stop.p+'%</span>'+
-      (data.stops.length>2?'<button class="cp-btn btn-sm" onclick="geDelStop(\''+sq+'\','+i+')" title="删除色标">✕</button>':'<span style="width:26px"></span>')+
+      (data.stops.length>2?'<button class="cp-btn btn-sm" onclick="geDelStop(\''+sq+'\','+i+')" title="删除色标"></button>':'<span style="width:26px"></span>')+
     '</div>';
   });
   html+='</div>';
