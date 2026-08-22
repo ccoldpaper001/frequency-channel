@@ -341,13 +341,3 @@ body.side-collapsed .sidebar-group{visibility:hidden;height:10px;padding:0}
 body.side-collapsed .cat-item{justify-content:center;padding:10px 0;font-size:0}
 body.side-collapsed .cat-item svg{font-size:17px}
 body.side-collapsed #admin-box{display:none !important}
-
-/* 鎵嬫満涓婃姌鍙?= 鏀惰捣鍏ㄩ儴瀵艰埅鏉★紝鍙暀鏍囬琛?*/
-@media(max-width:640px){
-body.side-collapsed .sidebar #category-nav,
-body.side-collapsed .sidebar #community-nav,
-body.side-collapsed .sidebar #ai-nav,
-body.side-collapsed .sidebar .sidebar-group,
-body.side-collapsed .sidebar #admin-box{display:none !important}
-body.side-collapsed .sidebar{width:100%}
-}
