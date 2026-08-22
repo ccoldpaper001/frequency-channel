@@ -201,7 +201,7 @@ async function rpAiAnalyze(){
     var res=await fetch(buildApiUrl(api.url,'/chat/completions'),{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+api.key},body:JSON.stringify({model:api.model,messages:[{role:'system',content:sysPrompt},{role:'user',content:userContent}],temperature:.3,max_tokens:2000})});
     if(!res.ok){var e=await res.json().catch(function(){});throw new Error((e&&e.error&&e.error.message)||'HTTP '+res.status)}
     var d=await res.json();
-    rpAnalysisResult=d.choices[0].message.content.trim();
+    rpAnalysisResult=((d.choices[0].message&&d.choices[0].message.content)||'').trim();
     $('rpAnalysisBox').style.display='block';
     $('rpAnalysisResult').value=rpAnalysisResult;
     if(memoryEnabled){addMemory('user','【选择符替换分析】'+userContent.substring(0,500));addMemory('assistant',rpAnalysisResult);checkAutoSummary()}

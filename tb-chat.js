@@ -117,7 +117,7 @@ async function sendChatMessage() {
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var data = await res.json();
-    var reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '(空回复)';
+    var reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(空回复，请检查模型是否支持对话)';
     status.textContent = '';
     chatHistory.push({ role: 'assistant', content: reply });
     chatSave();
