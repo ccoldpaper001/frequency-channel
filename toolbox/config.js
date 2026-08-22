@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // config.js - 常量 & 全局状态
 // ==============================
 
@@ -44,7 +44,7 @@ function loadDefaultPromptsData(){
   if(DEFAULT_PROMPTS_DATA)return DEFAULT_PROMPTS_DATA;
   try{
     var xhr=new XMLHttpRequest();
-    xhr.open('GET','data.json',false);
+    xhr.open('GET',(window.__TOOLBOX_DIR__||'')+'data.json',false);
     xhr.send(null);
     if(xhr.status===200||xhr.status===0){
       DEFAULT_PROMPTS_DATA=JSON.parse(xhr.responseText);

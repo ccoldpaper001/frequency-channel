@@ -50,15 +50,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-new-post").addEventListener("click", showPostPage);
   document.getElementById("btn-back-list").addEventListener("click", showListView);
 
-  // AI 工具导航：点击切换内嵌工具箱的功能页
+  // AI 工具导航：点击后按需把工具箱加载进页面 DOM 并切换功能页
   document.querySelectorAll("#ai-nav .cat-item").forEach(item => {
     item.addEventListener("click", () => {
       showToolbox();
       document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       item.classList.add("active");
-      const frame = document.querySelector(".toolbox-frame");
-      try { frame.contentWindow.switchPage(item.dataset.page); }
-      catch (e) { /* iframe 未加载完时忽略 */ }
+      ensureToolbox(item.dataset.page);
     });
   });
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
@@ -107,8 +105,6 @@ async function register(e) {
 async function logout() {
   await db.auth.signOut();
   localStorage.removeItem("forum_uid");
-  const tbFrame = document.querySelector(".toolbox-frame");
-  if (tbFrame) tbFrame.src = "toolbox/?embed=1";
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
@@ -143,10 +139,8 @@ async function afterLogin(user) {
   refreshTopBar();
   if (myProfile?.is_admin) document.getElementById("admin-box").style.display = "block";
 
-  // 告知工具箱当前用户（工具箱按此隔离数据），并刷新内嵌页使其生效
+  // 工具箱存储按此隔离各用户数据（同一页面内实时读取）
   localStorage.setItem("forum_uid", user.id);
-  const tbFrame = document.querySelector(".toolbox-frame");
-  if (tbFrame) tbFrame.src = "toolbox/?embed=1";
 }
 
 function refreshTopBar() {
@@ -219,6 +213,32 @@ async function deleteCategory(id) {
   const { error } = await db.from("categories").delete().eq("id", id);
   if (error) return showMsg("admin-msg", "删除失败（请先清空该分区的帖子）：" + error.message, true);
   loadCategories();
+}
+
+// ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
+const TOOLBOX_SCRIPTS = ["storage.js","svg-icons.js","config.js","utils.js","editor.js","ai.js","memory.js","api.js","search.js","prompt-db.js","replace.js","sidebar-sort.js","htmledit.js","svg-converter.js","app.js"];
+let toolboxLoading = null;
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.body.appendChild(s);
+  });
+}
+
+async function ensureToolbox(page) {
+  if (!toolboxLoading) {
+    toolboxLoading = (async () => {
+      window.__TOOLBOX_DIR__ = "toolbox/";
+      const html = await (await fetch("toolbox/body.html")).text();
+      document.getElementById("toolbox-root").innerHTML = html;
+      for (const f of TOOLBOX_SCRIPTS) await loadScript("toolbox/" + f);
+    })();
+    toolboxLoading.catch(() => { toolboxLoading = null; });
+  }
+  try { await toolboxLoading; } catch (e) { console.warn("工具箱加载失败", e); return; }
+  if (page && typeof switchPage === "function") switchPage(page);
 }
 
 // ---------- 页面切换：列表 / 发帖页 / 工具箱 ----------

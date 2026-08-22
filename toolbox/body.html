@@ -1,0 +1,301 @@
+﻿
+
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-logo" style="display:flex;align-items:center;justify-content:space-between"><span class="logo-text">✨ 工具箱</span></div>
+  <button id="sidebarToggle" title="收起/展开侧边栏" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--td);opacity:0.6;transition:opacity .2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg class="icon" viewBox="0 0 24 24" style="font-size:14px"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <nav class="sidebar-nav">
+    <a class="nav-item" data-page="ai" onclick="switchPage('ai')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 4.5-3 5.7V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 0 1 7-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="nav-text">AI生成</span></a>
+    <a class="nav-item active" data-page="manual" onclick="switchPage('manual')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.1-2.1 2.7-2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nav-text">手动调整</span></a>
+    <a class="nav-item" data-page="component" onclick="switchPage('component')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="nav-text">提示词数据库</span></a>
+    <a class="nav-item" data-page="analyzer" onclick="switchPage('analyzer')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="nav-text">组件分析</span></a>
+    <a class="nav-item" data-page="codegen" onclick="switchPage('codegen')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M13 2 3 14h8l-1 8 11-13h-8l1-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="nav-text">代码生成</span></a>
+    <a class="nav-item" data-page="replace" onclick="switchPage('replace')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13v1a4 4 0 0 1-4 4H3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nav-text">选择符替换</span></a>
+    <a class="nav-item" data-page="htmledit" onclick="switchPage('htmledit')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="nav-text">代码编辑</span></a>
+    <a class="nav-item" data-page="svgconv" onclick="switchPage('svgconv')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nav-text">SVG转换</span></a>
+    <a class="nav-item" data-page="selectors" onclick="switchPage('selectors')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/><circle cx="4" cy="12" r="1.2" fill="currentColor"/><circle cx="4" cy="18" r="1.2" fill="currentColor"/></svg></span><span class="nav-text">选择符管理</span></a>
+    <a class="nav-item" data-page="memory" onclick="switchPage('memory')"><span class="nav-icon"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7v5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nav-text">记忆管理</span></a>
+  </nav>
+  <div class="sidebar-bottom" style="display:flex;flex-direction:column;gap:6px">
+    <button class="cp-btn" id="helpBtn" style="width:100%;padding:8px;font-size:11px"><span><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span> <span>使用说明</span></button>
+    <button class="cp-btn" id="akb1" style="width:100%;padding:8px;font-size:11px"><span>🔑</span> <span id="aks">设置API</span></button>
+  </div>
+</div>
+
+<div class="main-content">
+<div class="sb" id="sb"></div>
+
+<!-- ===== 手动调整 ===== -->
+<div class="page active" id="page-manual">
+  <div class="page-header">
+    <h2>🔧 手动调整CSS</h2>
+    <div style="display:flex;gap:6px">
+      <button class="cp-btn" id="cpa"><span>📋</span> 复制全部</button>
+      <button class="cp-btn" id="cpo"><span>📄</span> 查看代码</button>
+      <button class="cp-btn" id="clr" style="border-color:rgba(239,68,68,.3);color:#f87171"><span>🗑️</span> 清除</button>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="pb-h"><div class="t"><span>🔧</span> 区块编辑器 <span style="font-size:11px;color:var(--td);font-weight:400">— 点击选择器编辑CSS</span></div></div>
+    <div class="pb-b">
+      <div style="padding:8px 12px"><input type="text" id="selSearch" placeholder="搜索选择符（名称/备注）..." style="width:100%;padding:6px 10px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" oninput="rsel()"></div>
+      <div class="cs-sel-list" id="bsel"></div>
+      <div id="blist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AI生成 ===== -->
+<div class="page" id="page-ai">
+  <div class="page-header"><h2>🤖 AI智能生成</h2></div>
+
+  <div class="ai-section">
+    <div class="ai-section-title">📤 提示词发送顺序 <span style="font-size:11px;color:var(--td)">（按以下顺序组合发送给AI）</span></div>
+
+    <div class="ai-flow-step">
+      <div class="ai-flow-label">① 基础提示词 <span style="font-size:11px;color:var(--td)">（可在当前页面切换，编辑请到提示词数据库）</span></div>
+      <select class="prompt-sel" id="promptSel" style="margin-bottom:0"></select>
+    </div>
+
+    <div class="ai-flow-arrow">↓</div>
+
+    <div class="ai-flow-step">
+      <div class="ai-flow-label">② 选择符 <span style="font-size:11px;color:var(--td)">（动态跟随「选择符管理」中的当前集合，点击选中要修改的选择符，不选则默认全部）</span></div>
+      <div class="ai-sel-toolbar">
+        <button class="cp-btn btn-sm" id="aiSelAll">全选</button>
+        <button class="cp-btn btn-sm" id="aiSelNone">清空</button>
+        <span style="font-size:11px;color:var(--td)">已选 <b id="aiSelCnt">0</b> 个</span>
+        <input type="text" id="aiSelSearch" placeholder="搜索..." style="margin-left:auto;width:140px;padding:4px 8px;border:1px solid var(--br);border-radius:4px;font-size:11px;background:var(--bi);color:var(--t)">
+      </div>
+      <div class="ai-sel-grid" id="aiSelGrid"></div>
+    </div>
+
+    <div class="ai-flow-arrow">↓</div>
+
+    <div class="ai-flow-step">
+      <div class="ai-flow-label">③ 您的额外要求 <span style="font-size:11px;color:var(--td)">（即时生效，无需保存）</span></div>
+      <textarea id="ri" rows="2" placeholder="例如：聊天背景换星空、头部加毛玻璃" style="width:100%;min-height:50px;padding:9px 12px;background:var(--bi);border:1px solid var(--br);border-radius:8px;color:var(--t);font-size:13px;font-family:inherit;resize:vertical"></textarea>
+    </div>
+  </div>
+
+  <div class="ai-section">
+    <div class="ai-section-title">📄 当前提示词内容 <span style="font-size:11px;color:var(--td)">（可直接修改，同步更新到提示词数据库；在提示词中写入 {{SELECTORS}} 可动态插入当前选择符列表）</span></div>
+    <textarea class="prompt-ta" id="promptTa" placeholder="当前基础提示词内容..."></textarea>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+    <button class="btn btn-p" id="gb"><span>🚀</span> 生成</button>
+    <span style="font-size:11px;color:var(--td)">（选中选择符则只修改选中，未选则生成全部）</span>
+  </div>
+
+
+  <div class="ai-section" id="lastAiSection" style="display:none;margin-top:14px">
+    <div class="ai-section-title">📝 此次AI生成的代码 <span style="font-size:11px;color:var(--td)">（最近一次AI返回的原始CSS，已自动填入编辑器）</span></div>
+    <textarea id="lastAiCss" rows="10" readonly placeholder="AI生成的原始CSS代码将显示在这里..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical;background:var(--bi);color:var(--t)"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-s btn-sm" id="lastAiCopy"><span>📋</span> 复制代码</button>
+      <button class="btn btn-p btn-sm" id="lastAiRetry"><span>🔄</span> 不满意？重说一次</button>
+      <button class="btn btn-s btn-sm" onclick="toggleLastAiReq()"><span>📤</span> 查看本次请求</button>
+    </div>
+    <div id="lastAiReqBox" style="display:none;margin-top:10px">
+      <div class="ai-section-title" style="font-size:12px">📤 本次发送的完整请求内容 <span style="font-size:11px;color:var(--td)">（含系统提示词与用户消息，可核对您的额外要求是否已包含）</span></div>
+      <textarea id="lastAiReqText" rows="12" readonly placeholder="点击上方“查看本次请求”按钮加载..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical;background:var(--bi);color:var(--t)"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-s btn-sm" onclick="copyLastAiReq()"><span>📋</span> 复制请求内容</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 选择符管理 ===== -->
+<div class="page" id="page-selectors">
+  <div class="page-header">
+    <h2>📋 选择符管理</h2>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-s btn-sm" id="importTextBtn">📥 从文本导入</button>
+      <button class="btn btn-p btn-sm" id="newSetBtn">＋ 新建</button>
+    </div>
+  </div>
+  <div class="set-list" id="setList"></div>
+
+  <!-- 新建/编辑弹窗 -->
+  <div class="modal" id="setModal">
+    <div class="md">
+      <div class="md-h"><h3 id="setModalTitle">新建选择符集</h3><button class="md-x" id="setModalX">✕</button></div>
+      <div class="md-b">
+        <div class="md-field"><label>集合名称</label><input type="text" id="newSetName" placeholder="例如：SillyTavern"></div>
+        <div class="md-field"><label>图标</label><input type="text" id="newSetIcon" value="📋" maxlength="2"></div>
+        <div class="md-field"><label>描述</label><input type="text" id="newSetDesc" placeholder="简要描述"></div>
+        <div class="md-field">
+          <label>添加选择符</label>
+          <div style="display:flex;gap:6px">
+            <input type="text" id="newSelGroup" placeholder="组名" style="flex:1">
+            <input type="text" id="newSelSelector" placeholder="CSS选择器" style="flex:2">
+            <input type="text" id="newSelHint" placeholder="说明" style="flex:1">
+            <button class="cp-btn" id="addSelBtn">＋</button>
+          </div>
+        </div>
+        <div class="md-field"><label>已添加</label><div class="sel-preview" id="selPreview"></div></div>
+      </div>
+      <div class="md-f"><button class="btn btn-s btn-sm" id="setModalCancel">取消</button><button class="btn btn-p btn-sm" id="setModalSave">💾 保存</button></div>
+    </div>
+  </div>
+
+  <!-- 记忆编辑弹窗 -->
+  <div class="modal" id="memEditModal">
+    <div class="md">
+      <div class="md-h"><h3 id="memEditTitle">编辑记忆</h3><button class="md-x" id="memEditX">✕</button></div>
+      <div class="md-b">
+        <div class="md-field" id="memEditRoleField" style="display:none">
+          <label>角色</label>
+          <select id="memEditRole" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)">
+            <option value="user">👤 用户（User）</option>
+            <option value="assistant">🤖 AI（Assistant）</option>
+          </select>
+        </div>
+        <div class="md-field">
+          <label id="memEditLabel">内容</label>
+          <textarea id="memEditContent" rows="8" placeholder="请输入内容..." style="width:100%;font-size:13px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical;background:var(--bi);color:var(--t);font-family:inherit;line-height:1.6"></textarea>
+        </div>
+      </div>
+      <div class="md-f"><button class="btn btn-s btn-sm" id="memEditCancel">取消</button><button class="btn btn-p btn-sm" id="memEditSave">💾 保存</button></div>
+    </div>
+  </div>
+
+  <!-- 文本导入弹窗 -->
+  <div class="modal" id="importModal">
+    <div class="md">
+      <div class="md-h"><h3>📥 从文本导入选择符</h3><button class="md-x" id="importModalX">✕</button></div>
+      <div class="md-b">
+        <div class="md-field">
+          <label>粘贴HTML/CSS代码或页面源码</label>
+          <textarea id="importText" rows="10" placeholder="粘贴HTML源码、CSS代码或任意包含CSS选择符的文本，系统会自动分析提取选择符并分类..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+        </div>
+        <div class="md-field">
+          <label>集合名称</label>
+          <input type="text" id="importSetName" placeholder="自动识别的名称或自定义">
+        </div>
+        <div class="md-field" id="importResult" style="display:none">
+          <label>识别结果</label>
+          <div class="sel-preview" id="importPreview"></div>
+        </div>
+      </div>
+      <div class="md-f">
+        <button class="btn btn-s btn-sm" id="importAnalyze"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 分析</button>
+        <button class="btn btn-s btn-sm" id="importModalCancel">取消</button>
+        <button class="btn btn-p btn-sm" id="importSave">💾 保存为集合</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 选择符替换 ===== -->
+<div class="page" id="page-replace">
+  <div class="page-header"><h2>🔄 选择符快捷替换</h2></div>
+  <div class="cp-section">
+    <div class="ai-section-title">📥 源选择符（被替换） <span style="font-size:11px;color:var(--td)">（从预设集中批量选择）</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <select id="rpSourceSet" style="flex:1;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" onchange="rpOnSetChange('source')"></select>
+      <button class="cp-btn btn-sm" onclick="rpSelAll('source',true)">全选</button>
+      <button class="cp-btn btn-sm" onclick="rpSelAll('source',false)">清空</button>
+      <span style="font-size:11px;color:var(--td)">已选 <b id="rpSourceCnt">0</b></span>
+    </div>
+    <input type="text" placeholder="搜索选择符（名称/备注）..." style="width:100%;padding:5px 8px;margin-bottom:6px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" oninput="rpFilterList('source',this.value)">
+    <div id="rpSourceSels" style="max-height:200px;overflow-y:auto;border:1px solid var(--br);border-radius:6px;padding:6px"></div>
+  </div>
+  <div style="text-align:center;margin:8px 0">
+    <button class="cp-btn" id="rpSwap" onclick="rpSwap()" title="交换源和目标">⇅ 交换</button>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📤 目标选择符（替换为） <span style="font-size:11px;color:var(--td)">（按顺序与源一一对应）</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <select id="rpTargetSet" style="flex:1;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" onchange="rpOnSetChange('target')"></select>
+      <button class="cp-btn btn-sm" onclick="rpSelAll('target',true)">全选</button>
+      <button class="cp-btn btn-sm" onclick="rpSelAll('target',false)">清空</button>
+      <span style="font-size:11px;color:var(--td)">已选 <b id="rpTargetCnt">0</b></span>
+    </div>
+    <input type="text" placeholder="搜索选择符（名称/备注）..." style="width:100%;padding:5px 8px;margin-bottom:6px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)" oninput="rpFilterList('target',this.value)">
+    <div id="rpTargetSels" style="max-height:200px;overflow-y:auto;border:1px solid var(--br);border-radius:6px;padding:6px"></div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">🔗 替换对应关系 <span style="font-size:11px;color:var(--td)">（按勾选顺序一一对应，实时预览）</span></div>
+    <div id="rpMapPreview" style="border:1px solid var(--br);border-radius:6px;max-height:250px;overflow-y:auto"></div>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">📝 粘贴CSS代码 <span style="font-size:11px;color:var(--td)">（粘贴需要替换选择符的CSS代码）</span></div>
+    <textarea id="rpCssInput" rows="10" placeholder="粘贴你的CSS代码，例如：\n.operation:hover {\n    background: rgba(224, 201, 167, 0.3) !important;\n}\n..." style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+  </div>
+  <div class="cp-section">
+    <div class="ai-section-title">⚙️ 替换配置</div>
+    <div class="md-field"><label>使用API <span style="font-size:11px;color:var(--td)">（AI分析/替换时使用，默认主API）</span></label>
+      <select id="rpApi" style="width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:6px;font-size:12px;background:var(--bi);color:var(--t)"></select>
+    </div>
+    <div class="md-field"><label>额外锁定要求 <span style="font-size:11px;color:var(--td)">（AI辅助替换时的约束指令，默认只改选择符不改CSS内容）</span></label>
+      <textarea id="rpLockReq" rows="2" placeholder="例如：只修改选择符名称，不要修改任何CSS属性值和结构" style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical">只修改选择符名称，不要修改任何CSS属性值、数值、颜色和结构</textarea>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn btn-p btn-sm" id="rpDoReplace" onclick="rpDoReplace()">🔄 直接替换（正则）</button>
+      <button class="btn btn-s btn-sm" id="rpAiAnalyze" onclick="rpAiAnalyze()">🤖 AI分析替换问题</button>
+      <button class="btn btn-p btn-sm" id="rpAiReplace" onclick="rpAiReplace()">✨ AI辅助替换</button>
+    </div>
+  </div>
+  <div class="cp-section" id="rpResultBox" style="display:none">
+    <div class="ai-section-title">📤 替换结果 <span style="font-size:11px;color:var(--td)">（可直接复制使用）</span></div>
+    <textarea id="rpResult" rows="10" readonly style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="cp-btn btn-sm" onclick="copyToClipboard($('rpResult').value).then(function(){sbt('ok','✅ 已复制');setTimeout(hst,1500)})">📋 复制结果</button>
+    </div>
+  </div>
+  <div class="cp-section" id="rpAnalysisBox" style="display:none">
+    <div class="ai-section-title">📋 AI分析结果</div>
+    <textarea id="rpAnalysisResult" rows="8" readonly style="width:100%;font-family:monospace;font-size:12px;padding:10px;border:1px solid var(--br);border-radius:6px;resize:vertical;background:var(--bi);color:var(--t)"></textarea>
+  </div>
+</div>
+
+<!-- ===== 代码编辑 ===== -->
+<div class="page" id="page-svgconv">
+  <div class="page-header">
+    <h2>🎨 SVG图标转换</h2>
+    <div style="display:flex;gap:6px">
+      <button class="cp-btn" id="svgConvert"><span>🔄</span> 转换</button>
+      <button class="cp-btn" id="svgCopy"><span>📋</span> 复制</button>
+      <button class="cp-btn" id="svgClear" style="border-color:rgba(239,68,68,.3);color:#f87171"><span>🗑️</span> 清空</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+    <div>
+      <div class="md-field"><label>SVG 代码输入</label><textarea id="svgInput" rows="12" placeholder="粘贴 SVG 代码..."></textarea></div>
+    </div>
+    <div>
+      <div class="md-field"><label>CSS 格式输出</label><textarea id="svgOutput" rows="12" readonly placeholder="转换结果..."></textarea></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+    <div class="md-field"><label>预览大小</label><input type="number" id="svgSize" min="16" max="512" value="64" style="width:100%"></div>
+    <div class="md-field"><label>预览颜色</label><input type="color" id="svgColor" value="#333333" style="width:100%;height:32px"></div>
+    <div class="md-field"><label>预览</label><div id="svgPreview" style="width:100%;height:64px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border-radius:4px"></div></div>
+  </div>
+  <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--br)">
+    <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="toggleResPanel()">
+      <div style="font-size:12px;font-weight:600;color:var(--td)"><span id="resArrow" style="display:inline-block;transition:transform .2s;margin-right:4px">▶</span>资源链接</div>
+      <button class="cp-btn btn-sm" onclick="event.stopPropagation();addResLink()" style="font-size:10px">＋ 添加链接</button>
+    </div>
+    <div id="resPanel" style="display:none;margin-top:8px">
+      <div id="resList" style="display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-htmledit">
+  <div class="page-header">
+    <h2>📝 代码编辑 <span style="font-size:11px;color:var(--td);font-weight:400">（HTML 预览与展示，内容仅保留在本次会话中，切换页面不丢失，刷新后清空）</span></h2>
+    <div style="display:flex;gap:6px">
+      <button class="cp-btn btn-sm" id="heRun">▶️ 运行预览</button>
+      <button class="cp-btn btn-sm" id="heCopy">📋 复制代码</button>
+      <button class="cp-btn btn-sm" id="heClear" style="border-color:rgba(239,68,68,.3);color:#f87171">🗑️ 清空</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:stretch">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div class="ai-section-title" style="margin-bottom:6px">✏️ HTML 代码</div>
+      <textarea id="heEditor" placeholder="<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; }\n  </style>\n</head>\n<body>\n  <h1>Hello</h1>\n
