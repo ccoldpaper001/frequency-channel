@@ -113,3 +113,9 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 /* 澶嶉€夋/閫夐」鏂囧瓧缁熶竴宸﹀榻?*/
 #toolbox-root label{text-align:left;justify-content:flex-start}
 #toolbox-root input[type='checkbox'],#toolbox-root input[type='radio']{width:auto;flex-shrink:0}
+/* 閫夋嫨绗﹀崱鐗囷紙鎵撻挬椤癸級鏂囧瓧宸﹀榻?*/
+#toolbox-root .ai-sel-item{text-align:left;justify-content:flex-start}
+
+/* 宸ュ叿椤甸潰鍐呭姘村钩灞呬腑 */
+#toolbox-root .page.active{max-width:960px;margin:0 auto}
+#toolbox-root .main-content{padding:16px}
