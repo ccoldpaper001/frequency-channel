@@ -158,10 +158,13 @@ textarea { resize: vertical; }
 .fab:hover { transform: scale(1.08); }
 .fab svg { width: 24px; height: 24px; }
 
-/* 工具箱内嵌视图 */
-.toolbox-card { padding: 0; overflow: hidden; }
+/* 工具箱内嵌视图（无卡片边框，与页面无缝融合） */
+.toolbox-card {
+  padding: 0; overflow: hidden;
+  border-radius: 0; box-shadow: none; background: transparent;
+}
 .toolbox-frame {
-  width: 100%; height: calc(100vh - 110px);
+  width: 100%; height: calc(100vh - 60px);
   min-height: 480px; border: none; display: block;
 }
 

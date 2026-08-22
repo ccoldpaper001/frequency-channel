@@ -1,14 +1,14 @@
 /* ==============================
-   QQY CSS美化工具箱 - 样式表（暖棕主题）
+   QQY CSS美化工具箱 - 样式表（黑白主题，与论坛统一）
    ============================== */
 @import url("https://fontsapi.zeoseven.com/437/main/result.css");
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f5f0eb;--bi:#ffffff;--t:#3a3a3a;--ts:#6b5a4d;--td:#a08c7d;
-  --br:#e8ddd2;--br2:#f0e8de;
-  --p:#c29475;--pl:#a87a5c;--g:#4a7c59;--accent:#6b4c3b;
-  --danger:#c14b5e;--warn:#c9a227;--info:#5a8fbb;
-  --shadow:0 2px 12px rgba(140,100,60,.08);--shadow2:0 4px 16px rgba(140,100,60,.14)
+  --bg:#f4f4f4;--bi:#ffffff;--t:#222222;--ts:#555555;--td:#999999;
+  --br:#cccccc;--br2:#e8e8e8;
+  --p:#111111;--pl:#000000;--g:#444444;--accent:#141414;
+  --danger:#d32f2f;--warn:#666666;--info:#555555;
+  --shadow:0 2px 12px rgba(0,0,0,.08);--shadow2:0 4px 16px rgba(0,0,0,.14)
 }
 body{font-family:"Huiwen-MinchoGBK","Palatino Linotype",serif;background:var(--bg);color:var(--t);font-size:14px;line-height:1.6}
 

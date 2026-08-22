@@ -95,6 +95,9 @@ async function register(e) {
 
 async function logout() {
   await db.auth.signOut();
+  localStorage.removeItem("forum_uid");
+  const tbFrame = document.querySelector(".toolbox-frame");
+  if (tbFrame) tbFrame.src = "toolbox/";
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
@@ -128,6 +131,11 @@ async function afterLogin(user) {
 
   refreshTopBar();
   if (myProfile?.is_admin) document.getElementById("admin-box").style.display = "block";
+
+  // 告知工具箱当前用户（工具箱按此隔离数据），并刷新内嵌页使其生效
+  localStorage.setItem("forum_uid", user.id);
+  const tbFrame = document.querySelector(".toolbox-frame");
+  if (tbFrame) tbFrame.src = "toolbox/";
 }
 
 function refreshTopBar() {
