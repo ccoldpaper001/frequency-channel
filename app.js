@@ -3,9 +3,15 @@
 let currentUser = null;     // auth 用户
 let myProfile = null;       // profiles 表里我的资料
 let categories = [];        // 所有分区
+let currentFilter = 0;      // 当前选中的分区（0=全部）
+
+// 分区文件夹图标（侧边栏/标签共用）
+const folderSvg = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>';
+const closeSvg = '<svg viewBox="0 0 48 48"><path d="M10 10l28 28M38 10L10 38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>';
+const trashSvg = '<svg viewBox="0 0 48 48"><path d="M8 12h32M19 12V6h10v6M12 12l3 32h18l3-32M19 22v12M29 22v12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const defaultAvatar = "data:image/svg+xml," + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="72" height="72" fill="#c7d2fe"/><text x="36" y="45" text-anchor="middle" font-size="32" fill="#fff">👤</text></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><rect width="72" height="72" fill="#c7d2fe"/><circle cx="36" cy="28" r="12" fill="#fff"/><path d="M14 64c0-13 10-20 22-20s22 7 22 20" fill="#fff"/></svg>'
 );
 
 // ---------- 页面加载 ----------
@@ -28,7 +34,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-logout").addEventListener("click", logout);
   document.getElementById("btn-post").addEventListener("click", createPost);
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
-  document.getElementById("filter-category").addEventListener("change", loadPosts);
 
   // 个人资料弹窗
   document.getElementById("btn-profile").addEventListener("click", openProfileModal);
@@ -209,17 +214,26 @@ async function loadCategories() {
   selPost.innerHTML = '<option value="">选择分区</option>' +
     categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
 
-  // 筛选分区
-  const selFilter = document.getElementById("filter-category");
-  const cur = selFilter.value;
-  selFilter.innerHTML = '<option value="0">全部分区</option>' +
-    categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
-  if (cur) selFilter.value = cur;
+  // 侧边栏分区导航
+  const nav = document.getElementById("category-nav");
+  nav.innerHTML =
+    `<a class="cat-item ${currentFilter === 0 ? "active" : ""}" data-id="0">${folderSvg}全部</a>` +
+    categories.map(c =>
+      `<a class="cat-item ${currentFilter === c.id ? "active" : ""}" data-id="${c.id}">${folderSvg}${escapeHtml(c.name)}</a>`
+    ).join("");
+  nav.querySelectorAll(".cat-item").forEach(item => {
+    item.addEventListener("click", () => {
+      currentFilter = Number(item.dataset.id);
+      nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+      loadPosts();
+    });
+  });
 
   // 管理员面板里的分区标签
   if (myProfile?.is_admin) {
     document.getElementById("category-manage").innerHTML = categories.map(c =>
-      `<span class="cat-tag">${escapeHtml(c.name)}<button data-id="${c.id}" class="cat-del">✕</button></span>`
+      `<span class="cat-tag">${escapeHtml(c.name)}<button data-id="${c.id}" class="cat-del" title="删除分区">${closeSvg}</button></span>`
     ).join("") || '<span class="tip">还没有分区</span>';
     document.querySelectorAll(".cat-del").forEach(b =>
       b.addEventListener("click", () => deleteCategory(Number(b.dataset.id))));
@@ -229,7 +243,7 @@ async function loadCategories() {
 async function loadPosts() {
   await loadCategories();
 
-  const filterId = Number(document.getElementById("filter-category").value);
+  const filterId = currentFilter;
   let query = db.from("posts").select("*, categories(name)").order("created_at", { ascending: false });
   if (filterId > 0) query = query.eq("category_id", filterId);
 
@@ -261,7 +275,7 @@ async function loadPosts() {
         </div>
       </div>
       <p class="content">${escapeHtml(p.content || "")}</p>
-      ${canDelete ? `<button class="del" data-id="${p.id}">删除</button>` : ""}
+      ${canDelete ? `<button class="del" data-id="${p.id}">${trashSvg}删除</button>` : ""}
     </div>`;
   }).join("");
 
