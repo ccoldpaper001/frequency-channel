@@ -530,7 +530,7 @@ function showListView() {
 
 // ---------- 发帖 / 编辑帖子 ----------
 const postBtnPublish = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布';
-const postBtnUpdate = editSvg + '覆盖发布';
+const postBtnUpdate = '<svg class="icon-sm" viewBox="0 0 48 48"><path d="M8 40h6L38 16l-6-6L8 34v6zM33 9l6 6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>覆盖发布';
 
 function resetPostForm() {
   editingPostId = null;
