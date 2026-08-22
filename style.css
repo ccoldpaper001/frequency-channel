@@ -23,11 +23,10 @@ body {
 /* ---------- 左侧全高侧边栏（腾讯云控制台风格） ---------- */
 .sidebar {
   width: 200px;
-  flex-shrink: 0;
   background: var(--side-bg);
   color: var(--side-text);
-  min-height: 100vh;
-  position: sticky; top: 0;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  overflow-y: auto;
   display: flex; flex-direction: column;
 }
 .logo {
@@ -53,7 +52,7 @@ body {
 .cat-item.active { background: var(--brown); color: #fff; }
 
 /* ---------- 右侧内容区 ---------- */
-.content { flex: 1; min-width: 0; }
+.content { flex: 1; min-width: 0; margin-left: 200px; }
 
 header {
   background: #fff;
@@ -177,6 +176,7 @@ textarea { resize: vertical; }
 @media (max-width: 640px) {
   body { flex-direction: column; }
   .sidebar { width: 100%; min-height: auto; position: static; }
+  .content { margin-left: 0; }
   .logo { padding: 12px 16px; }
   .sidebar-group { display: none; }
   #category-nav { flex-direction: row; overflow-x: auto; }
