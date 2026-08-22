@@ -18,10 +18,18 @@ const defaultAvatar = "data:image/svg+xml," + encodeURIComponent(
 
 // ---------- 页面加载 ----------
 window.addEventListener("DOMContentLoaded", async () => {
+  const loadStart = Date.now();
   const { data: { user } } = await db.auth.getUser();
   if (user) await afterLogin(user);
 
   loadPosts();
+
+  // 加载页至少显示 600ms，避免闪烁；完成后淡出
+  const wait = Math.max(0, 600 - (Date.now() - loadStart));
+  setTimeout(() => {
+    const ls = document.getElementById("loading-screen");
+    if (ls) { ls.classList.add("hidden"); setTimeout(() => ls.remove(), 400); }
+  }, wait);
 
   // 标签切换：登录 / 注册
   document.querySelectorAll(".tab").forEach(tab => {
@@ -53,6 +61,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   // AI 工具导航：点击后按需把工具箱加载进页面 DOM 并切换功能页
   document.querySelectorAll("#ai-nav .cat-item").forEach(item => {
     item.addEventListener("click", () => {
+      if (!requireLogin()) return;
       showToolbox();
       document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       item.classList.add("active");
@@ -246,6 +255,7 @@ async function ensureToolbox(page) {
 
 // ---------- 预设词广场 ----------
 function showPresetsView() {
+  if (!requireLogin()) return;
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
@@ -333,8 +343,18 @@ async function loadPresets() {
   });
 }
 
+// ---------- 登录门槛：未登录只能使用登录/注册 ----------
+function requireLogin() {
+  if (currentUser) return true;
+  alert("请先注册或登录后使用此功能");
+  showListView();
+  document.getElementById("login-email").focus();
+  return false;
+}
+
 // ---------- 页面切换：列表 / 发帖页 / 工具箱 ----------
 function showPostPage() {
+  if (!requireLogin()) return;
   document.getElementById("list-view").style.display = "none";
   document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("presets-view").style.display = "none";
