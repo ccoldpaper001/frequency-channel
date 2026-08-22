@@ -154,10 +154,13 @@ async function logout() {
   currentUser = null; myProfile = null;
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
-  document.getElementById("post-page").style.display = "none";
   document.getElementById("btn-new-post").style.display = "none";
   document.getElementById("admin-box").style.display = "none";
+  // 切回列表视图：隐藏工具箱/预设词广场/选择符广场/发帖页等所有视图
+  showListView();
   document.getElementById("list-view").style.display = "block";
+  // 清掉可能残留的帖子编辑状态
+  if (typeof resetPostForm === "function") resetPostForm();
   loadPosts();
 }
 
