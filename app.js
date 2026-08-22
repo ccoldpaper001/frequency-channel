@@ -564,7 +564,9 @@ async function createPost() {
       author_nickname: myProfile?.nickname || currentUser.email,
       updated_at: new Date().toISOString()
     }).eq("id", editingPostId);
-    if (error) return showMsg("post-msg", "覆盖发布失败：" + error.message, true);
+    if (error) return showMsg("post-msg", (error.message || "").indexOf("does not exist") >= 0
+      ? "需要先启用编辑功能：请在 Supabase 的 SQL Editor 里运行仓库中的「置顶与编辑帖子.sql」"
+      : "覆盖发布失败：" + error.message, true);
     resetPostForm();
     showMsg("post-msg", "已覆盖重新发布！", false);
     showListView();
@@ -645,9 +647,7 @@ async function loadPosts() {
   await loadCategories();
 
   const filterId = currentFilter;
-  let query = db.from("posts").select("*, categories(name)")
-    .order("is_pinned", { ascending: false })
-    .order("created_at", { ascending: false });
+  let query = db.from("posts").select("*, categories(name)").order("created_at", { ascending: false });
   if (filterId > 0) query = query.eq("category_id", filterId);
   if (searchKeyword) {
     const kw = searchKeyword.replace(/[,()]/g, " "); // 防止关键词破坏查询语法
@@ -670,6 +670,8 @@ async function loadPosts() {
   const box = document.getElementById("posts");
   if (error) { box.innerHTML = `<p class="empty">加载失败：${error.message}</p>`; return; }
   if (!posts.length) { box.innerHTML = '<p class="empty">这个分区还没有帖子</p>'; return; }
+  // 置顶帖排最前（前端排序，数据库没跑置顶SQL时也能正常加载）
+  posts.sort((a, b) => ((b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0)));
   lastPosts = posts;
 
   box.innerHTML = posts.map(p => {
@@ -732,7 +734,9 @@ async function loadPosts() {
       const next = !post.is_pinned;
       if (!await pageConfirm(next ? "确定把这篇帖子置顶吗？" : "确定取消置顶吗？")) return;
       const { error } = await db.from("posts").update({ is_pinned: next }).eq("id", btn.dataset.id);
-      if (error) return alert("操作失败：" + error.message);
+      if (error) return alert((error.message || "").indexOf("does not exist") >= 0
+        ? "需要先启用置顶功能：请在 Supabase 的 SQL Editor 里运行仓库中的「置顶与编辑帖子.sql」"
+        : "操作失败：" + error.message);
       loadPosts();
     });
   });
