@@ -31,9 +31,49 @@ function renderChatPresets() {
 
 function currentChatSystemPrompt() {
   var name = document.getElementById('chatPreset') ? document.getElementById('chatPreset').value : '';
-  if (!name) return '';
-  var cp = promptDB.find(function (p) { return p.name === name; });
-  return cp ? (cp.prompt || '') : '';
+  var sys = '';
+  if (name) {
+    var cp = promptDB.find(function (p) { return p.name === name; });
+    sys = cp ? (cp.prompt || '') : '';
+  }
+  // 追加勾选的选择符（发送内容 = 预设 + 选择符）
+  var sels = chatSelectedSels();
+  if (sels.length) {
+    sys += (sys ? '\n\n' : '') + '需要修改的选择符：\n' + sels.join('\n');
+  }
+  return sys;
+}
+
+// ===== 选择符勾选（复用选择符管理里的当前集合） =====
+var chatSels = {};
+try { chatSels = JSON.parse(storage.getItem('qqy_chat_sels') || '{}'); } catch (e) { chatSels = {}; }
+
+function chatSelectedSels() {
+  return Object.keys(chatSels).filter(function (k) { return chatSels[k]; });
+}
+
+function renderChatSels() {
+  var grid = document.getElementById('chatSelGrid');
+  if (!grid) return;
+  var html = '';
+  getSelectors().forEach(function (g) {
+    g.s.forEach(function (s, i) {
+      var on = !!chatSels[s];
+      var hint = (g.hints && g.hints[i]) ? '（' + g.hints[i] + '）' : '';
+      html += '<span class="chat-sel-item' + (on ? ' checked' : '') + '" data-sel="' + escH(s) + '">' + escH(s) + hint + '</span>';
+    });
+  });
+  if (!html) html = '<div class="mem-empty">当前集合没有选择符</div>';
+  grid.innerHTML = html;
+  grid.querySelectorAll('.chat-sel-item').forEach(function (el) {
+    el.onclick = function () {
+      var s = el.dataset.sel;
+      chatSels[s] = !chatSels[s];
+      if (!chatSels[s]) delete chatSels[s];
+      storage.setItem('qqy_chat_sels', JSON.stringify(chatSels));
+      el.classList.toggle('checked', !!chatSels[s]);
+    };
+  });
 }
 
 function renderChatMessages() {
@@ -44,7 +84,8 @@ function renderChatMessages() {
     return;
   }
   box.innerHTML = chatHistory.map(function (m) {
-    return '<div class="chat-msg ' + m.role + '"><div class="chat-bubble">' + escH(m.content).replace(/\n/g, '<br>') + '</div></div>';
+    var who = m.role === 'user' ? '我' : 'AI';
+    return '<div class="chat-msg ' + m.role + '"><span class="chat-role">' + who + '</span><div class="chat-bubble">' + escH(m.content).replace(/\n/g, '<br>') + '</div></div>';
   }).join('');
   box.scrollTop = box.scrollHeight;
 }
@@ -90,6 +131,7 @@ async function sendChatMessage() {
 
 function initChatPage() {
   renderChatPresets();
+  renderChatSels();
   renderChatMessages();
   var input = document.getElementById('chatInput');
   var send = document.getElementById('chatSend');

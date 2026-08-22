@@ -23,7 +23,7 @@ function switchPage(page){
   if(page==='replace'){initReplacePage()}
   if(page==='htmledit'){initHtmlEditPage()}
   if(page==='svgconv'){initSvgConverterPage()}
-  if(page==='chat'&&typeof renderChatPresets==='function'){renderChatPresets();renderChatMessages()}
+  if(page==='chat'&&typeof renderChatPresets==='function'){renderChatPresets();renderChatSels();renderChatMessages()}
   if(page==='errlog'&&typeof renderAiErrorLog==='function'){renderAiErrorLog()}
 }
 

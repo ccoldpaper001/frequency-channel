@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-28" />
-  <link rel="stylesheet" href="tb.css?v=20260822-28" />
+  <link rel="stylesheet" href="style.css?v=20260822-29" />
+  <link rel="stylesheet" href="tb.css?v=20260822-29" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-28"></script>
+  <script src="supabase-config.js?v=20260822-29"></script>
 </head>
 <body>
   <!-- 全屏加载页 -->
@@ -145,6 +145,10 @@
       <button class="cp-btn" id="chatClear">清空对话</button>
     </div>
   </div>
+  <details class="chat-sel-box" id="chatSelBox">
+    <summary>选择符（可选，勾选后会随提示词一起发送）</summary>
+    <div id="chatSelGrid"></div>
+  </details>
   <div id="chatMessages"></div>
   <div style="display:flex;gap:8px;margin-top:12px">
     <textarea id="chatInput" placeholder="输入消息，Ctrl+Enter 发送…" rows="2" style="flex:1;resize:vertical"></textarea>
@@ -755,6 +759,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-28"></script>
+  <script src="app.js?v=20260822-29"></script>
 </body>
 </html>
