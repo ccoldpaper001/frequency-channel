@@ -253,14 +253,14 @@ async function addCategory() {
 }
 
 async function deleteCategory(id) {
-  if (!confirm("删除分区后，该分区下的帖子也会被删除。确定删除？")) return;
+  if (!await pageConfirm("删除分区后，该分区下的帖子也会被删除。确定删除？")) return;
   const { error } = await db.from("categories").delete().eq("id", id);
   if (error) return showMsg("admin-msg", "删除失败（请先清空该分区的帖子）：" + error.message, true);
   loadCategories(true);
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-46");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-49");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -276,7 +276,7 @@ async function ensureToolbox(page) {
     toolboxLoading = (async () => {
       window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("tb-storage.js?v=20260822-46");
+      await loadScript("tb-storage.js?v=20260822-49");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
@@ -333,7 +333,7 @@ async function loadSelpacks() {
   });
   box.querySelectorAll(".del-selpack").forEach(btn => {
     btn.addEventListener("click", async () => {
-      if (!confirm("确定删除这个选择符合集吗？")) return;
+      if (!await pageConfirm("确定删除这个选择符合集吗？")) return;
       const { error } = await db.from("selector_packs").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
       loadSelpacks();
@@ -424,11 +424,30 @@ async function loadPresets() {
   });
   box.querySelectorAll(".del").forEach(btn => {
     btn.addEventListener("click", async () => {
-      if (!confirm("确定删除这个预设词吗？")) return;
+      if (!await pageConfirm("确定删除这个预设词吗？")) return;
       const { error } = await db.from("prompt_presets").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
       loadPresets();
     });
+  });
+}
+
+// ---------- 网页内确认弹窗（替代浏览器原生 confirm） ----------
+function pageConfirm(text) {
+  return new Promise(resolve => {
+    const modal = document.getElementById("confirm-modal");
+    const txt = document.getElementById("confirm-text");
+    const ok = document.getElementById("confirm-ok");
+    const cancel = document.getElementById("confirm-cancel");
+    txt.textContent = text;
+    modal.style.display = "flex";
+    const done = val => {
+      modal.style.display = "none";
+      ok.onclick = cancel.onclick = null;
+      resolve(val);
+    };
+    ok.onclick = () => done(true);
+    cancel.onclick = () => done(false);
   });
 }
 
@@ -616,7 +635,7 @@ async function loadPosts() {
 
   box.querySelectorAll(".del").forEach(btn => {
     btn.addEventListener("click", async () => {
-      if (!confirm("确定删除这篇帖子吗？")) return;
+      if (!await pageConfirm("确定删除这篇帖子吗？")) return;
       const { error } = await db.from("posts").delete().eq("id", btn.dataset.id);
       if (error) return alert("删除失败：" + error.message);
       loadPosts();
@@ -638,7 +657,7 @@ async function loadPosts() {
       const newCat = Number(sel.value);
       const postId = sel.dataset.id;
       const catName = categories.find(c => c.id === newCat)?.name || "";
-      if (!confirm(`确定把这篇帖子移动到「${catName}」分区吗？`)) { loadPosts(); return; }
+      if (!await pageConfirm(`确定把这篇帖子移动到「${catName}」分区吗？`)) { loadPosts(); return; }
       const { error } = await db.from("posts").update({ category_id: newCat }).eq("id", postId);
       if (error) return alert("移动失败：" + error.message);
       loadPosts();

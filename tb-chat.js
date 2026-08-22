@@ -140,8 +140,10 @@ function initChatPage() {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendChatMessage(); }
   });
   var clear = document.getElementById('chatClear');
-  if (clear) clear.onclick = function () {
-    if (!confirm('确定清空当前对话记录吗？')) return;
+  if (clear) clear.onclick = async function () {
+    if (typeof showDialog === 'function') {
+      if (!await showDialog('确认清空', '确定清空当前对话记录吗？', 'confirm')) return;
+    }
     chatHistory = []; chatSave(); renderChatMessages();
   };
 }

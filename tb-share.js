@@ -1,4 +1,4 @@
-// ==============================
+﻿// ==============================
 // tb-share.js - 选择符合集：发布到论坛 / 从论坛导入
 // 发布：标题 + 说明 + 选择符；导入：只导入选择符本身（生成一个新的自定义集合）
 // ==============================
@@ -35,7 +35,8 @@ async function submitSelPack() {
     closeSelPackModal();
     document.getElementById('selPackTitle').value = '';
     document.getElementById('selPackDesc').value = '';
-    alert('已发布到选择符广场！');
+    if (typeof sbt === 'function') { sbt('ok', '已发布到选择符广场'); setTimeout(hst, 2000); }
+    else alert('已发布到选择符广场！');
   } catch (e) { alert('发布失败：' + e.message); }
 }
 

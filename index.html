@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工具箱</title>
-  <link rel="stylesheet" href="style.css?v=20260822-48" />
-  <link rel="stylesheet" href="tb.css?v=20260822-46" />
+  <link rel="stylesheet" href="style.css?v=20260822-49" />
+  <link rel="stylesheet" href="tb.css?v=20260822-49" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-46"></script>
+  <script src="supabase-config.js?v=20260822-49"></script>
 </head>
 <body>
   <!-- 全屏加载页：等待全部模块（登录态/帖子/工具箱）就绪后自动消失 -->
@@ -770,6 +770,17 @@
     <svg viewBox="0 0 48 48"><path d="M8 40l4-12L36 4l8 8-24 24-12 4zM30 10l8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>
   </button>
 
+  <!-- 网页内确认弹窗（替代浏览器原生 confirm） -->
+  <div id="confirm-modal" style="display:none">
+    <div class="card modal-card confirm-card">
+      <p id="confirm-text" style="font-size:14px;line-height:1.7;margin-bottom:18px"></p>
+      <div class="modal-btns" style="justify-content:flex-end">
+        <button id="confirm-cancel" class="btn-outline">取消</button>
+        <button id="confirm-ok" class="btn">确定</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 个人资料弹窗 -->
   <div id="profile-modal" style="display:none">
     <div class="card modal-card">
@@ -790,6 +801,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-46"></script>
+  <script src="app.js?v=20260822-49"></script>
 </body>
 </html>

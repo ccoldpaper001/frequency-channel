@@ -255,7 +255,7 @@ async function shareCpToPlaza(i){
   if(typeof db==='undefined'||!localStorage.getItem('forum_uid')){
     alert('请先在论坛登录后再分享');return;
   }
-  if(!confirm('确定把「'+cp.name+'」公开到预设词广场吗？所有人将可见。'))return;
+  if(typeof showDialog==='function'){if(!await showDialog('确认分享','确定把「'+cp.name+'」公开到预设词广场吗？所有人将可见。','confirm'))return}
   try{
     var r=await db.from('prompt_presets').insert({
       title:cp.name,
