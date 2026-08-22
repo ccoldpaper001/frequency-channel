@@ -49,6 +49,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-post").addEventListener("click", createPost);
   document.getElementById("btn-new-post").addEventListener("click", showPostPage);
   document.getElementById("btn-back-list").addEventListener("click", showListView);
+  document.getElementById("nav-toolbox").addEventListener("click", showToolbox);
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
 
   // 个人资料弹窗
@@ -201,14 +202,25 @@ async function deleteCategory(id) {
   loadCategories();
 }
 
-// ---------- 页面切换：列表 / 发帖页 ----------
+// ---------- 页面切换：列表 / 发帖页 / 工具箱 ----------
 function showPostPage() {
   document.getElementById("list-view").style.display = "none";
+  document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("post-page").style.display = "block";
+  window.scrollTo(0, 0);
+}
+function showToolbox() {
+  document.getElementById("list-view").style.display = "none";
+  document.getElementById("post-page").style.display = "none";
+  document.getElementById("toolbox-view").style.display = "block";
+  // 高亮侧边栏“工具箱”
+  document.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
+  document.getElementById("nav-toolbox").classList.add("active");
   window.scrollTo(0, 0);
 }
 function showListView() {
   document.getElementById("post-page").style.display = "none";
+  document.getElementById("toolbox-view").style.display = "none";
   document.getElementById("list-view").style.display = "block";
 }
 
@@ -254,6 +266,8 @@ async function loadCategories() {
   nav.querySelectorAll(".cat-item").forEach(item => {
     item.addEventListener("click", () => {
       currentFilter = Number(item.dataset.id);
+      document.getElementById("toolbox-view").style.display = "none";
+      document.getElementById("list-view").style.display = "block";
       nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
       item.classList.add("active");
       loadPosts();

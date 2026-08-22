@@ -158,6 +158,13 @@ textarea { resize: vertical; }
 .fab:hover { transform: scale(1.08); }
 .fab svg { width: 24px; height: 24px; }
 
+/* 工具箱内嵌视图 */
+.toolbox-card { padding: 0; overflow: hidden; }
+.toolbox-frame {
+  width: 100%; height: calc(100vh - 110px);
+  min-height: 480px; border: none; display: block;
+}
+
 /* 发帖整页视图 */
 #post-page .card { display: flex; flex-direction: column; gap: 12px; }
 .back-btn { margin-bottom: 14px; }
