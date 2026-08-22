@@ -225,12 +225,15 @@ function renderCpList(){
       var typeTag='<span style="display:inline-block;padding:1px 6px;background:rgba(126,85,255,.12);color:var(--pl);border-radius:4px;font-size:10px;margin-left:6px">'+escH(typeName)+'</span>';
       var builtinTag=cp.builtin?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">默认</span>':'';
       var apiTag=cp.api?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px"> '+escH(cp.api)+'</span>':'';
+      var pubTag=cp.is_public
+        ?'<span style="display:inline-block;padding:1px 6px;background:rgba(56,239,125,.12);color:#2d8659;border-radius:4px;font-size:10px;margin-left:6px">公开</span>'
+        :'<span style="display:inline-block;padding:1px 6px;background:rgba(120,120,130,.15);color:var(--td);border-radius:4px;font-size:10px;margin-left:6px">私密</span>';
       html+='<div class="cp-card" onclick="loadCpTemplate('+i+')" id="cpCard'+i+'">'+
-        '<div class="cp-card-title">'+escH(cp.name)+typeTag+apiTag+'</div>'+
+        '<div class="cp-card-title">'+escH(cp.name)+typeTag+apiTag+pubTag+'</div>'+
         '<div class="cp-card-desc">'+escH(cp.note||'')+'</div>'+
         '<div class="cp-collapse">'+
           '<div class="cp-card-prompt">'+escH((cp.prompt||'').substring(0,400))+(cp.prompt&&cp.prompt.length>400?'...':'')+'</div>'+
-          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">编辑</button><button class="cp-btn btn-sm" onclick="event.stopPropagation();shareCpToPlaza('+i+')">分享到广场</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">删除</button></div>'+
+          '<div class="cp-card-actions"><button class="cp-btn btn-sm" onclick="event.stopPropagation();loadCpTemplate('+i+')">编辑</button><button class="cp-btn btn-sm" '+(cp.is_public?'style="border-color:rgba(120,120,130,.35);color:var(--td)"':'')+' onclick="event.stopPropagation();toggleCpPublic('+i+')">'+(cp.is_public?'设为私密':'设为公开')+'</button><button class="cp-btn btn-sm" style="border-color:rgba(239,68,68,.3);color:#f87171" onclick="event.stopPropagation();deleteCpTemplate('+i+')">删除</button></div>'+
         '</div>'+
       '</div>';
     });
@@ -249,24 +252,60 @@ function renderCpList(){
   list.innerHTML=html;
 }
 
-// 把提示词数据库里的提示词公开分享到论坛的预设词广场
-async function shareCpToPlaza(i){
-  var cp=promptDB[i];if(!cp)return;
-  if(typeof db==='undefined'||!localStorage.getItem('forum_uid')){
-    alert('请先在论坛登录后再分享');return;
-  }
-  if(typeof showDialog==='function'){if(!await showDialog('确认分享','确定把「'+cp.name+'」公开到预设词广场吗？所有人将可见。','confirm'))return}
+// ===== 提示词公开/私密（与预设词广场按 用户+标题 匹配同步，默认私密） =====
+async function cpPlazaRecordId(title){
+  var uid=localStorage.getItem('forum_uid');
+  if(typeof db==='undefined'||!uid)return null;
   try{
-    var r=await db.from('prompt_presets').insert({
-      title:cp.name,
-      content:cp.prompt||'',
-      is_public:true,
-      user_id:localStorage.getItem('forum_uid'),
-      author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''
-    });
-    if(r.error){alert('分享失败：'+r.error.message);return}
-    alert('已公开到预设词广场！');
-  }catch(e){alert('分享失败：'+e.message)}
+    var q=await db.from('prompt_presets').select('id').eq('user_id',uid).eq('title',title).limit(1);
+    return (q.data&&q.data[0]&&q.data[0].id)||null;
+  }catch(e){return null}
+}
+async function syncCpPlaza(cp,oldName){
+  // 同步提示词的公开状态和内容到预设词广场；oldName 用于改名后定位旧记录
+  var uid=localStorage.getItem('forum_uid');
+  if(typeof db==='undefined'||!uid)return {ok:false,err:null};
+  try{
+    var recId=await cpPlazaRecordId(oldName||cp.name);
+    if(cp.is_public){
+      var payload={title:cp.name,content:cp.prompt||'',is_public:true,author_nickname:(typeof myProfile!=='undefined'&&myProfile&&myProfile.nickname)||''};
+      if(recId){
+        var u=await db.from('prompt_presets').update(payload).eq('id',recId);
+        return {ok:!u.error,err:u.error};
+      }
+      var ins=await db.from('prompt_presets').insert(Object.assign({user_id:uid},payload));
+      return {ok:!ins.error,err:ins.error};
+    }
+    if(recId){
+      var d=await db.from('prompt_presets').update({is_public:false}).eq('id',recId);
+      return {ok:!d.error,err:d.error};
+    }
+    return {ok:true,err:null};
+  }catch(e){return {ok:false,err:e}}
+}
+async function toggleCpPublic(i){
+  var cp=promptDB[i];if(!cp)return;
+  if(typeof db==='undefined'||!localStorage.getItem('forum_uid')){showDialog('提示','请先在论坛登录后再设置公开');return}
+  var makePublic=!cp.is_public;
+  if(makePublic&&!await showDialog('确认公开','确定把「'+cp.name+'」设为公开吗？预设词广场的所有人都将看到它。','confirm'))return;
+  cp.is_public=makePublic;
+  var r=await syncCpPlaza(cp);
+  if(!r.ok){
+    cp.is_public=!makePublic;
+    renderCpList();
+    showDialog('同步失败',(r.err&&r.err.message)||'网络错误，请稍后再试');return;
+  }
+  savePromptDB();renderCpList();
+  sbt('ok',makePublic?' 已设为公开，广场可见':' 已设为私密，仅自己可见');setTimeout(hst,2000);
+}
+var _cpPlazaSyncTimer=null;
+function scheduleCpPlazaSync(idx){
+  // 公开的提示词被编辑时延迟同步到广场，避免每个按键都发请求
+  clearTimeout(_cpPlazaSyncTimer);
+  _cpPlazaSyncTimer=setTimeout(function(){
+    var cp=promptDB[idx];
+    if(cp&&cp.is_public)syncCpPlaza(cp);
+  },1500);
 }
 
 function toggleCpCard(i){
@@ -283,6 +322,7 @@ function saveCpInline(){
   promptDB[editingCpIdx].note=noteEl?noteEl.value.trim():'';
   promptDB[editingCpIdx].prompt=promptEl.value;
   savePromptDB();
+  if(promptDB[editingCpIdx].is_public)scheduleCpPlazaSync(editingCpIdx);
   var card=$('cpCard'+editingCpIdx);
   if(card){
     var titleEl=card.querySelector('.cp-card-title');
@@ -327,13 +367,15 @@ function loadCpTemplate(i){
 function saveCpTemplate(){
   var name=$('cpName').value.trim();
   if(!name){showDialog('提示','请填写名称');return}
+  var oldName=editingCpIdx>=0?promptDB[editingCpIdx].name:null;
   var cp={
     name:name,
     type:$('cpType').value,
     note:$('cpNote').value.trim(),
     prompt:$('cpPrompt').value,
     api:$('cpApi')?$('cpApi').value:'',
-    builtin:editingCpIdx>=0?(promptDB[editingCpIdx].builtin||false):false
+    builtin:editingCpIdx>=0?(promptDB[editingCpIdx].builtin||false):false,
+    is_public:editingCpIdx>=0?(promptDB[editingCpIdx].is_public||false):false
   };
   if(editingCpIdx>=0){
     // 编辑时若改名，需检查新名字是否与其他提示词重名
@@ -346,6 +388,7 @@ function saveCpTemplate(){
     promptDB.push(cp);editingCpIdx=promptDB.length-1;
   }
   savePromptDB();
+  if(cp.is_public)syncCpPlaza(cp,oldName);
   renderCpList();
   loadPromptUI();
   sbt('ok',' 已保存');setTimeout(hst,2000);
@@ -355,7 +398,13 @@ async function deleteCpTemplate(i){
   var idx=(i!==undefined)?i:editingCpIdx;
   if(idx<0||!promptDB[idx]){showDialog('提示','请先选择一个提示词');return}
   if(!await showDialog('确认删除','删除提示词「'+promptDB[idx].name+'」？','confirm'))return;
+  var removed=promptDB[idx];
   promptDB.splice(idx,1);
+  if(removed.is_public){
+    // 公开的提示词被删除时，同步从广场移除
+    var recId=await cpPlazaRecordId(removed.name);
+    if(recId)db.from('prompt_presets').delete().eq('id',recId).then(function(){});
+  }
   savePromptDB();
   editingCpIdx=-1;
   newCpTemplate();

@@ -260,7 +260,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-52");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-53");
 let toolboxLoading = null;
 
 function loadScript(src) {
