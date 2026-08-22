@@ -13,8 +13,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { data: { user } } = await db.auth.getUser();
   if (user) await afterLogin(user);
 
-  document.getElementById("btn-send-code").addEventListener("click", sendCode);
-  document.getElementById("btn-verify").addEventListener("click", verifyCode);
+  // 标签切换：登录 / 注册
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("form-login").style.display = tab.dataset.tab === "login" ? "flex" : "none";
+      document.getElementById("form-register").style.display = tab.dataset.tab === "register" ? "flex" : "none";
+    });
+  });
+
+  document.getElementById("form-login").addEventListener("submit", login);
+  document.getElementById("form-register").addEventListener("submit", register);
   document.getElementById("btn-logout").addEventListener("click", logout);
   document.getElementById("btn-post").addEventListener("click", createPost);
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
@@ -27,32 +37,38 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-save-profile").addEventListener("click", saveNickname);
 });
 
-// ---------- 验证码登录 ----------
-async function sendCode() {
-  const email = document.getElementById("otp-email").value.trim();
-  if (!email) return showMsg("auth-msg", "请先填写邮箱", true);
-
-  const { error } = await db.auth.signInWithOtp({
-    email,
-    options: {
-      shouldCreateNewUser: true,
-      data: { nickname: document.getElementById("otp-nickname").value.trim() || email.split("@")[0] }
-    }
-  });
-  if (error) return showMsg("auth-msg", "发送失败：" + error.message, true);
-  showMsg("auth-msg", "验证码已发送到你的邮箱，请查收（可能在垃圾邮件里）", false);
-}
-
-async function verifyCode() {
-  const email = document.getElementById("otp-email").value.trim();
-  const token = document.getElementById("otp-code").value.trim();
-  if (!email || token.length !== 6) return showMsg("auth-msg", "请填写邮箱和6位验证码", true);
-
-  const { data, error } = await db.auth.verifyOtp({ email, token, type: "email" });
-  if (error) return showMsg("auth-msg", "验证失败：" + error.message, true);
-  showMsg("auth-msg", "登录成功！", false);
+// ---------- 密码登录 / 注册 ----------
+async function login(e) {
+  e.preventDefault();
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
+  if (error) return showMsg("login-msg", "登录失败：" + error.message, true);
+  showMsg("login-msg", "登录成功！", false);
   await afterLogin(data.user);
   loadPosts();
+}
+
+async function register(e) {
+  e.preventDefault();
+  const email = document.getElementById("reg-email").value.trim();
+  const password = document.getElementById("reg-password").value;
+  const nickname = document.getElementById("reg-nickname").value.trim();
+
+  const { data, error } = await db.auth.signUp({
+    email, password,
+    options: { data: { nickname } }
+  });
+  if (error) return showMsg("reg-msg", "注册失败：" + error.message, true);
+
+  // 若 Supabase 开了邮箱验证，需先去邮箱点确认链接
+  if (data.user && !data.session) {
+    showMsg("reg-msg", "注册成功！请到邮箱点击确认链接后再登录。", false);
+  } else {
+    showMsg("reg-msg", "注册成功！", false);
+    await afterLogin(data.user);
+    loadPosts();
+  }
 }
 
 async function logout() {

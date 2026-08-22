@@ -41,8 +41,13 @@ input, textarea, select {
 textarea { resize: vertical; }
 
 .auth-form { display: flex; flex-direction: column; gap: 10px; }
-.otp-row { display: flex; gap: 10px; }
-.otp-row input { flex: 1; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab {
+  padding: 8px 20px; border: none; background: #e8e8e8;
+  border-radius: 6px; cursor: pointer; font-size: 14px;
+}
+.tab.active { background: #4f6ef7; color: #fff; }
 
 .btn {
   padding: 10px 18px; background: #4f6ef7; color: #fff;
