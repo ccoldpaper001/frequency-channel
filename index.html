@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-39" />
-  <link rel="stylesheet" href="tb.css?v=20260822-39" />
+  <link rel="stylesheet" href="style.css?v=20260822-40" />
+  <link rel="stylesheet" href="tb.css?v=20260822-40" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-39"></script>
+  <script src="supabase-config.js?v=20260822-40"></script>
 </head>
 <body>
   <!-- 全屏加载页：等待全部模块（登录态/帖子/工具箱）就绪后自动消失 -->
@@ -20,7 +20,8 @@
   <aside class="sidebar">
     <div class="logo">
       <svg class="icon" viewBox="0 0 48 48"><path d="M5 40h38M8 34V6h24l8 8v20" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M16 6v10h12" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M15 28h14M15 21h14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-      <span>文字论坛</span>
+      <span class="logo-text">文字论坛</span>
+      <button id="btn-side-toggle" class="side-toggle" title="折叠/展开侧边栏"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 10h36M6 24h36M6 38h36" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button>
     </div>
 
     <div class="sidebar-group">分区</div>
@@ -785,6 +786,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-39"></script>
+  <script src="app.js?v=20260822-40"></script>
 </body>
 </html>

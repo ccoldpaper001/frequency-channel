@@ -340,3 +340,29 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
 body.logged-in #community-nav{display:flex}
 body.logged-in #ai-nav{display:flex;flex-direction:column}
 body.logged-in #admin-box{display:flex}
+
+/* ---------- 鍙姌鍙犱晶杈规爮 ---------- */
+.logo{justify-content:space-between}
+.logo>*:first-child{flex-shrink:0}
+.side-toggle{margin-left:auto;background:none;border:none;color:#8a7a68;cursor:pointer;padding:4px;display:flex}
+.side-toggle:hover{color:#fff}
+
+/* 鎶樺彔鎬侊細绐勬潯 + 浠呭浘鏍?*/
+body.side-collapsed .sidebar{width:56px}
+body.side-collapsed .content{margin-left:56px}
+body.side-collapsed .logo{padding:16px 10px;justify-content:center}
+body.side-collapsed .logo-text,body.side-collapsed .side-toggle{display:none}
+body.side-collapsed .sidebar-group{visibility:hidden;height:10px;padding:0}
+body.side-collapsed .cat-item{justify-content:center;padding:10px 0;font-size:0}
+body.side-collapsed .cat-item svg{font-size:17px}
+body.side-collapsed #admin-box{display:none !important}
+
+/* 鎵嬫満涓婃姌鍙?= 鏀惰捣鍏ㄩ儴瀵艰埅鏉★紝鍙暀鏍囬琛?*/
+@media(max-width:640px){
+body.side-collapsed .sidebar #category-nav,
+body.side-collapsed .sidebar #community-nav,
+body.side-collapsed .sidebar #ai-nav,
+body.side-collapsed .sidebar .sidebar-group,
+body.side-collapsed .sidebar #admin-box{display:none !important}
+body.side-collapsed .sidebar{width:100%}
+}
