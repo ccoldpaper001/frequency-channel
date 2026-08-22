@@ -21,6 +21,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { data: { user } } = await db.auth.getUser();
   if (user) await afterLogin(user);
 
+  loadPosts();
+
   // 标签切换：登录 / 注册
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
