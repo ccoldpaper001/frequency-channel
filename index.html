@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-8" />
+  <link rel="stylesheet" href="style.css?v=20260822-9" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-8"></script>
+  <script src="supabase-config.js?v=20260822-9"></script>
 </head>
 <body>
   <!-- 左侧全高分栏（腾讯云控制台风格） -->
@@ -21,8 +21,19 @@
       <a class="cat-item active" data-id="0"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M5 10h14l4 6h20v26H5V10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>全部</a>
     </nav>
 
-    <div class="sidebar-group">工具</div>
-    <a class="cat-item" id="nav-toolbox"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 4l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10zM38 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>工具箱</a>
+    <div class="sidebar-group">AI 工具</div>
+    <nav id="ai-nav">
+      <a class="cat-item" data-page="ai"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M24 6l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8zM38 28l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5 1.5-4z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>AI 生成</a>
+      <a class="cat-item" data-page="manual"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 36l24-24 8 8-24 24H6v-8zM26 16l8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>手动调整 CSS</a>
+      <a class="cat-item" data-page="component"><svg class="icon-sm" viewBox="0 0 48 48"><rect x="6" y="6" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="4"/><rect x="26" y="26" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="4"/><path d="M22 14h14a4 4 0 014 4v14" fill="none" stroke="currentColor" stroke-width="4"/></svg>提示词数据库</a>
+      <a class="cat-item" data-page="analyzer"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M8 40V24M20 40V8M32 40v-8M44 40v-20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>组件分析</a>
+      <a class="cat-item" data-page="codegen"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M16 8L4 24l12 16M32 8l12 16-12 16M27 8l-6 32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>代码生成</a>
+      <a class="cat-item" data-page="replace"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M28 8L12 24l16 16M12 24h28" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>选择符替换</a>
+      <a class="cat-item" data-page="htmledit"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M8 8h32v24H24l-8 8v-8H8V8z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>代码编辑</a>
+      <a class="cat-item" data-page="svgconv"><svg class="icon-sm" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="4"/><path d="M24 14v20M14 24h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>SVG 转换</a>
+      <a class="cat-item" data-page="selectors"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 12h36M6 24h24M6 36h16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>选择符管理</a>
+      <a class="cat-item" data-page="memory"><svg class="icon-sm" viewBox="0 0 48 48"><rect x="8" y="14" width="32" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="4"/><path d="M8 22h32M16 8v6M32 8v6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>记忆管理</a>
+    </nav>
 
     <!-- 管理员面板（仅管理员可见） -->
     <div id="admin-box" class="admin-sidebar" style="display:none">
@@ -65,7 +76,7 @@
       <!-- 工具箱视图（内嵌） -->
       <section id="toolbox-view" style="display:none">
         <div class="card toolbox-card">
-          <iframe src="toolbox/" class="toolbox-frame" title="工具箱"></iframe>
+          <iframe src="toolbox/?embed=1" class="toolbox-frame" title="AI 工具"></iframe>
         </div>
       </section>
 
@@ -129,6 +140,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-8"></script>
+  <script src="app.js?v=20260822-9"></script>
 </body>
 </html>

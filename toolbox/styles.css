@@ -414,3 +414,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:non
 input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--p);cursor:pointer;border:2px solid var(--bi);box-shadow:0 1px 4px rgba(0,0,0,.2)}
 input[type="range"]::-moz-range-track{height:6px;border-radius:3px;background:var(--bg2)}
+
+/* 内嵌模式（embed=1）：隐藏工具箱自带侧边栏，导航由论坛侧边栏统一接管 */
+body.embedded .sidebar{display:none}
+body.embedded .main-content{margin-left:0}

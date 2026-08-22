@@ -49,7 +49,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-post").addEventListener("click", createPost);
   document.getElementById("btn-new-post").addEventListener("click", showPostPage);
   document.getElementById("btn-back-list").addEventListener("click", showListView);
-  document.getElementById("nav-toolbox").addEventListener("click", showToolbox);
+
+  // AI 工具导航：点击切换内嵌工具箱的功能页
+  document.querySelectorAll("#ai-nav .cat-item").forEach(item => {
+    item.addEventListener("click", () => {
+      showToolbox();
+      document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+      const frame = document.querySelector(".toolbox-frame");
+      try { frame.contentWindow.switchPage(item.dataset.page); }
+      catch (e) { /* iframe 未加载完时忽略 */ }
+    });
+  });
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
 
   // 个人资料弹窗
@@ -221,9 +232,8 @@ function showToolbox() {
   document.getElementById("list-view").style.display = "none";
   document.getElementById("post-page").style.display = "none";
   document.getElementById("toolbox-view").style.display = "block";
-  // 高亮侧边栏“工具箱”
-  document.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
-  document.getElementById("nav-toolbox").classList.add("active");
+  // 取消分区导航的高亮（AI 工具项自行管理高亮）
+  document.querySelectorAll("#category-nav .cat-item").forEach(i => i.classList.remove("active"));
   window.scrollTo(0, 0);
 }
 function showListView() {
@@ -276,6 +286,7 @@ async function loadCategories() {
       currentFilter = Number(item.dataset.id);
       document.getElementById("toolbox-view").style.display = "none";
       document.getElementById("list-view").style.display = "block";
+      document.querySelectorAll("#ai-nav .cat-item").forEach(i => i.classList.remove("active"));
       nav.querySelectorAll(".cat-item").forEach(i => i.classList.remove("active"));
       item.classList.add("active");
       loadPosts();

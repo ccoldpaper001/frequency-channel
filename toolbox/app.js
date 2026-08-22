@@ -2,6 +2,11 @@
 // app.js - 初始化 & 事件绑定
 // ==============================
 
+// 内嵌模式：URL 带 embed=1 时隐藏自带侧边栏（导航由论坛侧边栏接管）
+if (location.search.indexOf('embed=1') > -1) {
+  document.body.classList.add('embedded');
+}
+
 function switchPage(page){
   hst();
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
