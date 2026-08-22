@@ -119,3 +119,6 @@ body.embedded .sidebar{display:none}#toolbox-root body.embedded .main-content{ma
 /* 宸ュ叿椤甸潰鍐呭姘村钩灞呬腑 */
 #toolbox-root .page.active{max-width:960px;margin:0 auto}
 #toolbox-root .main-content{padding:16px}
+/* 鑷€傚簲灞呬腑锛氫互缃戦〉瑙嗗彛涓哄熀鍑?*/
+#toolbox-root .main-content{width:100%;display:block}
+#toolbox-root .page.active{max-width:min(1000px,100%);margin-left:auto;margin-right:auto;width:100%}

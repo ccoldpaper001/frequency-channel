@@ -44,7 +44,19 @@ var SVG_ICONS={
 var EMOJI_ICON_MAP={
   '🤖':'ai','🔧':'manual','🗄️':'database','🗄':'database','🔍':'search','⚡':'bolt','🔄':'replace','📋':'list','🧠':'memory','📝':'note','✏️':'edit','✏':'edit',
   '📤':'export','📥':'import','💾':'save','🗑️':'delete','🗑':'delete','✕':'close','⚙️':'settings','⚙':'settings','🔑':'key','📄':'doc','👁️':'eye','👁':'eye',
-  '✨':'sparkle','⚠️':'warn','⚠':'warn','🚀':'rocket','🗂️':'folder','🗂':'folder','🔗':'link','💬':'chat','👤':'user','✅':'check','▶️':'play','＋':'plus','⇅':'swap'
+  '✨':'sparkle','⚠️':'warn','⚠':'warn','🚀':'rocket','🗂️':'folder','🗂':'folder','🔗':'link','💬':'chat','👤':'user','✅':'check','▶️':'play','＋':'plus','⇅':'swap',
+  // 补充常见漏网 emoji，保证全部转为统一风格的 SVG
+  '✓':'check','✔️':'check','✔':'check','☑️':'check','☑':'check','☒':'close','❌':'close','❎':'close','⛔':'close','🚫':'close',
+  '💡':'sparkle','⭐':'sparkle','🌟':'sparkle','🎉':'sparkle','🎈':'sparkle','✨️':'sparkle',
+  '🔒':'key','🗝️':'key','🔓':'key','🔐':'key',
+  '⬆️':'swap','⬇️':'swap','⬅️':'swap','➡️':'swap','↑':'swap','↓':'swap','←':'swap','→':'swap','🔁':'swap','🔀':'swap',
+  '❓':'warn','❗':'warn','❕':'warn','🔔':'warn','📣':'warn','💢':'warn',
+  '📈':'bolt','📉':'bolt','🔥':'bolt','🎯':'bolt','🏃':'bolt','💨':'bolt',
+  '🧩':'note','📌':'note','🏷️':'note','🔖':'note','📖':'doc','📚':'doc','📰':'doc','📃':'doc','🗓️':'doc','📋️':'list',
+  '✍️':'edit','🖊️':'edit','🖋️':'edit','🖌️':'edit','🖍️':'edit',
+  '📁':'folder','📂':'folder','🗃️':'database','📦':'folder',
+  '🕐':'memory','🕑':'memory','🕒':'memory','🕓':'memory','🕔':'memory','🕕':'memory','🕖':'memory','🕗':'memory','🕘':'memory','🕙':'memory','🕚':'memory','🕛':'memory',
+  '🔍️':'search','🔎':'search','ℹ️':'warn','‼️':'warn','⁉️':'warn'
 };
 
 // 生成 SVG 图标标签
