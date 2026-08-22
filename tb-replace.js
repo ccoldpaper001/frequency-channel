@@ -202,7 +202,7 @@ async function rpAiAnalyze(){
     if(!res.ok){var e=await res.json().catch(function(){});throw new Error((e&&e.error&&e.error.message)||'HTTP '+res.status)}
     var d=await res.json();
     rpAnalysisResult=((d.choices[0].message&&d.choices[0].message.content)||'').trim();
-  rememberAIResult('閫夋嫨绗﹀垎鏋?,rpAnalysisResult);
+    rememberAIResult('选择符分析',rpAnalysisResult);
     $('rpAnalysisBox').style.display='block';
     $('rpAnalysisResult').value=rpAnalysisResult;
     if(memoryEnabled){addMemory('user','【选择符替换分析】'+userContent.substring(0,500));addMemory('assistant',rpAnalysisResult);checkAutoSummary()}
