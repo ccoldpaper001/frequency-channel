@@ -23,13 +23,22 @@ const defaultAvatar = "data:image/svg+xml," + encodeURIComponent(
 // ---------- 页面加载 ----------
 window.addEventListener("DOMContentLoaded", async () => {
   const loadStart = Date.now();
+  const loadingText = document.getElementById("loading-text");
+
+  // 第一步：登录状态 + 用户资料
+  if (loadingText) loadingText.textContent = "正在检查登录状态…";
   const { data: { user } } = await db.auth.getUser();
   if (user) await afterLogin(user);
 
-  loadPosts();
+  // 第二步：并行加载帖子数据和整个工具箱模块（已登录时），
+  // 全部完成后才撤下加载页——用户看到界面时一切就绪，不会经历加载卡顿
+  if (loadingText) loadingText.textContent = "正在加载全部模块…";
+  const tasks = [loadPosts()];
+  if (user) tasks.push(ensureToolbox(null));
+  await Promise.all(tasks);
 
-  // 加载页至少显示 600ms，避免闪烁；完成后淡出
-  const wait = Math.max(0, 600 - (Date.now() - loadStart));
+  if (loadingText) loadingText.textContent = "即将就绪…";
+  const wait = Math.max(0, 400 - (Date.now() - loadStart)); // 最少 400ms，避免一闪而过
   setTimeout(() => {
     const ls = document.getElementById("loading-screen");
     if (ls) { ls.classList.add("hidden"); setTimeout(() => ls.remove(), 400); }
@@ -242,7 +251,7 @@ async function deleteCategory(id) {
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-37");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-38");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -258,7 +267,7 @@ async function ensureToolbox(page) {
     toolboxLoading = (async () => {
       window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("tb-storage.js?v=20260822-37");
+      await loadScript("tb-storage.js?v=20260822-38");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
