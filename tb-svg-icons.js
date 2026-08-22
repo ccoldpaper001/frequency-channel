@@ -107,9 +107,10 @@ function autoReplaceEmojiInDom(root){
 }
 
 // 页面加载完成后自动替换静态内容中的 emoji
+// 性能：只观察工具箱容器，避免每次界面变化都全页遍历导致切换卡顿
 function initEmojiReplacement(){
-  setTimeout(function(){autoReplaceEmojiInDom()},100);
-  // 监听 DOM 变化，自动处理动态生成的内容
+  var scope=document.getElementById('toolbox-root')||document.body;
+  setTimeout(function(){autoReplaceEmojiInDom(scope)},100);
   var observer=new MutationObserver(function(mutations){
     var hasNewContent=false;
     mutations.forEach(function(m){
@@ -117,10 +118,10 @@ function initEmojiReplacement(){
     });
     if(hasNewContent){
       clearTimeout(window._emojiReplaceTimer);
-      window._emojiReplaceTimer=setTimeout(function(){autoReplaceEmojiInDom()},150);
+      window._emojiReplaceTimer=setTimeout(function(){autoReplaceEmojiInDom(document.getElementById('toolbox-root')||document.body)},300);
     }
   });
-  observer.observe(document.body,{childList:true,subtree:true});
+  observer.observe(scope,{childList:true,subtree:true});
 }
 
 if(document.readyState==='loading'){

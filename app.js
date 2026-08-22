@@ -3,6 +3,10 @@
 let currentUser = null;     // auth 用户
 let myProfile = null;       // profiles 表里我的资料
 let categories = [];        // 所有分区
+let categoriesCache = null; // 分区缓存（减少查询）
+let categoriesCacheAt = 0;
+let avatarMapCache = null;  // 用户头像缓存
+let avatarMapCacheAt = 0;
 let currentFilter = 0;      // 当前选中的分区（0=全部）
 let searchKeyword = "";     // 搜索关键词
 
@@ -198,6 +202,7 @@ async function uploadAvatar() {
   if (updErr) return showMsg("profile-msg", "保存失败：" + updErr.message, true);
 
   myProfile.avatar_url = data.publicUrl;
+  avatarMapCache = null; // 头像变了，清空缓存
   document.getElementById("modal-avatar").src = data.publicUrl;
   refreshTopBar();
   showMsg("profile-msg", "头像已更新！", false);
@@ -226,18 +231,18 @@ async function addCategory() {
   if (error) return showMsg("admin-msg", "创建失败：" + error.message, true);
   document.getElementById("new-category").value = "";
   showMsg("admin-msg", "分区创建成功！", false);
-  loadCategories();
+  loadCategories(true);
 }
 
 async function deleteCategory(id) {
   if (!confirm("删除分区后，该分区下的帖子也会被删除。确定删除？")) return;
   const { error } = await db.from("categories").delete().eq("id", id);
   if (error) return showMsg("admin-msg", "删除失败（请先清空该分区的帖子）：" + error.message, true);
-  loadCategories();
+  loadCategories(true);
 }
 
 // ---------- AI 工具箱：按需直接注入页面 DOM（非 iframe） ----------
-const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-34");
+const TOOLBOX_SCRIPTS = ["tb-svg-icons.js","tb-config.js","tb-utils.js","tb-editor.js","tb-ai.js","tb-memory.js","tb-api.js","tb-search.js","tb-prompt-db.js","tb-replace.js","tb-sidebar-sort.js","tb-htmledit.js","tb-svg-converter.js","tb-chat.js","tb-share.js","tb-app.js"].map(f => f + "?v=20260822-35");
 let toolboxLoading = null;
 
 function loadScript(src) {
@@ -253,7 +258,7 @@ async function ensureToolbox(page) {
     toolboxLoading = (async () => {
       window.__TOOLBOX_DIR__ = ""; // data.json 已在根目录
       // 先加载存储层，等待云端数据拉取完成后再渲染界面
-      await loadScript("tb-storage.js?v=20260822-34");
+      await loadScript("tb-storage.js?v=20260822-35");
       if (window.__TOOLBOX_SYNC__) { try { await window.__TOOLBOX_SYNC__; } catch (e) {} }
       for (const f of TOOLBOX_SCRIPTS) await loadScript(f);
     })();
@@ -478,9 +483,20 @@ async function createPost() {
 }
 
 // ---------- 数据加载 ----------
-async function loadCategories() {
+async function loadCategories(force) {
+  // 性能：分区列表缓存 60 秒，避免每次点击/搜索都重新查库并重建侧边栏
+  if (!force && categoriesCache && Date.now() - categoriesCacheAt < 60000) {
+    renderCategoriesNav();
+    return;
+  }
   const { data } = await db.from("categories").select("*").order("id");
   categories = data || [];
+  categoriesCache = JSON.stringify(categories);
+  categoriesCacheAt = Date.now();
+  renderCategoriesNav();
+}
+
+function renderCategoriesNav() {
 
   // 发帖选择分区
   const selPost = document.getElementById("post-category");
@@ -532,10 +548,17 @@ async function loadPosts() {
     query = query.or(`title.ilike.%${kw}%,content.ilike.%${kw}%`);
   }
 
-  // 单独取所有用户资料，用 user_id 对应头像
-  const { data: allProfiles } = await db.from("profiles").select("id, avatar_url");
-  const avatarMap = {};
-  (allProfiles || []).forEach(p => avatarMap[p.id] = p.avatar_url);
+  // 单独取所有用户资料（缓存 60 秒），用 user_id 对应头像
+  let avatarMap;
+  if (avatarMapCache && Date.now() - avatarMapCacheAt < 60000) {
+    avatarMap = avatarMapCache;
+  } else {
+    const { data: allProfiles } = await db.from("profiles").select("id, avatar_url");
+    avatarMap = {};
+    (allProfiles || []).forEach(p => avatarMap[p.id] = p.avatar_url);
+    avatarMapCache = avatarMap;
+    avatarMapCacheAt = Date.now();
+  }
 
   const { data: posts, error } = await query;
   const box = document.getElementById("posts");
