@@ -45,6 +45,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     }, 300);
   });
   document.getElementById("btn-post").addEventListener("click", createPost);
+  document.getElementById("btn-new-post").addEventListener("click", () => {
+    const panel = document.getElementById("post-box");
+    panel.style.display = panel.style.display === "none" ? "flex" : "none";
+  });
+  document.getElementById("btn-close-post").addEventListener("click", () => {
+    document.getElementById("post-box").style.display = "none";
+  });
   document.getElementById("btn-add-category").addEventListener("click", addCategory);
 
   // 个人资料弹窗
@@ -94,6 +101,7 @@ async function logout() {
   document.getElementById("user-bar").style.display = "none";
   document.getElementById("auth-box").style.display = "block";
   document.getElementById("post-box").style.display = "none";
+  document.getElementById("btn-new-post").style.display = "none";
   document.getElementById("admin-box").style.display = "none";
   loadPosts();
 }
@@ -102,7 +110,7 @@ async function logout() {
 async function afterLogin(user) {
   currentUser = user;
   document.getElementById("auth-box").style.display = "none";
-  document.getElementById("post-box").style.display = "block";
+  document.getElementById("btn-new-post").style.display = "flex";
   document.getElementById("user-bar").style.display = "flex";
 
   // 读取我的资料（触发器会在首次注册时自动创建）

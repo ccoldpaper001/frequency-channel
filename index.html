@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>文字论坛</title>
-  <link rel="stylesheet" href="style.css?v=20260822-2" />
+  <link rel="stylesheet" href="style.css?v=20260822-3" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260822-2"></script>
+  <script src="supabase-config.js?v=20260822-3"></script>
 </head>
 <body>
   <!-- 左侧全高分栏（腾讯云控制台风格） -->
@@ -56,16 +56,6 @@
         </form>
       </section>
 
-      <!-- 已登录：发帖区 -->
-      <section id="post-box" class="card" style="display:none">
-        <h2>发表新帖</h2>
-        <input type="text" id="post-title" placeholder="标题" maxlength="100" />
-        <select id="post-category"></select>
-        <textarea id="post-content" placeholder="写下你想说的内容..." rows="4"></textarea>
-        <button id="btn-post" class="btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
-        <p class="msg" id="post-msg"></p>
-      </section>
-
       <!-- 管理员面板 -->
       <section id="admin-box" class="card" style="display:none">
         <h2><svg class="icon" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="4"/><path d="M20.5 31.5a4.5 4.5 0 009 0c0-4.5-9-2.5-9-7a4.5 4.5 0 019 0M24 13v4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>管理员面板</h2>
@@ -88,6 +78,24 @@
     </main>
   </div>
 
+  <!-- 右下角悬浮发帖按钮 -->
+  <button id="btn-new-post" class="fab" style="display:none" title="发表新帖">
+    <svg viewBox="0 0 48 48"><path d="M8 40l4-12L36 4l8 8-24 24-12 4zM30 10l8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+  </button>
+
+  <!-- 悬浮发帖窗口 -->
+  <section id="post-box" class="fab-panel" style="display:none">
+    <div class="fab-panel-head">
+      <span>发表新帖</span>
+      <button id="btn-close-post" title="收起"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M10 10l28 28M38 10L10 38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg></button>
+    </div>
+    <input type="text" id="post-title" placeholder="标题" maxlength="100" />
+    <select id="post-category"></select>
+    <textarea id="post-content" placeholder="写下你想说的内容..." rows="4"></textarea>
+    <button id="btn-post" class="btn"><svg class="icon-sm" viewBox="0 0 48 48"><path d="M6 24l10-10 26 26M16 24l10-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>发布</button>
+    <p class="msg" id="post-msg"></p>
+  </section>
+
   <!-- 个人资料弹窗 -->
   <div id="profile-modal" style="display:none">
     <div class="card modal-card">
@@ -108,6 +116,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260822-2"></script>
+  <script src="app.js?v=20260822-3"></script>
 </body>
 </html>

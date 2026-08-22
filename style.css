@@ -119,7 +119,7 @@ textarea { resize: vertical; }
 .msg.error { color: #d32f2f; }
 .msg.ok { color: #4d8a4d; }
 
-#post-box input, #post-box select, #post-box textarea { margin-bottom: 10px; }
+#post-box input, #post-box select, #post-box textarea { margin: 0; }
 
 .admin-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
 /* 创建分区输入框：宽度随文字自适应 */
@@ -128,6 +128,39 @@ textarea { resize: vertical; }
   min-width: 10ch; max-width: 100%;
   field-sizing: content;
 }
+
+/* ---------- 右下角悬浮发帖 ---------- */
+.fab {
+  position: fixed; right: 24px; bottom: 24px;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--main); color: #fff;
+  border: none; cursor: pointer; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,.28);
+  transition: transform .15s;
+}
+.fab:hover { transform: scale(1.08); }
+.fab svg { width: 24px; height: 24px; }
+
+.fab-panel {
+  position: fixed; right: 24px; bottom: 90px;
+  width: min(360px, calc(100vw - 48px));
+  background: #fff; border-radius: 12px;
+  padding: 14px 16px 16px; z-index: 50;
+  box-shadow: 0 6px 24px rgba(0,0,0,.22);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.fab-panel-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 15px; font-weight: bold; color: #222;
+}
+.fab-panel-head button {
+  border: none; background: none; cursor: pointer;
+  color: #999; display: flex; padding: 2px;
+}
+.fab-panel-head button:hover { color: #222; }
+.fab-panel-head svg { width: 16px; height: 16px; }
+.fab-panel .msg { margin-top: -2px; }
 
 /* 关键词搜索框 */
 .search-box { margin-bottom: 14px; }
