@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工具箱</title>
-  <link rel="stylesheet" href="style.css?v=20260822-42" />
+  <link rel="stylesheet" href="style.css?v=20260822-43" />
   <link rel="stylesheet" href="tb.css?v=20260822-40" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260822-40"></script>
@@ -12,7 +12,11 @@
 <body>
   <!-- 全屏加载页：等待全部模块（登录态/帖子/工具箱）就绪后自动消失 -->
   <div id="loading-screen">
-    <svg class="spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 40"/></svg>
+    <svg class="spinner" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 40">
+        <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+      </circle>
+    </svg>
     <p id="loading-text">正在加载全部模块…</p>
   </div>
 

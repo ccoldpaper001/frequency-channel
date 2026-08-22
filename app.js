@@ -58,8 +58,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("form-register").addEventListener("submit", register);
   document.getElementById("btn-logout").addEventListener("click", logout);
 
-  // 侧边栏折叠/展开（记住状态）
-  if (localStorage.getItem("forum_sidebar_collapsed") === "1") {
+  // 侧边栏折叠/展开（记住状态；手机端默认收窄，用户手动操作过则尊重其选择）
+  const sidePref = localStorage.getItem("forum_sidebar_collapsed");
+  if (sidePref === "1" || (sidePref === null && window.innerWidth <= 640)) {
     document.body.classList.add("side-collapsed");
   }
   document.getElementById("btn-side-toggle").addEventListener("click", () => {
