@@ -121,13 +121,29 @@ textarea { resize: vertical; }
 
 #post-box input, #post-box select, #post-box textarea { margin: 0; }
 
-.admin-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
-/* 创建分区输入框：宽度随文字自适应 */
+/* 侧边栏里的管理员面板 */
+.admin-sidebar {
+  margin-top: auto;           /* 推到侧边栏底部 */
+  padding: 14px 12px 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.admin-sidebar .sidebar-group { display: flex; align-items: center; gap: 6px; }
+.admin-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+.admin-row .btn { padding: 8px 10px; flex-shrink: 0; }
 #new-category {
-  width: auto;
-  min-width: 10ch; max-width: 100%;
+  width: auto; min-width: 0; flex: 1;
+  padding: 8px 10px; font-size: 13px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.2);
+  color: #eee; border-radius: 6px;
   field-sizing: content;
 }
+#new-category::placeholder { color: #8a7a68; }
+#new-category:focus { border-color: #fff; outline: none; }
+.admin-sidebar .cat-tag {
+  background: rgba(255,255,255,.1); color: #ddd;
+}
+.msg-dark { color: #b5b5b5; }
 
 /* ---------- 右下角悬浮发帖 ---------- */
 .fab {
