@@ -41,7 +41,9 @@ body {
   font-size: 12px; color: #777;
   padding: 16px 18px 6px;
 }
-#category-nav { display: flex; flex-direction: column; padding: 0 8px; }
+/* 三组导航统一：纵向排列，项与项之间留出间距 */
+#category-nav { display: flex; flex-direction: column; gap: 4px; padding: 0 8px; }
+#community-nav, #ai-nav { gap: 4px; }
 .cat-item {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 12px; margin: 1px 0;
@@ -311,9 +313,10 @@ select:focus, textarea:focus, input:focus { outline: none; border-color: var(--m
   body.logged-in #community-nav,
   body.logged-in #ai-nav {
     flex-direction: row !important;
+    gap: 8px !important;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 8px;
+    padding: 0 10px 6px;
     scrollbar-width: none;
   }
   #category-nav::-webkit-scrollbar,
