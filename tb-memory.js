@@ -16,6 +16,16 @@ function addMemory(role,content){
   renderMemory();renderUnsaved();
 }
 
+// 各 AI 功能生成的内容也写入记忆（带来源标记，超长截断）
+function rememberAIResult(source,content){
+  try{
+    if(!content)return;
+    var text='【'+source+'】\n'+content;
+    if(text.length>2000)text=text.substring(0,2000)+'…（已截断）';
+    addMemory('assistant',text);
+  }catch(e){}
+}
+
 function renderMemory(){
   var box=$('memList');if(!box)return;
   var cnt=$('memCnt');if(cnt)cnt.textContent=aiMemory.length;

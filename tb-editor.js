@@ -339,6 +339,7 @@ function analyzeWithAI(text){
     body:JSON.stringify({model:akModel,messages:[{role:'system',content:sp},{role:'user',content:previewText}],temperature:.3,max_tokens:2048})
   }).then(function(res){return res.json()}).then(function(d){
     var content=((d.choices[0].message&&d.choices[0].message.content)||'').trim();
+  rememberAIResult('AI瀵煎叆CSS',content);
     var match=content.match(/\[[\s\S]*\]/);
     if(match){
       try{tempSels=JSON.parse(match[0]);renderImportPreview()}

@@ -405,6 +405,7 @@ async function cgAnalyzePrompt(){
     var d=await res.json();
     if(!d.choices||!d.choices[0])throw new Error('接口返回异常');
     var cgContent=d.choices[0].message&&d.choices[0].message.content;if(!cgContent)throw new Error('AI返回内容为空');$('cgResult').value=cgContent.trim();
+    rememberAIResult('组件分析',cgContent);
     sbt('ok',' 提示词生成完成');setTimeout(hst,2000);
   }catch(err){if(typeof logAiError==='function')logAiError('生成提示词',err.message||String(err));showDialog('生成失败',err.message)}
   finally{btn.disabled=false;btn.textContent=' 生成提示词'}
@@ -443,6 +444,7 @@ async function cgAnalyze(){
     var d=await res.json();
     if(!d.choices||!d.choices[0])throw new Error('接口返回异常');
     var cgCodeContent=d.choices[0].message&&d.choices[0].message.content;if(!cgCodeContent)throw new Error('AI返回内容为空');$('cgCodeResult').value=cgCodeContent.trim();
+    rememberAIResult('代码生成',cgCodeContent);
     if(typeof cgUpdatePreview==='function')cgUpdatePreview();
     sbt('ok',' 组件代码生成完成');setTimeout(hst,2000);
   }catch(err){var fullReq='你是一个前端组件代码生成器。根据用户提供的组件提示词（描述组件结构和样式特点）和额外要求，生成完整的、可直接使用的 HTML/CSS/JavaScript 组件代码。只输出代码，不要输出解释。'+'\n\n[用户请求]\n'+userContent;var detail=typeof getApiSnapshot==='function'?getApiSnapshot(fullReq):null;if(typeof logAiError==='function')logAiError('生成代码',err.message||String(err),detail);alert('生成失败：'+err.message)}
