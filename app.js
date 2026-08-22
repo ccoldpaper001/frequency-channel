@@ -213,7 +213,7 @@ function closeProfileModal() {
 async function uploadAvatar() {
   const file = document.getElementById("avatar-file").files[0];
   if (!file) return;
-  if (file.size > 2 * 1024 * 1024) return showMsg("profile-msg", "图片不能超过 2MB", true);
+  if (file.size > 5 * 1024 * 1024) return showMsg("profile-msg", "图片不能超过 5MB", true);
 
   const ext = file.name.split(".").pop();
   const path = `${currentUser.id}/${Date.now()}.${ext}`;
